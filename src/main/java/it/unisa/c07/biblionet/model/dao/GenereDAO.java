@@ -19,4 +19,5 @@ public interface GenereDAO extends JpaRepository<Genere, String> {
      */
     @Query("SELECT g FROM Genere g WHERE UPPER(g.nome) = UPPER(?1)")
     Genere findByName(String genere);
+
 }

@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Base64;
  * il database.
  */
 @SpringBootApplication
+@EnableSwagger2
 public class BiblionetApplication {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {

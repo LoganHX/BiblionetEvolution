@@ -1,7 +1,8 @@
 package it.unisa.c07.biblionet.autenticazione.controller;
 
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneService;
+import it.unisa.c07.biblionet.model.dao.utente.LettoreDAO;
 import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
 import it.unisa.c07.biblionet.model.entity.utente.Esperto;
 import it.unisa.c07.biblionet.model.entity.utente.Lettore;
@@ -26,7 +27,17 @@ public class AreaUtenteController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final AutenticazioneService autenticazioneService;
+    private final LettoreDAO lettoreDAO;
 
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Get user", notes = "Get user by id")
+    @ApiResponses(value= {
+            @ApiResponse(code=200, message ="articolo trovato")
+    })
+    public UtenteRegistrato getById(@ApiParam(name = "id", value = "Unique user ID", required = true) @PathVariable("id") Long id)
+    {
+        return lettoreDAO.getOne("id");
+    }
     /**
      * Implementa la funzionalità di smistare l'utente sulla view di
      * modifica dati corretta.

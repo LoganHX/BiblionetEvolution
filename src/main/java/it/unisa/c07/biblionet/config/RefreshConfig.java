@@ -1,4 +1,4 @@
-package it.unisa.c07.biblionet.config;
+/**package it.unisa.c07.biblionet.config;
 
 import it.unisa.c07.biblionet.model.dao.SessionUserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,4 +18,4 @@ public class RefreshConfig {
     public void every15Minutes(){
         System.out.println("REFRESH");
     }
-}
+}*/

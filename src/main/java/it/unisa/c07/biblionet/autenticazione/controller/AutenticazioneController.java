@@ -30,7 +30,7 @@ public class AutenticazioneController {
      * @param model il Model
      * @return la pagina dove è visualizzato
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping(value = "")
     public String visualizzaLogin(final Model model) {
         model.addAttribute("loggedUser", null);
         return "autenticazione/login";
@@ -43,10 +43,10 @@ public class AutenticazioneController {
      * @param model la sessione in cui salvare l'utente.
      * @return rimanda alla pagina di home.
      */
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@RequestBody RequestLogin requerst) {
-        String utente = autenticazioneService.login(requerst.getEmail(),
-                                                                requerst.getPassword());
+    @PostMapping(value = "/login")
+    public String login(@RequestBody RequestLogin request) {
+        String utente = autenticazioneService.login(request.getEmail(),
+                                                                request.getPassword());
             if (utente == null) {
                 return "autenticazione/login";
             }
@@ -61,7 +61,7 @@ public class AutenticazioneController {
      * @param status contiene i dati della sessione.
      * @return Rimanda alla pagina di index.
      */
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @GetMapping(value = "/logout")
 
     public String logout(final SessionStatus status) {
         status.setComplete();
