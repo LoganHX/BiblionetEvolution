@@ -12,29 +12,26 @@
   courses of Computer Science at University of Salerno.
 </p>
 
-# Project description and introduction
+# Project description and introduction-------------------Biblionet Evolution
 
-In this section we introduce context informations for the project.
+In this section we introduce context informations for the project
 
 ## Introduction
 
 📕 🎓 Spring Boot Web App for library support. Produced for the Software Engineering and Software Project Management courses of Computer Science at University of Salerno.
 
-## Authors
+## Evolution's Authors 
 
-* **Stefano Lambiase**      - *Project Manager*   - [StefanoLambiase](https://github.com/StefanoLambiase)
-* **Gianmario Voria**       - *Developer*         - [gianwario](https://github.com/gianwario)
-* **Viviana Pentangelo**    - *Developer*         - [vipenti](https://github.com/vipenti)
-* **Antonio Della Porta**   - *Developer*         - [atdepo](https://github.com/atdepo)
-* **Alessio Casolaro**      - *Developer*         - [BearGrillz99](https://github.com/BearGrillz99)
-* **Giulio Triggiani**      - *Developer*         - [rayleighRe1](https://github.com/rayleighRe1)
-* **Ciro Maiorino**         - *Developer*         - [Tekhorror](https://github.com/Tekhorror)
-* **Nicola Pagliara**       - *Developer*         - [Nicola-Pagliara](https://github.com/Nicola-Pagliara)
-* **Luca Cristiano**        - *Developer*         - [Zekromaster](https://github.com/Zekromaster)
+* **Stefano Lambiase**     - *Project Manager*   - [StefanoLambiase](https://github.com/StefanoLambiase)
+* **Ida Iannone**          - *Developer*         - [](https://github.com/)
+* **Giuseppe De Filippo**  - *Developer*         - [](https://github.com/)
+* **Cosimo Stabile**       - *Developer*         - [](https://github.com/)
 
 ## Documentation
 
 * Project's javadoc can be found in *docs* directory and at the following link: [Javadoc Link](https://stefanolambiase.github.io/biblionet/).
+* Process documentation can be found in *projectDocs*  directory.
+* Project's javadoc can be found in *docs* directory and at the following link:
 * Process documentation can be found in *projectDocs*  directory.
 
 
