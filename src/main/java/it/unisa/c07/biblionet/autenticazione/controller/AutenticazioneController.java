@@ -51,12 +51,10 @@ public class AutenticazioneController {
     public ResponseEntity<?> login(@RequestParam String email,
                                    @RequestParam String password) {
 
-        //todo one secret key for each user? che significa
         UtenteRegistrato utente = autenticazioneService.login(email, password);
 
         if (utente == null) {
-            System.out.println("Autenticazione non riuscita");
-            return null;
+            return new ResponseEntity<>("I dati di autenticazione non sono validi", HttpStatus.FORBIDDEN);
         } else {
             return new ResponseEntity<>(jwtGenerator.generateToken(utente), HttpStatus.OK);
         }

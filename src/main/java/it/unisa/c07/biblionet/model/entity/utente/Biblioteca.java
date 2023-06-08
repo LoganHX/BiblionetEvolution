@@ -3,6 +3,7 @@ package it.unisa.c07.biblionet.model.entity.utente;
 import it.unisa.c07.biblionet.model.entity.Possesso;
 import it.unisa.c07.biblionet.model.entity.TicketPrestito;
 import it.unisa.c07.biblionet.utils.Length;
+import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 /**
@@ -26,7 +28,7 @@ import java.util.List;
 @SuperBuilder
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class Biblioteca extends UtenteRegistrato {
 
 
@@ -35,6 +37,7 @@ public class Biblioteca extends UtenteRegistrato {
      */
     @Column(nullable = false, length = Length.LENGTH_60)
     @NonNull
+    @Pattern(regexp = RispettoVincoli.NAME_REGEX)
     private String nomeBiblioteca;
 
     /**

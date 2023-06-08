@@ -3,6 +3,7 @@ package it.unisa.c07.biblionet.model.entity.utente;
 import it.unisa.c07.biblionet.model.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.model.entity.Genere;
 import it.unisa.c07.biblionet.utils.Length;
+import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 /**
@@ -47,6 +49,7 @@ public class Esperto extends UtenteRegistrato implements HaGenere {
      */
     @NonNull
     @Column(nullable = false, length = Length.LENGTH_30)
+    @Pattern(regexp = RispettoVincoli.NAME_REGEX, message = "Il campo deve contenere esattamente 9 cifre.")
     private String nome;
 
     /**
@@ -54,6 +57,7 @@ public class Esperto extends UtenteRegistrato implements HaGenere {
      */
     @NonNull
     @Column(nullable = false, length = Length.LENGTH_30)
+    @Pattern(regexp = RispettoVincoli.NAME_REGEX)
     private String cognome;
 
     /**

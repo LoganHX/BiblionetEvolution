@@ -5,23 +5,19 @@ import it.unisa.c07.biblionet.model.entity.utente.Esperto;
 import it.unisa.c07.biblionet.model.entity.utente.Lettore;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import it.unisa.c07.biblionet.registrazione.service.RegistrazioneService;
-import it.unisa.c07.biblionet.utils.validazione.RegexTester;
+import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
+import javax.validation.Valid;
 
 /**
  * @author Alessio Casolaro
  * @author Antonio Della Porta
  */
-@Controller
-@SessionAttributes("loggedUser")
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/registrazione")
 public final class RegistrazioneController {
@@ -30,18 +26,18 @@ public final class RegistrazioneController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final RegistrazioneService registrazioneService;
-    private static RegexTester regexTester;
 
     /**
      * Implementa la funzionalità di visualizzare
      * la scelta di registrazione.
      *
      * @return La pagina di visualizzazione
-     */
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String visualizzaRegistrazione() {
         return "registrazione/registrazione";
     }
+    */
 
     /**
      * Implementa la funzionalità di registrazione di
@@ -85,28 +81,19 @@ public final class RegistrazioneController {
     @RequestMapping(value = "/esperto", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public String registrazioneEsperto(final @ModelAttribute("esperto") Esperto esperto,
-                                        final @RequestParam("conferma_password") String password,
-                                        final @RequestParam("bibliotecaEmail") String bibliotecaEmail) {
+    public ResponseEntity<String> registrazioneEsperto(final @Valid @ModelAttribute Esperto esperto,
+                                                       BindingResult bindingResult,
+                                                       final @RequestParam("conferma_password") String password,
+                                                       final @RequestParam("bibliotecaEmail") String bibliotecaEmail) {
 
-        if (registrazioneService.isEmailRegistrata(esperto.getEmail())) {
-            return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
+        String s = controlliPreliminari(bindingResult, password, esperto);
+        if(!s.isEmpty()){
+            return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
         }
-        if (!registrazioneService.isEmailRegistrata(bibliotecaEmail)) {
-            return "Non vi è alcuna biblioteca già registrata associata all'indirizzo e-mail fornito";
-        }
-
-        if (!RegexTester.testEsperto(esperto)) {
-            return "I dati forniti non rispettano il formato atteso.";
-        }
-        if(!controllaPassword(esperto, password) || password.length() <= 7){
-            return "Password non adeguata";
-        }
-
         esperto.setBiblioteca(registrazioneService.getBibliotecaByEmail(bibliotecaEmail));
 
         registrazioneService.registraEsperto(esperto);
-        return "Registrazione effettuata correttamente";
+        return new ResponseEntity<>("Registrazione ok", HttpStatus.OK);
     }
 
     /**
@@ -119,24 +106,16 @@ public final class RegistrazioneController {
     @RequestMapping(value = "/biblioteca", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public String registrazioneBiblioteca(@ModelAttribute("biblioteca") Biblioteca biblioteca,
-                                           @RequestParam("conferma_password")
-                                           String password
-                                           ) {
-
-        if (registrazioneService.isEmailRegistrata(biblioteca.getEmail())) {
-            return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
+    public ResponseEntity<String> registrazioneBiblioteca(@Valid @ModelAttribute Biblioteca biblioteca,
+                                                          BindingResult bindingResult,
+                                                          @RequestParam("conferma_password") String password
+    ) {
+        String s = controlliPreliminari(bindingResult, password, biblioteca);
+        if(!s.isEmpty()){
+            return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
         }
-        if (!RegexTester.testBiblioteca(biblioteca)) {
-            return "I dati forniti non rispettano il formato atteso.";
-        }
-
-        if(!controllaPassword(biblioteca, password) || password.length() <= 7){
-            return "Password non adeguata";
-        }
-
         registrazioneService.registraBiblioteca(biblioteca);
-        return "Registrazione effettuata correttamente";
+        return new ResponseEntity<>("Registrazione effettuata correttamente", HttpStatus.OK);
     }
 
 
@@ -154,39 +133,31 @@ public final class RegistrazioneController {
     @RequestMapping(value = "/lettore", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public String registrazioneLettore(final @ModelAttribute("lettore") Lettore lettore,
+    public ResponseEntity<String> registrazioneLettore(@Valid @ModelAttribute Lettore lettore,
+                                       BindingResult bindingResult,
                                        final @RequestParam("conferma_password")
                                                String password
     ) {
-
-        if (registrazioneService.isEmailRegistrata(lettore.getEmail())) {
-            return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
-        }
-        if (!RegexTester.testLettore(lettore)) {
-            return "I dati forniti non rispettano il formato atteso.";
-        }
-        if(!controllaPassword(lettore, password) || password.length() <= 7){
-            return "Password non adeguata";
+        String s = controlliPreliminari(bindingResult, password, lettore);
+        if(!s.isEmpty()){
+            return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
         }
 
         registrazioneService.registraLettore(lettore);
-        return "Registrazione effettuata correttamente";
+        return new ResponseEntity<>("Registrazione effettuata correttamente", HttpStatus.OK);
     }
 
-    private boolean controllaPassword(UtenteRegistrato utente, String password){
-        try {
-            MessageDigest md;
-            md = MessageDigest.getInstance("SHA-256");
-            byte[] arr = md.digest(password.getBytes());
-
-            if (Arrays.compare(arr, utente.getPassword()) != 0) {
-                return false;
-            }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return true;
+private String controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistrato utenteRegistrato){
+    if(bindingResult.hasErrors()){
+        return "Errore di validazione";
     }
-
+    if (registrazioneService.isEmailRegistrata(utenteRegistrato.getEmail())) {
+        return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
+    }
+    if(!RispettoVincoli.passwordRispettaVincoli(utenteRegistrato, password)){
+        return "Password non adeguata";
+    }
+    return "";
+}
 
 }

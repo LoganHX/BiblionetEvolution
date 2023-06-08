@@ -5,6 +5,7 @@ import it.unisa.c07.biblionet.model.entity.Genere;
 import it.unisa.c07.biblionet.model.entity.Evento;
 import it.unisa.c07.biblionet.model.entity.TicketPrestito;
 import it.unisa.c07.biblionet.utils.Length;
+import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -16,6 +17,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
+
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.OnDelete;
@@ -46,6 +49,7 @@ public class Lettore extends UtenteRegistrato implements HaGenere {
      */
     @NonNull
     @Column(nullable = false, length = Length.LENGTH_30)
+    @Pattern(regexp = RispettoVincoli.NAME_REGEX)
     private String nome;
 
     /**
@@ -53,6 +57,7 @@ public class Lettore extends UtenteRegistrato implements HaGenere {
      */
     @NonNull
     @Column(nullable = false, length = Length.LENGTH_30)
+    @Pattern(regexp = RispettoVincoli.NAME_REGEX)
     private String cognome;
 
     /**

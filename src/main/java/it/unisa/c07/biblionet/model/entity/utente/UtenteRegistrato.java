@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.model.entity.utente;
 
 import it.unisa.c07.biblionet.utils.Length;
+import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.Column;
 import javax.persistence.InheritanceType;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -21,9 +23,10 @@ import java.security.NoSuchAlgorithmException;
 @Entity
 @SuperBuilder
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @EqualsAndHashCode
 @Inheritance(strategy = InheritanceType.JOINED)
+
 public class UtenteRegistrato {
 
     /**
@@ -60,6 +63,7 @@ public class UtenteRegistrato {
      */
     @Column(nullable = false, length = Length.LENGTH_30)
     @NonNull
+    @Pattern(regexp = RispettoVincoli.ADDRESS_REGEX)
     private String via;
 
     /**
@@ -67,6 +71,7 @@ public class UtenteRegistrato {
      */
     @Column(nullable = false, length = Length.LENGTH_10)
     @NonNull
+    @Pattern(regexp = RispettoVincoli.PHONE_REGEX)
     private String recapitoTelefonico;
 
 

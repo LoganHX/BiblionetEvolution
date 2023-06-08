@@ -1,23 +1,22 @@
 package it.unisa.c07.biblionet.autenticazione.controller;
 
+import io.jsonwebtoken.Claims;
 import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneService;
 import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
 import it.unisa.c07.biblionet.model.entity.utente.Esperto;
 import it.unisa.c07.biblionet.model.entity.utente.Lettore;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
-import it.unisa.c07.biblionet.utils.validazione.RegexTester;
+import it.unisa.c07.biblionet.utils.Utils;
+import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
+import javax.validation.Valid;
+
 
 /**
  * @author Alessio Casolaro, Antonio Della Porta
@@ -33,9 +32,9 @@ public class AreaUtenteController {
     private final AutenticazioneService autenticazioneService;
 
     /**
+     * INUTILE DOPO IL RIFACIMENTO DELLA INTERFACCIA CON REACT
      * Implementa la funzionalità di smistare l'utente sulla view di
      * modifica dati corretta.
-     * @param model Utilizzato per gestire la sessione.
      *
      * @return modifica_dati_biblioteca se l'account
      * da modificare é una biblioteca.
@@ -45,7 +44,7 @@ public class AreaUtenteController {
      *
      * modifica_dati_lettore se l'account
      * da modificare é un lettore.
-     */
+
     @RequestMapping(value = "/modifica-dati", method = RequestMethod.GET)
     public String modificaDati(final Model model) {
         UtenteRegistrato utente = (UtenteRegistrato)
@@ -71,81 +70,70 @@ public class AreaUtenteController {
         }
         return "autenticazione/login";
     }
+*/
 
+    private String controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistrato utenteRegistrato){
+        if(bindingResult.hasErrors()){
+            return "Errore di validazione";
+        }
 
+        if(autenticazioneService.login(utenteRegistrato.getEmail(), vecchia) == null){ //usata solo per vedere se la password vecchia corrisponde, non effettua davvero il login
+            return "Password errata. Non sei autorizzato a modificare la password.";
+        }
+
+        return "";
+
+    }
+    private String qualePassword(String vecchia, String nuova, String conferma){
+        if(nuova.isEmpty() && conferma.isEmpty()) return vecchia;
+        if (RispettoVincoli.confrontoPassword(nuova, conferma)) {
+            return conferma;
+        }
+        return vecchia;
+    }
     /**
      * Implementa la funzionalità di modifica dati di una bibilioteca.
      *
-     * @param model Utilizzato per gestire la sessione.
-     * @param biblioteca Una biblioteca da modificare.
+     * @param biblioteca email della biblioteca da modificare.
      * @param vecchia La vecchia password dell'account.
      * @param nuova La nuova password dell'account.
      * @param conferma La password di conferma password dell'account.
      *
      * @return login Se la modifica va a buon fine.
      * modifica_dati_biblioteca Se la modifica non va a buon fine
+     *
      */
-    @RequestMapping(value = "/conferma-modifica-biblioteca",
-            method = RequestMethod.POST)
-    public String confermaModificaBiblioteca(final Model model,
-                     final Biblioteca biblioteca,
-                     final @RequestParam("vecchia_password")String vecchia,
-                     final @RequestParam("nuova_password")String nuova,
-                     final @RequestParam("conferma_password")String conferma) {
+    @PostMapping(value = "/conferma-modifica-biblioteca")
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<String> modificaDatiBiblioteca(
+            final @RequestHeader (name="Authorization") String token,
+            final @Valid @RequestParam("Biblioteca") Biblioteca biblioteca,
+            BindingResult bindingResult,
+            final @RequestParam("vecchia_password")String vecchia,
+            final @RequestParam("nuova_password")String nuova,
+            final @RequestParam("conferma_password")String conferma) {
+
+        Claims claims = Utils.getClaimsFromTokenWithoutKey(token);
+        if(! claims.getSubject().equalsIgnoreCase(biblioteca.getEmail()))
+            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
+
+        biblioteca.setPassword(qualePassword(vecchia, nuova, conferma));
+        String s = controlliPreliminari(bindingResult, vecchia, biblioteca);
+        if(!s.isEmpty()) return new ResponseEntity<>(s, HttpStatus.FORBIDDEN);
 
 
-        Biblioteca toUpdate = autenticazioneService
-                .findBibliotecaByEmail(biblioteca.getEmail());
-
-        HashMap<String, String> tester = new HashMap<>();
-        tester.put(biblioteca.getNomeBiblioteca(), "^[A-zÀ-ù ‘-]{2,60}$");
-        tester.put(biblioteca.getRecapitoTelefonico(), "^\\d{10}$");
-        tester.put(biblioteca.getVia(), "^[0-9A-zÀ-ù ‘-]{2,30}$");
-
-        RegexTester regexTester = new RegexTester();
-        if (!regexTester.toTest(tester)) {
-            return "area-utente/modifica-dati-biblioteca";
-        }
-
-
-        if (!vecchia.isEmpty() && !nuova.isEmpty() && !conferma.isEmpty()) {
-            try {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA-256");
-                byte[] vecchiaHash = md.digest(vecchia.getBytes());
-
-                if (nuova.length() <= 7) {
-                    return "area-utente/modifica-dati-biblioteca";
-                }
-
-                if (Arrays.compare(vecchiaHash,
-                        toUpdate.getPassword()) == 0
-                        &&
-                        nuova.equals(conferma)
-                ) {
-                    biblioteca.setPassword(nuova);
-                } else {
-                    return "area-utente/modifica-dati-biblioteca";
-                }
-
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            biblioteca.setHashedPassword(toUpdate.getPassword());
-        }
 
         autenticazioneService.aggiornaBiblioteca(biblioteca);
-        model.addAttribute("loggedUser", biblioteca);
-        return "autenticazione/login";
 
+        return new ResponseEntity<>("Dati aggiornati", HttpStatus.OK);
     }
+
+
 
     /**
      * Implementa la funzionalità di modifica dati di un esperto.
      *
-     * @param model Utilizzato per gestire la sessione.
      * @param esperto Un esperto da modificare.
      * @param vecchia La vecchia password dell'account.
      * @param nuova La nuova password dell'account.
@@ -155,80 +143,45 @@ public class AreaUtenteController {
      * @return login Se la modifica va a buon fine.
      * modifica_dati_esperto Se la modifica non va a buon fine
      */
-    @RequestMapping(value = "/conferma-modifica-esperto",
-            method = RequestMethod.POST)
-    public String confermaModificaEsperto(final Model model,
-                       final Esperto esperto,
-                       final @RequestParam("vecchia_password")String vecchia,
-                       final @RequestParam("nuova_password")String nuova,
-                       final @RequestParam("conferma_password")String conferma,
-                       final @RequestParam("email_biblioteca")
-                                                      String emailBiblioteca) {
+    @PostMapping(value = "/conferma-modifica-esperto")
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<String> modificaDatiEsperto(
+            final @RequestHeader (name="Authorization") String token,
+            final @Valid @RequestParam("Esperto") Esperto esperto,
+            BindingResult bindingResult,
+            final @RequestParam("vecchia_password")String vecchia,
+            final @RequestParam("nuova_password")String nuova,
+            final @RequestParam("conferma_password")String conferma,
+            final @RequestParam("email_biblioteca")String emailBiblioteca) {
 
 
-        Esperto toUpdate = autenticazioneService
-                .findEspertoByEmail(esperto.getEmail());
 
-        Biblioteca b = autenticazioneService
-                .findBibliotecaByEmail(emailBiblioteca);
+        Esperto toUpdate = autenticazioneService.findEspertoByEmail(esperto.getEmail());
+        Claims claims = Utils.getClaimsFromTokenWithoutKey(token);
+        if(! claims.getSubject().equalsIgnoreCase(esperto.getEmail()))
+            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
 
-        HashMap<String, String> tester = new HashMap<>();
-        tester.put(esperto.getNome(), "^[A-zÀ-ù ‘-]{2,30}$");
-        tester.put(esperto.getCognome(), "^[A-zÀ-ù ‘-]{2,30}$");
-        tester.put(esperto.getRecapitoTelefonico(), "^\\d{10}$");
-        tester.put(esperto.getVia(), "^[0-9A-zÀ-ù ‘-]{2,30}$");
-
-        RegexTester regexTester = new RegexTester();
-        if (!regexTester.toTest(tester)) {
-            return "area-utente/modifica-dati-esperto";
-        }
+        esperto.setPassword(qualePassword(vecchia, nuova, conferma));
+        String s = controlliPreliminari(bindingResult, vecchia, esperto);
+        if(!s.isEmpty()) return new ResponseEntity<>(s, HttpStatus.FORBIDDEN);
 
 
+        Biblioteca b = autenticazioneService.findBibliotecaByEmail(emailBiblioteca);
         if (b != null) {
             esperto.setBiblioteca(b);
         } else {
             esperto.setBiblioteca(toUpdate.getBiblioteca());
-            return "area-utente/modifica-dati-esperto";
         }
 
-        if (!vecchia.isEmpty() && !nuova.isEmpty() && !conferma.isEmpty()) {
-            try {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA-256");
-                byte[] vecchiaHash = md.digest(vecchia.getBytes());
-
-                if (nuova.length() <= 7) {
-                    return "area-utente/modifica-dati-esperto";
-                }
-
-                if (Arrays.compare(vecchiaHash, toUpdate.getPassword()) == 0
-                        && nuova.equals(conferma)
-                ) {
-                    System.out.println("password giusta");
-                    esperto.setPassword(nuova);
-                } else {
-                    System.out.println("password sbagliata");
-                    return "area-utente/modifica-dati-esperto";
-                }
-
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-        } else {
-            esperto.setHashedPassword(toUpdate.getPassword());
-        }
-
-
-        System.out.println(esperto.getEmail());
         autenticazioneService.aggiornaEsperto(esperto);
-        model.addAttribute("loggedUser", esperto);
-        return "autenticazione/login";
+
+        return new ResponseEntity<>("Dati aggiornati", HttpStatus.OK);
     }
 
     /**
      * Implementa la funzionalità di modifica dati di un lettore.
      *
-     * @param model Utilizzato per gestire la sessione.
      * @param lettore Un lettore da modificare.
      * @param vecchia La vecchia password dell'account.
      * @param nuova La nuova password dell'account.
@@ -239,56 +192,26 @@ public class AreaUtenteController {
      */
     @RequestMapping(value = "/conferma-modifica-lettore",
             method = RequestMethod.POST)
-    public String confermaModificaLettore(final Model model,
-                                          final Lettore lettore,
+    public ResponseEntity<String> confermaModificaLettore(final @RequestHeader (name="Authorization") String token,
+                     final @Valid @ModelAttribute Lettore lettore,
+                     BindingResult bindingResult,
                      final @RequestParam("vecchia_password")String vecchia,
                      final @RequestParam("nuova_password")String nuova,
                      final @RequestParam("conferma_password")String conferma) {
 
 
-        Lettore toUpdate = autenticazioneService
-                .findLettoreByEmail(lettore.getEmail());
+        Claims claims = Utils.getClaimsFromTokenWithoutKey(token);
+        //if(! claims.getSubject().equalsIgnoreCase(lettore.getEmail()))
+          //  return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
 
-        HashMap<String, String> tester = new HashMap<>();
-        tester.put(lettore.getNome(), "^[A-zÀ-ù ‘-]{2,30}$");
-        tester.put(lettore.getCognome(), "^[A-zÀ-ù ‘-]{2,30}$");
-        tester.put(lettore.getRecapitoTelefonico(), "^\\d{10}$");
-        tester.put(lettore.getVia(), "^[0-9A-zÀ-ù ‘-]{2,30}$");
+        lettore.setPassword(qualePassword(vecchia, nuova, conferma));
+        String s = controlliPreliminari(bindingResult, vecchia, lettore);
+        if(!s.isEmpty()) return new ResponseEntity<>(s, HttpStatus.FORBIDDEN);
 
-        RegexTester regexTester = new RegexTester();
 
-        if (!regexTester.toTest(tester)) {
-            return "area-utente/modifica-dati-lettore";
-        }
-
-        if (!vecchia.isEmpty() && !nuova.isEmpty() && !conferma.isEmpty()) {
-            try {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA-256");
-                byte[] vecchiaHash = md.digest(vecchia.getBytes());
-
-                if (nuova.length() <= 7) {
-                    return "area-utente/modifica-dati-lettore";
-                }
-                if (Arrays.compare(vecchiaHash, toUpdate.getPassword()) == 0
-                        && nuova.equals(conferma)
-                ) {
-                    lettore.setPassword(nuova);
-                } else {
-                    return "area-utente/modifica-dati-lettore";
-                }
-
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-        } else {
-            lettore.setHashedPassword(toUpdate.getPassword());
-        }
-
-        System.out.println(lettore.getRecapitoTelefonico());
         autenticazioneService.aggiornaLettore(lettore);
-        model.addAttribute("loggedUser", lettore);
-        return "autenticazione/login";
+
+        return new ResponseEntity<>("Dati aggiornati", HttpStatus.OK);
     }
 
     /**
@@ -297,7 +220,7 @@ public class AreaUtenteController {
      *
      * @param model Utilizzato per gestire la sessione.
      * @return La view di visualizzazione area utente
-     */
+
     @RequestMapping(value = "/area-utente", method = RequestMethod.GET)
     public String areaUtente(final Model model) {
         UtenteRegistrato utente = (UtenteRegistrato)
@@ -323,13 +246,14 @@ public class AreaUtenteController {
         }
         return "autenticazione/login";
     }
+    */
 
     /**
      * Implementa la funzionalitá di visualizzazione dei clubs
      * a cui il lettore é iscritto.
      * @param model Utilizzato per gestire la sessione.
      * @return La view di visualizzazione dei clubs a cui é iscritto
-     */
+
     @RequestMapping(value = "area-utente/visualizza-clubs-personali-lettore",
             method = RequestMethod.GET)
     public String visualizzaClubsLettore(final Model model) {
@@ -341,13 +265,14 @@ public class AreaUtenteController {
         }
         return "autenticazione/login";
     }
+    */
 
     /**
      * Implementa la funzionalitá di visualizzazione dei clubs
      * che l'esperto gestisce.
      * @param model Utilizzato per gestire la sessione.
      * @return La view di visualizzazione dei clubs che gestisce
-     */
+
     @RequestMapping(value = "area-utente/visualizza-clubs-personali-esperto",
             method = RequestMethod.GET)
     public String visualizzaClubsEsperto(final Model model) {
@@ -359,4 +284,5 @@ public class AreaUtenteController {
         }
         return "autenticazione/login";
     }
+    */
 }
