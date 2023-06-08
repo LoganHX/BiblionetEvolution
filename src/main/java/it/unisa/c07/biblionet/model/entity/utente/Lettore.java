@@ -31,7 +31,7 @@ import java.util.List;
 @Entity
 @SuperBuilder
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class Lettore extends UtenteRegistrato implements HaGenere {
 
     /**

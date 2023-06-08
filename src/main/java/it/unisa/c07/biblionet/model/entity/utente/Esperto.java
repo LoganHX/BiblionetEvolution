@@ -32,7 +32,7 @@ import java.util.List;
 @SuperBuilder
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class Esperto extends UtenteRegistrato implements HaGenere {
 
     /**
@@ -109,6 +109,8 @@ public class Esperto extends UtenteRegistrato implements HaGenere {
         this.cognome = cognome;
         this.biblioteca = biblioteca;
     }
+
+
 /*
     public boolean equals (Object o){
         if(o instanceof Esperto) {

@@ -12,13 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -47,17 +43,14 @@ public class BibliotecaController {
     /**
      * Implementa la funzionalità che permette di
      * visualizzare tutte le biblioteche iscritte.
-     * @param model Il model in cui salvare la lista
      * @return La view per visualizzare le biblioteche
      */
     @RequestMapping(value = "/visualizza-biblioteche",
             method = RequestMethod.GET)
-    public String visualizzaListaBiblioteche(final Model model) {
-
-        model.addAttribute("listaBiblioteche",
-                prenotazioneService.getAllBiblioteche());
-
-        return "/biblioteca/visualizza-lista-biblioteche";
+    @ResponseBody
+    @CrossOrigin
+    public List<Biblioteca> visualizzaListaBiblioteche() {
+        return prenotazioneService.getAllBiblioteche();
     }
 
     /**
@@ -66,7 +59,7 @@ public class BibliotecaController {
      * nuovi libri prenotabili.
      * @param model Il model per recuperare l'utente
      * @return La view
-     */
+
     @RequestMapping(value = "/inserisci-nuovo-libro",
                             method = RequestMethod.GET)
     public String visualizzaInserimentoLibro(final Model model) {
@@ -86,6 +79,7 @@ public class BibliotecaController {
 
         return "/biblioteca/inserimento-nuovo-libro-prenotabile";
     }
+    */
 
     /**
      * Implementa la funzionalità che permette inserire
