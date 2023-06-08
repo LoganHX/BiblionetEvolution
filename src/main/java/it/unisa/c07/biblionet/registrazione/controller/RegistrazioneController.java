@@ -83,6 +83,8 @@ public final class RegistrazioneController {
      * @return la view per effettuare il login
      */
     @RequestMapping(value = "/esperto", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
     public String registrazioneEsperto(final @ModelAttribute("esperto") Esperto esperto,
                                         final @RequestParam("conferma_password") String password,
                                         final @RequestParam("bibliotecaEmail") String bibliotecaEmail) {
@@ -93,12 +95,15 @@ public final class RegistrazioneController {
         if (!registrazioneService.isEmailRegistrata(bibliotecaEmail)) {
             return "Non vi è alcuna biblioteca già registrata associata all'indirizzo e-mail fornito";
         }
-        if (RegexTester.testEsperto(esperto)) {
+
+        if (!RegexTester.testEsperto(esperto)) {
             return "I dati forniti non rispettano il formato atteso.";
         }
         if(!controllaPassword(esperto, password) || password.length() <= 7){
             return "Password non adeguata";
         }
+
+        esperto.setBiblioteca(registrazioneService.getBibliotecaByEmail(bibliotecaEmail));
 
         registrazioneService.registraEsperto(esperto);
         return "Registrazione effettuata correttamente";
@@ -147,6 +152,8 @@ public final class RegistrazioneController {
      * @return La view per effettuare il login
      */
     @RequestMapping(value = "/lettore", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
     public String registrazioneLettore(final @ModelAttribute("lettore") Lettore lettore,
                                        final @RequestParam("conferma_password")
                                                String password
@@ -155,7 +162,7 @@ public final class RegistrazioneController {
         if (registrazioneService.isEmailRegistrata(lettore.getEmail())) {
             return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
         }
-        if (RegexTester.testLettore(lettore)) {
+        if (!RegexTester.testLettore(lettore)) {
             return "I dati forniti non rispettano il formato atteso.";
         }
         if(!controllaPassword(lettore, password) || password.length() <= 7){
