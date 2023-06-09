@@ -38,10 +38,8 @@ public class AreaUtenteController {
      *
      * @return modifica_dati_biblioteca se l'account
      * da modificare é una biblioteca.
-     *
      * modifica_dati_esperto se l'account
      * da modificare é un esperto.
-     *
      * modifica_dati_lettore se l'account
      * da modificare é un lettore.
 
@@ -92,7 +90,7 @@ public class AreaUtenteController {
         return vecchia;
     }
     /**
-     * Implementa la funzionalità di modifica dati di una bibilioteca.
+     * Implementa la funzionalità di modifica dati di una biblioteca.
      *
      * @param biblioteca email della biblioteca da modificare.
      * @param vecchia La vecchia password dell'account.
@@ -249,7 +247,7 @@ public class AreaUtenteController {
     */
 
     /**
-     * Implementa la funzionalitá di visualizzazione dei clubs
+     * Implementa la funzionalità di visualizzazione dei clubs
      * a cui il lettore é iscritto.
      * @param model Utilizzato per gestire la sessione.
      * @return La view di visualizzazione dei clubs a cui é iscritto
@@ -268,7 +266,7 @@ public class AreaUtenteController {
     */
 
     /**
-     * Implementa la funzionalitá di visualizzazione dei clubs
+     * Implementa la funzionalità di visualizzazione dei clubs
      * che l'esperto gestisce.
      * @param model Utilizzato per gestire la sessione.
      * @return La view di visualizzazione dei clubs che gestisce

@@ -1,12 +1,8 @@
 package it.unisa.c07.biblionet.prenotazioneLibri.controller;
 
-
-import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneService;
 import it.unisa.c07.biblionet.model.dao.utente.BibliotecaDAO;
-import it.unisa.c07.biblionet.model.entity.Genere;
 import it.unisa.c07.biblionet.model.entity.Libro;
 import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
-import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import it.unisa.c07.biblionet.model.form.LibroForm;
 import it.unisa.c07.biblionet.prenotazioneLibri.service.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.utils.Utils;
@@ -14,11 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -59,34 +51,6 @@ public class BibliotecaController {
     }
 
     /**
-     * Implementa la funzionalità che permette di
-     * visualizzare la pagina per l'inserimento di
-     * nuovi libri prenotabili.
-     * @param model Il model per recuperare l'utente
-     * @return La view
-
-    @RequestMapping(value = "/inserisci-nuovo-libro",
-                            method = RequestMethod.GET)
-    public String visualizzaInserimentoLibro(final Model model) {
-
-        UtenteRegistrato utente =
-                (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || utente.getTipo() != "Biblioteca") {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
-        List<Libro> listaLibri =
-                prenotazioneService.visualizzaListaLibriCompleta();
-        model.addAttribute("listaLibri", listaLibri);
-
-        List<Genere> listaGeneri = prenotazioneService.getAllGeneri();
-        model.addAttribute("listaGeneri", listaGeneri);
-
-        return "/biblioteca/inserimento-nuovo-libro-prenotabile";
-    }
-    */
-
-    /**
      * Implementa la funzionalità che permette inserire
      * un libro tramite l'isbn e una Api di Google.
      * @param isbn l'isbn del libro
@@ -111,7 +75,6 @@ public class BibliotecaController {
             return new ResponseEntity<>("ISBN inesistente", HttpStatus.BAD_REQUEST);
         }
         Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
-        if (b == null) return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
 
         List<String> glist = Arrays.asList(generi.clone());
         Libro l = prenotazioneService.inserimentoPerIsbn(
@@ -142,7 +105,6 @@ public class BibliotecaController {
             return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
         Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
-        if (b == null) return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         Libro l = prenotazioneService.inserimentoDalDatabase(
                 idLibro, b.getEmail(), numCopie);
         return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
@@ -170,7 +132,6 @@ public class BibliotecaController {
             return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
         Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
-        if (b == null) return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         Libro l = new Libro();
         l.setTitolo(libro.getTitolo());
         if (libro.getIsbn() != null) {
@@ -226,7 +187,7 @@ public class BibliotecaController {
     }
 
     /**
-     * Implementa la funzionalitá di visualizzazione
+     * Implementa la funzionalità di visualizzazione
      * del profilo di una singola biblioteca.
      * @param email della biblioteca
      * @return La view di visualizzazione singola biblioteca
