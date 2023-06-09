@@ -14,4 +14,21 @@ public class Utils {
         Jwt<?, ?> jwt = parser.parse(unsignedToken);
         return (Claims) jwt.getBody();
     }
+
+    public static boolean isUtenteBiblioteca(String token){
+        if(token == null) return false;
+        return "Biblioteca".equalsIgnoreCase((String) getClaimsFromTokenWithoutKey(token).get("role"));
+    }
+    public static boolean isUtenteLettore(String token){
+        if(token == null) return false;
+        return "Lettore".equalsIgnoreCase((String) getClaimsFromTokenWithoutKey(token).get("role"));
+    }
+    public static boolean isUtenteEsperto(String token){
+        if(token == null) return false;
+        return "Esperto".equalsIgnoreCase((String) getClaimsFromTokenWithoutKey(token).get("role"));
+    }
+    public static String getSubjectFromToken(String token){
+        if(token == null) return null;
+        return getClaimsFromTokenWithoutKey(token).getSubject();
+    }
 }

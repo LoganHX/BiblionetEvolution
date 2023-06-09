@@ -1,14 +1,18 @@
 package it.unisa.c07.biblionet.prenotazioneLibri.controller;
 
 
+import it.unisa.c07.biblionet.autenticazione.service.AutenticazioneService;
+import it.unisa.c07.biblionet.model.dao.utente.BibliotecaDAO;
 import it.unisa.c07.biblionet.model.entity.Genere;
 import it.unisa.c07.biblionet.model.entity.Libro;
 import it.unisa.c07.biblionet.model.entity.utente.Biblioteca;
 import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
 import it.unisa.c07.biblionet.model.form.LibroForm;
 import it.unisa.c07.biblionet.prenotazioneLibri.service.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -39,6 +43,7 @@ public class BibliotecaController {
      * persistenza.
      */
     private final PrenotazioneLibriService prenotazioneService;
+    private final BibliotecaDAO bibliotecaDAO;
 
     /**
      * Implementa la funzionalità che permette di
@@ -83,37 +88,39 @@ public class BibliotecaController {
 
     /**
      * Implementa la funzionalità che permette inserire
-     * un libro tramite l'isbn ed una Api di Google.
+     * un libro tramite l'isbn e una Api di Google.
      * @param isbn l'isbn del libro
      * @param generi la lista dei generi del libro
      * @param numCopie il numero di copie possedute
-     * @param model Il model per recuperare l'utente
      * @return La view per visualizzare il libro
      */
-    @RequestMapping(value = "/inserimento-isbn",
-                        method = RequestMethod.POST)
-    public String inserisciPerIsbn(final Model model,
-                                   @RequestParam final String isbn,
-                                   @RequestParam final String[] generi,
-                                   @RequestParam final int numCopie) {
+    @PostMapping(value = "/inserimento-isbn")
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<String> inserisciPerIsbn(@RequestParam final String isbn,
+                                                   @RequestHeader (name="Authorization") final String token,
+                                                   @RequestParam final String[] generi,
+                                                   @RequestParam final int numCopie) {
+
+        if (!Utils.isUtenteBiblioteca(token)) {
+            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
+        }
+        //todo controllare scadenza token
 
         if (isbn == null) {
-            return "redirect:/biblioteca/inserisci-nuovo-libro";
+            return new ResponseEntity<>("ISBN inesistente", HttpStatus.BAD_REQUEST);
         }
-        UtenteRegistrato utente =
-                (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || utente.getTipo() != "Biblioteca") {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        Biblioteca b = (Biblioteca) utente;
+        Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
+        if (b == null) return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
+
         List<String> glist = Arrays.asList(generi.clone());
         Libro l = prenotazioneService.inserimentoPerIsbn(
                 isbn, b.getEmail(), numCopie, glist);
         if (l == null) {
-            return "redirect:/biblioteca/inserisci-nuovo-libro";
+            return new ResponseEntity<>("Libro non crato", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return "redirect:/prenotazione-libri/" + l.getIdLibro()
-                + "/visualizza-libro";
+        return new ResponseEntity<>("Libro creato con successo", HttpStatus.OK);
+
     }
 
     /**
@@ -122,49 +129,48 @@ public class BibliotecaController {
      * dal db.
      * @param idLibro l'ID del libro
      * @param numCopie il numero di copie possedute
-     * @param model Il model per recuperare l'utente
      * @return La view per visualizzare il libro
      */
-    @RequestMapping(value = "/inserimento-archivio",
-                        method = RequestMethod.POST)
-    public String inserisciDaDatabase(final Model model,
-                                   @RequestParam final int idLibro,
+    @PostMapping(value = "/inserimento-archivio")
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<String> inserisciDaDatabase(@RequestParam final int idLibro,
+                                      @RequestHeader (name="Authorization") final String token,
                                    @RequestParam final int numCopie) {
 
-        UtenteRegistrato utente =
-                (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || utente.getTipo() != "Biblioteca") {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        if (!Utils.isUtenteBiblioteca(token)) {
+            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
-        Biblioteca b = (Biblioteca) utente;
+        Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
+        if (b == null) return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         Libro l = prenotazioneService.inserimentoDalDatabase(
                 idLibro, b.getEmail(), numCopie);
-        return "redirect:/prenotazione-libri/" + l.getIdLibro()
-                + "/visualizza-libro";
+        return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
+
     }
 
     /**
      * Implementa la funzionalità che permette inserire
      * un libro manualmente tramite form.
-     * @param model Il model per recuperare l'utente
      * @param libro Il libro da salvare
      * @param numCopie il numero di copie possedute
      * @param annoPubblicazione l'anno di pubblicazione
      * @return La view per visualizzare il libro
      */
-    @RequestMapping(value = "/inserimento-manuale",
-                        method = RequestMethod.POST)
-    public String inserisciManualmente(final Model model,
-                                       final LibroForm libro,
-                                       final int numCopie,
-                                       final String annoPubblicazione) {
+    @PostMapping(value = "/inserimento-manuale")
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<String> inserisciManualmente(
+            @RequestHeader (name="Authorization") final String token,
+            @RequestParam final LibroForm libro,
+            @RequestParam final int numCopie,
+            @RequestParam final String annoPubblicazione) {
 
-        UtenteRegistrato utente =
-                (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || utente.getTipo() != "Biblioteca") {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        if (!Utils.isUtenteBiblioteca(token)) {
+            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
-        Biblioteca b = (Biblioteca) utente;
+        Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
+        if (b == null) return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         Libro l = new Libro();
         l.setTitolo(libro.getTitolo());
         if (libro.getIsbn() != null) {
@@ -190,8 +196,8 @@ public class BibliotecaController {
         l.setAnnoDiPubblicazione(anno);
         Libro newLibro = prenotazioneService.inserimentoManuale(
                 l, b.getEmail(), numCopie, libro.getGeneri());
-        return "redirect:/prenotazione-libri/" + newLibro.getIdLibro()
-                + "/visualizza-libro";
+        return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
+
     }
 
     /**
@@ -200,45 +206,35 @@ public class BibliotecaController {
      *
      * @param stringa La stringa di ricerca
      * @param filtro  L'informazione su cui filtrare
-     * @param model   Il model per salvare la lista
      * @return La view che visualizza la lista
      */
-    @RequestMapping(value = "/ricerca", method = RequestMethod.GET)
-    public String visualizzaListaFiltrata(
+    @GetMapping(value = "/ricerca")
+    @ResponseBody
+    @CrossOrigin
+    public List<Biblioteca> visualizzaListaFiltrata(
             @RequestParam("stringa") final String stringa,
-            @RequestParam("filtro") final String filtro,
-            final Model model) {
+            @RequestParam("filtro") final String filtro) {
 
         switch (filtro) {
             case "nome":
-                model.addAttribute("listaBiblioteche", prenotazioneService.
-                        getBibliotecheByNome(stringa));
-                break;
+                return prenotazioneService.getBibliotecheByNome(stringa);
             case "citta":
-                model.addAttribute("listaBiblioteche", prenotazioneService.
-                        getBibliotecheByCitta(stringa));
-                break;
+                return prenotazioneService.getBibliotecheByCitta(stringa);
             default:
-                model.addAttribute("listaBiblioteche",
-                        prenotazioneService.getAllBiblioteche());
-                break;
+                return prenotazioneService.getAllBiblioteche();
         }
-        return "biblioteca/visualizza-lista-biblioteche";
     }
 
     /**
      * Implementa la funzionalitá di visualizzazione
      * del profilo di una singola biblioteca.
      * @param email della biblioteca
-     * @param model Per salvare la biblioteca
      * @return La view di visualizzazione singola biblioteca
      */
-    @RequestMapping(value = "/{email}",
-            method = RequestMethod.GET)
-    public String visualizzaDatiBiblioteca(final @PathVariable String email,
-                                           final Model model) {
-        model.addAttribute("biblioteca",
-                prenotazioneService.getBibliotecaById(email));
-        return "biblioteca/visualizza-singola-biblioteca";
+    @GetMapping(value = "/{email}")
+    @ResponseBody
+    @CrossOrigin
+    public Biblioteca visualizzaDatiBiblioteca(final @PathVariable String email) {
+        return prenotazioneService.getBibliotecaById(email);
     }
 }
