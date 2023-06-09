@@ -38,5 +38,6 @@ public class ClubForm {
     /**
      * Copertina del club.
      */
+
     private MultipartFile copertina;
 }
