@@ -1,6 +1,6 @@
 package it.unisa.c07.biblionet.utils.eventchangeinterceptor;
 
-import it.unisa.c07.biblionet.model.entity.Evento;
+import it.unisa.c07.biblionet.entity.Evento;
 
 /**
  * CORRENTEMENTE DUMMY!

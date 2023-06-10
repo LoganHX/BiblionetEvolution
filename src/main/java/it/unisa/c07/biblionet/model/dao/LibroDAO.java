@@ -1,7 +1,7 @@
 package it.unisa.c07.biblionet.model.dao;
 
 import it.unisa.c07.biblionet.model.dao.customQueriesResults.ILibroIdAndName;
-import it.unisa.c07.biblionet.model.entity.Libro;
+import it.unisa.c07.biblionet.entity.Libro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

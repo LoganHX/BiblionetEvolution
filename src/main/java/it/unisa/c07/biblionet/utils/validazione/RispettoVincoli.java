@@ -1,6 +1,6 @@
 package it.unisa.c07.biblionet.utils.validazione;
 
-import it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato;
+import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;

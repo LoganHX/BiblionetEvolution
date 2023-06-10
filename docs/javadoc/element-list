@@ -13,8 +13,8 @@ it.unisa.c07.biblionet.model.entity
 it.unisa.c07.biblionet.model.entity.compositeKey
 it.unisa.c07.biblionet.model.entity.utente
 it.unisa.c07.biblionet.model.form
-it.unisa.c07.biblionet.preferenzeDiLettura.controller
-it.unisa.c07.biblionet.preferenzeDiLettura.service
+it.unisa.c07.biblionet.GestionePreferenzeDiLettura.controller
+it.unisa.c07.biblionet.GestionePreferenzeDiLettura.service
 it.unisa.c07.biblionet.prenotazioneLibri.controller
 it.unisa.c07.biblionet.prenotazioneLibri.service
 it.unisa.c07.biblionet.prenotazioneLibri.service.bookApiAdapter

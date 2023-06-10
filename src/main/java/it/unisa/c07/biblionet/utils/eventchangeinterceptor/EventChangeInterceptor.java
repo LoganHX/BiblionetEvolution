@@ -7,7 +7,7 @@ import java.util.List;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 
-import it.unisa.c07.biblionet.model.entity.Evento;
+import it.unisa.c07.biblionet.entity.Evento;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
