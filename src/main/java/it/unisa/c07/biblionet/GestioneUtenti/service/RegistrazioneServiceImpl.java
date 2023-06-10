@@ -1,12 +1,13 @@
 package it.unisa.c07.biblionet.GestioneUtenti.service;
 
+import it.unisa.c07.biblionet.GestioneGenere.GenereService;
 import it.unisa.c07.biblionet.GestioneGenere.repository.GenereDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.RegistrazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.EspertoDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.LettoreDAO;
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
+import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
@@ -37,7 +38,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     /**
      * Si occupa di gestire le operazioni CRUD del Genere.
      */
-    private final GenereDAO genereDAO;
+    private final GenereService genereService;
 
     /**
      * Si occupa delle operazioni CRUD.
@@ -112,7 +113,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     public final List<Genere> findGeneriByName(final String[] generi) {
         List<Genere> toReturn = new ArrayList<>();
         for (String g: generi) {
-            Genere gen = genereDAO.findByName(g);
+            Genere gen = genereService.getGenereByName(g);
             if (gen != null) {
                 toReturn.add(gen);
             }

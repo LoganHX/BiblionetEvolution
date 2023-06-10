@@ -3,7 +3,7 @@ package it.unisa.c07.biblionet.GestioneClubDelLibro.form;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import it.unisa.c07.biblionet.utils.validazione.ValidazioneEvento;
+import it.unisa.c07.biblionet.utils.ValidazioneEvento;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;

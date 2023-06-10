@@ -1,6 +1,5 @@
 package it.unisa.c07.biblionet.entity;
 
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
 import it.unisa.c07.biblionet.utils.Length;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +25,7 @@ import java.util.Set;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 public class ClubDelLibro {
 

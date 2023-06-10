@@ -1,4 +1,4 @@
-package it.unisa.c07.biblionet.model.dao.customQueriesResults;
+package it.unisa.c07.biblionet.entity;
 
 /**
  * Implementa la custom query result per la ricerca dei Libri per nome.

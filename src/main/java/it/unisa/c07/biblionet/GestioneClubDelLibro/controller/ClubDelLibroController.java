@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import it.unisa.c07.biblionet.GestioneUtenti.repository.EspertoDAO;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.utils.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +17,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import it.unisa.c07.biblionet.GestioneClubDelLibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.GestioneClubDelLibro.GestioneEventiService;
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.entity.Evento;
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
@@ -58,8 +56,7 @@ public class ClubDelLibroController {
      * degli eventi.
      */
     private final GestioneEventiService eventiService;
-    private final EspertoDAO espertoDAO;
-
+    private final AutenticazioneService autenticazioneService;
 
     /**
      * Metodo di utilità che modifica o crea un evento, validando
@@ -213,7 +210,7 @@ public class ClubDelLibroController {
         if (!Utils.isUtenteEsperto(token)) {
             return new ResponseEntity<>("Non sei autorizzato", HttpStatus.UNAUTHORIZED);
         }
-        Esperto esperto = (Esperto) espertoDAO.getOne(Utils.getSubjectFromToken(token));
+        Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
 
         ClubDelLibro cdl = new ClubDelLibro();
         cdl.setNome(clubForm.getNome());

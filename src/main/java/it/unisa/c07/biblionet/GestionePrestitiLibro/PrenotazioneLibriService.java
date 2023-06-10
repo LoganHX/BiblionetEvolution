@@ -1,8 +1,7 @@
-package it.unisa.c07.biblionet.GestionePrestitiLibro.service;
+package it.unisa.c07.biblionet.GestionePrestitiLibro;
 
-import it.unisa.c07.biblionet.model.dao.customQueriesResults.ILibroIdAndName;
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
-import it.unisa.c07.biblionet.entity.Libro;
+import it.unisa.c07.biblionet.entity.ILibroIdAndName;
+import it.unisa.c07.biblionet.entity.LibroBiblioteca;
 import it.unisa.c07.biblionet.entity.TicketPrestito;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Lettore;
@@ -22,7 +21,7 @@ public interface PrenotazioneLibriService {
      * prenotabili sulla piattaforma.
      * @return La lista di libri
      */
-    List<Libro> visualizzaListaLibriCompleta();
+    List<LibroBiblioteca> visualizzaListaLibriCompleta();
 
     /**
      * Implementa la funzionalità che permette
@@ -40,7 +39,7 @@ public interface PrenotazioneLibriService {
      * nel titolo
      * @return La lista di libri
      */
-    List<Libro> visualizzaListaLibriPerTitolo(String titolo);
+    List<LibroBiblioteca> visualizzaListaLibriPerTitolo(String titolo);
 
     /**
      * Implementa la funzionalità che permette
@@ -49,7 +48,7 @@ public interface PrenotazioneLibriService {
      * @param nomeBiblioteca Il nome della biblioteca
      * @return La lista di libri
      */
-    List<Libro> visualizzaListaLibriPerBiblioteca(String nomeBiblioteca);
+    List<LibroBiblioteca> visualizzaListaLibriPerBiblioteca(String nomeBiblioteca);
 
     /**
      * Implementa la funzionalità che permette
@@ -58,7 +57,7 @@ public interface PrenotazioneLibriService {
      * @param genere Il nome del genere
      * @return La lista di libri
      */
-    List<Libro> visualizzaListaLibriPerGenere(String genere);
+    List<LibroBiblioteca> visualizzaListaLibriPerGenere(String genere);
 
     /**
      * Implementa la funzionalità che permette
@@ -80,7 +79,7 @@ public interface PrenotazioneLibriService {
      * @param libro Il libro di cui estrarre le biblioteche
      * @return La lista delle biblioteche che possiedono il libro
      */
-    List<Biblioteca> getBibliotecheLibro(Libro libro);
+    List<Biblioteca> getBibliotecheLibro(LibroBiblioteca libro);
 
     /**
      * Implementa la funzionalità che permette
@@ -88,7 +87,7 @@ public interface PrenotazioneLibriService {
      * @param id L'ID del libro da ottenere
      * @return Il libro da ottenere
      */
-    Libro getLibroByID(int id);
+    LibroBiblioteca getLibroByID(int id);
 
     /**
      * Implementa la funzionalità che permette
@@ -162,8 +161,8 @@ public interface PrenotazioneLibriService {
      * @param generi la lista dei generi del libro
      * @return il libro creato
      */
-    Libro inserimentoPerIsbn(String isbn, String idBiblioteca,
-                             int numCopie, List<String> generi);
+    LibroBiblioteca inserimentoPerIsbn(String isbn, String idBiblioteca,
+                                   int numCopie, List<String> generi);
 
     /**
      * Implementa la funzionalità che permette
@@ -175,8 +174,8 @@ public interface PrenotazioneLibriService {
      * @param numCopie il numero di copie possedute
      * @return il libro inserito
      */
-    Libro inserimentoDalDatabase(int idLibro,
-                                 String idBiblioteca, int numCopie);
+    LibroBiblioteca inserimentoDalDatabase(int idLibro,
+                                       String idBiblioteca, int numCopie);
 
     /**
      * Implementa la funzionalità che permette
@@ -187,37 +186,10 @@ public interface PrenotazioneLibriService {
      * @param generi la lista dei generi del libro
      * @return il libro inserito
      */
-    Libro inserimentoManuale(Libro libro, String idBiblioteca,
-                             int numCopie, List<String> generi);
+    LibroBiblioteca inserimentoManuale(LibroBiblioteca libro, String idBiblioteca,
+                                   int numCopie, List<String> generi);
 
-    /**
-     * Implementa la funzionalità che permette di
-     * recuperare la lista dei generi.
-     * @return la lista dei generi.
-     */
-    List<Genere> getAllGeneri();
 
-    /**
-     * Implementa la funzionalità che permette di
-     * recuperare la lista delle biblioteche.
-     * @return la lista delle biblioteche.
-     */
-    List<Biblioteca> getAllBiblioteche();
 
-    /**
-     * Implementa la funzionalità che permette di
-     * recuperare la lista delle biblioteche dato un nome.
-     * @param nome il nome della biblioteca
-     * @return la lista delle biblioteche.
-     */
-    List<Biblioteca> getBibliotecheByNome(String nome);
-
-    /**
-     * Implementa la funzionalità che permette di
-     * recuperare la lista delle biblioteche data una citta.
-     * @param citta della biblioteca
-     * @return la lista delle biblioteche.
-     */
-    List<Biblioteca> getBibliotecheByCitta(String citta);
 
 }

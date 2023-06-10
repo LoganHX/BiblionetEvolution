@@ -1,15 +1,19 @@
 package it.unisa.c07.biblionet.GestioneGenere;
 
+import it.unisa.c07.biblionet.entity.Genere;
+
 import java.util.List;
 import java.util.Set;
 
 public interface GenereService {
+    Genere getGenereByName(String nome);
+
     /**
      * Implementa la funzionalità di restituire tutti i generi
      * presenti nel database.
      * @return la lista di tutti i generi presenti nel database
      */
-    Set<GenereDTO> getAllGeneri();
+    Set<Genere> getAllGeneri();
 
     /**
      * Implementa la funzionalità di restituire tutti i generi
@@ -18,5 +22,6 @@ public interface GenereService {
      * @return la lista di generi contenente solamente i generi effettivamente
      * presenti nel database
      */
-    Set<GenereDTO> getGeneriByName(String[] generi);
+    Set<Genere> getGeneriByName(String[] generi);
+
 }

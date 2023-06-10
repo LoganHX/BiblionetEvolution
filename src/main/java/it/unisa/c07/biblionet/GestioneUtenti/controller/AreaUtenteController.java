@@ -7,7 +7,7 @@ import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import it.unisa.c07.biblionet.utils.Utils;
-import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
+import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,43 +31,28 @@ public class AreaUtenteController {
     private final AutenticazioneService autenticazioneService;
 
     /**
-     * INUTILE DOPO IL RIFACIMENTO DELLA INTERFACCIA CON REACT
-     * Implementa la funzionalità di smistare l'utente sulla view di
-     * modifica dati corretta.
+     * Implementa la funzionalità di visualizzazione area utente
+     * in base al tipo.
      *
-     * @return modifica_dati_biblioteca se l'account
-     * da modificare é una biblioteca.
-     * modifica_dati_esperto se l'account
-     * da modificare é un esperto.
-     * modifica_dati_lettore se l'account
-     * da modificare é un lettore.
-
-    @RequestMapping(value = "/modifica-dati", method = RequestMethod.GET)
-    public String modificaDati(final Model model) {
-        UtenteRegistrato utente = (UtenteRegistrato)
-                model.getAttribute("loggedUser");
-
-        if (utente != null) {
-            if (autenticazioneService.isBiblioteca(utente)) {
-                Biblioteca biblioteca = (Biblioteca) utente;
-                model.addAttribute("biblioteca", biblioteca);
-                return "area-utente/modifica-dati-biblioteca";
-
-            } else if (autenticazioneService.isEsperto(utente)) {
-                Esperto esperto = (Esperto) utente;
-                model.addAttribute("esperto", esperto);
-                return "area-utente/modifica-dati-esperto";
-
-            } else if (autenticazioneService.isLettore(utente)) {
-                Lettore lettore = (Lettore) utente;
-                model.addAttribute("lettore", lettore);
-                return "area-utente/modifica-dati-lettore";
-
+     * @return La view di visualizzazione area utente
+     */
+    @GetMapping(value = "/area-utente")
+    @ResponseBody
+    @CrossOrigin
+    public UtenteRegistrato datiAreaUtente(
+            @RequestHeader(name = "Authorization") final String token
+    ) {
+        {
+            if (Utils.isUtenteBiblioteca(token)) {
+                return autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+            } else if (Utils.isUtenteEsperto(token)) {
+                return autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+            } else if (Utils.isUtenteLettore(token)) {
+                return autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
             }
         }
-        return "autenticazione/login";
+        return null;
     }
-*/
 
     private String controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistrato utenteRegistrato){
         if(bindingResult.hasErrors()){

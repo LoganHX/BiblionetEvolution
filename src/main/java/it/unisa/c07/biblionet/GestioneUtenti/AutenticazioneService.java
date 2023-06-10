@@ -67,6 +67,11 @@ public interface AutenticazioneService {
       */
      Lettore aggiornaLettore(Lettore utente);
 
+     List<Biblioteca> findBibliotecaByNome(String nomeBiblioteca);
+
+     List<Esperto> findAllEsperti();
+
+     List<Biblioteca> findAllBiblioteche();
 
      /**
       * Implementa la funzionalità di trovare un esperto.
@@ -82,6 +87,10 @@ public interface AutenticazioneService {
       */
      Lettore findLettoreByEmail(String email);
 
+     List<Esperto> findEspertiByNome(String nome);
+
+     List<Biblioteca> findBibliotecaByCitta(String citta);
+
      /**
       * Implementa la funzionalità di trovare una biblioteca.
       * @param email La mail della biblioteca
@@ -89,19 +98,4 @@ public interface AutenticazioneService {
       */
      Biblioteca findBibliotecaByEmail(String email);
 
-     /**
-      * Implementa la funzionalità di prendere una lista di club
-      * del libro a cui un lettore partecipa.
-      * @param lettore il lettore preso in esame
-      * @return la lista dei club del libro a cui partecipa
-      */
-     List<ClubDelLibro> findAllByLettori(Lettore lettore);
-
-     /**
-      * Implementa la funzionalità di prendere una lista di club
-      * del libro di cui un esperto è proprietario.
-      * @param esperto l' esperto preso in esame
-      * @return la lista dei club del libro a cui partecipa
-      */
-     List<ClubDelLibro> findAllByEsperto(Esperto esperto);
 }

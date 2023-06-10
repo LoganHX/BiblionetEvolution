@@ -1,7 +1,7 @@
 package it.unisa.c07.biblionet.entity;
 
 import it.unisa.c07.biblionet.utils.Length;
-import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
+import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

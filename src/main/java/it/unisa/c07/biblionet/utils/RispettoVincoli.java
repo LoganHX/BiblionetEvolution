@@ -1,4 +1,4 @@
-package it.unisa.c07.biblionet.utils.validazione;
+package it.unisa.c07.biblionet.utils;
 
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import java.security.MessageDigest;

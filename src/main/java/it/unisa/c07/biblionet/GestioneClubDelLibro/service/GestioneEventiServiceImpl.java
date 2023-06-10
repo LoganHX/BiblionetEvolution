@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 import it.unisa.c07.biblionet.GestioneClubDelLibro.GestioneEventiService;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.LettoreDAO;
 import it.unisa.c07.biblionet.entity.Lettore;
 import org.springframework.stereotype.Service;
 
 import it.unisa.c07.biblionet.GestioneClubDelLibro.repository.EventoDAO;
-import it.unisa.c07.biblionet.model.dao.LibroDAO;
+import it.unisa.c07.biblionet.GestioneClubDelLibro.repository.LibroEventoDAO;
 import it.unisa.c07.biblionet.entity.Evento;
-import it.unisa.c07.biblionet.entity.Libro;
+import it.unisa.c07.biblionet.entity.LibroEvento;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -35,12 +36,14 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Si occupa delle operazioni CRUD per un libro.
      */
-    private final LibroDAO libroDAO;
+    private final LibroEventoDAO libroEventoDAO;
+
+    private final AutenticazioneService autenticazioneService;
 
     /**
      * Si occupa delle operazioni CRUD per un lettore.
      */
-    private final LettoreDAO lettoreDAO;
+
 
 
     /**
@@ -88,8 +91,8 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * @return Il libro recuperato
      */
     @Override
-    public Optional<Libro> getLibroById(final int id) {
-        return libroDAO.findById(id);
+    public Optional<LibroEvento> getLibroById(final int id) {
+        return libroEventoDAO.findById(id);
     }
 
     /**
@@ -116,12 +119,12 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * ad un Lettore di partecipare ad un evento.
      * @param idLettore Il lettore da iscrivere all'evento
      * @param idEvento L'id dell'evento a cui partecipare
-     * @return Il lettore aggiornato ed iscritto all'evento
+     * @return Il lettore aggiornato e iscritto all'evento
      */
     @Override
     public Lettore partecipaEvento(final String idLettore, final int idEvento) {
         Evento evento = eventoDAO.getOne(idEvento);
-        Lettore lettore = lettoreDAO.findByID(idLettore);
+        Lettore lettore = autenticazioneService.findLettoreByEmail(idLettore);
         List<Evento> listaEventi = lettore.getEventi();
         if (listaEventi == null) {
             listaEventi = new ArrayList<>();
@@ -133,7 +136,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         }
         listaEventi.add(evento);
         lettore.setEventi(listaEventi);
-        Lettore l = lettoreDAO.save(lettore);
+        Lettore l = autenticazioneService.aggiornaLettore(lettore);
         return l;
     }
 
@@ -147,7 +150,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     @Override
     public Lettore abbandonaEvento(final String idLettore, final int idEvento) {
         Evento evento = eventoDAO.getOne(idEvento);
-        Lettore lettore = lettoreDAO.findByID(idLettore);
+        Lettore lettore = autenticazioneService.findLettoreByEmail(idLettore);
         List<Evento> listaEventi = lettore.getEventi();
 
         //Per chiunque leggesse, non fate domande e non toccate. Grazie
@@ -162,7 +165,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         }
 
         lettore.setEventi(listaEventi);
-        Lettore l = lettoreDAO.save(lettore);
+        Lettore l = autenticazioneService.aggiornaLettore(lettore);
         return l;
     }
 

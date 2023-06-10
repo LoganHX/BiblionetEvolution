@@ -1,10 +1,9 @@
 package it.unisa.c07.biblionet.GestionePrestitiLibro.controller;
 
-import it.unisa.c07.biblionet.GestionePrestitiLibro.service.PrenotazioneLibriService;
-import it.unisa.c07.biblionet.model.dao.customQueriesResults.ILibroIdAndName;
-import it.unisa.c07.biblionet.GestioneUtenti.repository.BibliotecaDAO;
-import it.unisa.c07.biblionet.GestioneUtenti.repository.LettoreDAO;
-import it.unisa.c07.biblionet.entity.Libro;
+import it.unisa.c07.biblionet.GestionePrestitiLibro.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
+import it.unisa.c07.biblionet.entity.ILibroIdAndName;
+import it.unisa.c07.biblionet.entity.LibroBiblioteca;
 import it.unisa.c07.biblionet.entity.TicketPrestito;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Lettore;
@@ -33,9 +32,7 @@ public class PrenotazioneLibriController {
      * persistenza.
      */
     private final PrenotazioneLibriService prenotazioneService;
-    private final LettoreDAO lettoreDAO;
-    private final BibliotecaDAO bibliotecaDAO;
-
+    private final AutenticazioneService autenticazioneService;
     /**
      * Implementa la funzionalità che permette di
      * visualizzare tutti i libri prenotabili.
@@ -45,7 +42,7 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "")
     @ResponseBody
     @CrossOrigin
-    public List<Libro> visualizzaListaLibri() {
+    public List<LibroBiblioteca> visualizzaListaLibri() {
         return prenotazioneService.visualizzaListaLibriCompleta();
     }
 
@@ -60,7 +57,7 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/ricerca")
     @ResponseBody
     @CrossOrigin
-    public List<Libro> visualizzaListaFiltrata(
+    public List<LibroBiblioteca> visualizzaListaFiltrata(
             @RequestParam("stringa") final String stringa,
             @RequestParam("filtro") final String filtro) {
 
@@ -94,7 +91,7 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/{id}/ottieni-libro")
     @ResponseBody
     @CrossOrigin
-    public Libro ottieniLibro(@PathVariable final int id) {
+    public LibroBiblioteca ottieniLibro(@PathVariable final int id) {
         return prenotazioneService.getLibroByID(id);
     }
 
@@ -117,7 +114,7 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteLettore(token)) {
             return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
-        Lettore l = (Lettore) lettoreDAO.getOne(Utils.getSubjectFromToken(token));
+        Lettore l = (Lettore) autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         TicketPrestito ticketPrestito = prenotazioneService.richiediPrestito(l,idBiblioteca,Integer.parseInt(idLibro));
         if(ticketPrestito != null) return new ResponseEntity<>("OK", HttpStatus.OK);
         return new ResponseEntity<>("Errore", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -139,7 +136,7 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return null;
         }
-        Biblioteca biblioteca = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
+        Biblioteca biblioteca = autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> lista = prenotazioneService.getTicketsByBiblioteca(biblioteca);
             /*
@@ -231,7 +228,7 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteLettore(token)) {
             return null;
         }
-        Lettore lettore = (Lettore) lettoreDAO.getOne(Utils.getSubjectFromToken(token));
+        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> listaTicket =
                     prenotazioneService.getTicketsLettore(lettore);

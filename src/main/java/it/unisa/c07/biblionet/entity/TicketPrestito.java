@@ -90,7 +90,7 @@ public class TicketPrestito {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
-    private Libro libro;
+    private LibroBiblioteca libro;
 
     /**
      * Rappresenta la biblioteca da cui si prende il prestito il libro.

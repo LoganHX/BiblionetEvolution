@@ -1,11 +1,7 @@
 package it.unisa.c07.biblionet.GestionePreferenzeDiLettura.controller;
 
-import it.unisa.c07.biblionet.GestioneGenere.GenereDTO;
 import it.unisa.c07.biblionet.GestioneGenere.GenereService;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.HaGenere;
-import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.entity.*;
 import it.unisa.c07.biblionet.GestionePreferenzeDiLettura.PreferenzeDiLetturaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -57,7 +53,7 @@ public class PreferenzeDiLetturaController {
                     ||  utenteRegistrato.getTipo().equals("Lettore"))) {
 
                 HaGenere utente = (HaGenere) utenteRegistrato;
-                Set<GenereDTO> allGeneri =
+                Set<Genere> allGeneri =
                         genereService.getAllGeneri();
 
                 List<String> generiUtente = new ArrayList<>(utente.getGeneri());
@@ -92,7 +88,7 @@ public class PreferenzeDiLetturaController {
     public String modificaGeneri(@RequestParam("genere") final String[]generi,
                                             final Model model) {
 
-        Set<GenereDTO> toAdd = genereService.getGeneriByName(generi);
+        Set<Genere> toAdd = genereService.getGeneriByName(generi);
         UtenteRegistrato utenteRegistrato =
                 (UtenteRegistrato) model.getAttribute("loggedUser");
 

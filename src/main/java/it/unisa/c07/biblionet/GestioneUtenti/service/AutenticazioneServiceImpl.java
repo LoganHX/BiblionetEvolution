@@ -45,7 +45,6 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * I.
      */
-    private final ClubDelLibroService clubDelLibroService;
 
     /**
      * Implementa la funzionalità di login
@@ -141,6 +140,34 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         return lettoreDAO.save(utente);
     }
 
+    @Override
+    public List<Biblioteca> findBibliotecaByNome(String nomeBiblioteca) {
+        return bibliotecaDAO.findByNome(nomeBiblioteca);
+    }
+
+
+    @Override
+    public List<Biblioteca> findAllBiblioteche() {
+        return bibliotecaDAO.findAllBiblioteche();
+    }
+
+    @Override
+    public List<Esperto> findAllEsperti(){
+        return espertoDAO.findAllEsperti();
+    }
+
+    @Override
+    public List<Esperto> findEspertiByNome(String nome){
+        return espertoDAO.findByNomeLike(nome);
+    }
+
+    @Override
+    public List<Biblioteca> findBibliotecaByCitta(String citta) {
+        return bibliotecaDAO.findByCitta(citta);
+    }
+
+
+
     /**
      * Implementa la funzionalità di trovare una biblioteca.
      * @param email La mail della biblioteca
@@ -177,26 +204,5 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         return (Lettore) b.orElse(null);
     }
 
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro a cui un lettore partecipa.
-     * @param lettore il lettore preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    @Override
-    public List<ClubDelLibro> findAllByLettori(final Lettore lettore) {
-        return clubDelLibroService.findAllByLettori(lettore);
-    }
-
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro di cui un esperto è proprietario.
-     * @param esperto l' esperto preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    @Override
-    public List<ClubDelLibro> findAllByEsperto(final Esperto esperto) {
-        return clubDelLibroService.findAllByEsperto(esperto);
-    }
 
 }

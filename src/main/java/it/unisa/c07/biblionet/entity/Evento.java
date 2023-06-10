@@ -81,7 +81,7 @@ public class Evento {
      */
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Libro libro;
+    private LibroEvento libro;
 
     @Override
     public boolean equals(final Object obj) {

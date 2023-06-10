@@ -1,16 +1,16 @@
 package it.unisa.c07.biblionet.GestionePreferenzeDiLettura.service;
 
-import it.unisa.c07.biblionet.GestioneGenere.GenereDTO;
 import it.unisa.c07.biblionet.GestionePreferenzeDiLettura.PreferenzeDiLetturaService;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.EspertoDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.LettoreDAO;
 import it.unisa.c07.biblionet.entity.Esperto;
+import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,15 +24,9 @@ public class PreferenzeDiLetturaServiceImpl implements
 
 
 
-    /**
-     * Si occupa delle funzioni CRUD per l'esperto.
-     */
-    private final EspertoDAO espertoDAO;
+    private final AutenticazioneService autenticazioneService;
 
-    /**
-     * Si occupa delle funzioni CRUD per l'utente.
-     */
-    private final LettoreDAO lettoreDAO;
+
 
     /**
      * Implementa la funzionalità di restituire tutti i generi
@@ -49,14 +43,14 @@ public class PreferenzeDiLetturaServiceImpl implements
      * @param esperto l'esperto a cui inserirli
      */
     @Override
-    public void addGeneriEsperto(final Set<GenereDTO> generi,
+    public void addGeneriEsperto(final Set<Genere> generi,
                                  final Esperto esperto) {
         Set<String> setGeneri = new HashSet<>();
-        for(GenereDTO genere: generi){
+        for(Genere genere: generi){
             setGeneri.add(genere.getNome());
         }
         esperto.setNomeGeneri(setGeneri);
-        espertoDAO.save(esperto);
+        autenticazioneService.aggiornaEsperto(esperto);
     }
 
     /**
@@ -66,14 +60,14 @@ public class PreferenzeDiLetturaServiceImpl implements
      * @param lettore il lettore a cui inserirli
      */
     @Override
-    public void addGeneriLettore(final Set<GenereDTO> generi,
+    public void addGeneriLettore(final Set<Genere> generi,
                                  final Lettore lettore) {
         Set<String> setGeneri = new HashSet<>();
-        for(GenereDTO genere: generi){
+        for(Genere genere: generi){
             setGeneri.add(genere.getNome());
         }
         lettore.setNomeGeneri(setGeneri);
-        lettoreDAO.save(lettore);
+        autenticazioneService.aggiornaLettore(lettore);
     }
 
 

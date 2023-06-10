@@ -1,4 +1,4 @@
-package it.unisa.c07.biblionet.utils.validazione;
+package it.unisa.c07.biblionet.utils;
 
 /**
  * Classe che fornisce i parametri di validazione

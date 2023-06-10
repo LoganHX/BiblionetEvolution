@@ -2,12 +2,11 @@ package it.unisa.c07.biblionet.GestioneClubDelLibro.service;
 
 import it.unisa.c07.biblionet.GestioneClubDelLibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.GestioneClubDelLibro.repository.ClubDelLibroDAO;
-import it.unisa.c07.biblionet.GestioneGenere.GenereDTO;
 import it.unisa.c07.biblionet.GestioneGenere.GenereService;
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
-import it.unisa.c07.biblionet.GestioneUtenti.repository.LettoreDAO;
+import it.unisa.c07.biblionet.GestioneUtenti.RegistrazioneService;
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.entity.Esperto;
+import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Implementa la classe che esplicita i metodi
  * definiti nell'interfaccia service per il
- * sottosustema ClubDelLibro.
+ * sottosistema ClubDelLibro.
  * @author Viviana Pentangelo, Gianmario Voria
  */
 @Service
@@ -31,18 +30,13 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Si occupa delle operazioni CRUD per un club.
      */
     private final ClubDelLibroDAO clubDAO;
-
     private final GenereService genereService;
-
-    /**
-     * Si occupa delle operazioni CRUD per un lettore.
-     */
-    private final LettoreDAO lettoreDAO;
+    private final RegistrazioneService registrazioneService;
 
 
     /**
      * Implementa la funzionalità che permette
-     * ad un Esperto di creare un Club del Libro.
+     * a un Esperto di creare un Club del Libro.
      * @param club Il Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
@@ -87,7 +81,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @return Lista dei generi sottoforma di entità
      */
     @Override
-    public Set<GenereDTO> getGeneri(final List<String> generi) {
+    public Set<Genere> getGeneri(final List<String> generi) {
         return genereService.getGeneriByName(generi.toArray(new String[0]));
     }
 
@@ -118,8 +112,8 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
 
     /**
      * Implementa la funzionalità che permette
-     * ad un lettore di effettuare
-     * l'iscrizione ad un club del libro.
+     * a un lettore di effettuare
+     * l'iscrizione a un club del libro.
      * @param club Il club al quale iscriversi
      * @param lettore Il lettore che si iscrive
      * @return true se è andato a buon fine, false altrimenti
@@ -133,7 +127,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         }
         listaClubs.add(club);
         lettore.setClubs(listaClubs);
-        lettoreDAO.save(lettore);
+        registrazioneService.registraLettore(lettore);
         return true;
     }
 
@@ -152,9 +146,9 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @return Tutti i generi nel sistema
      */
     public Set<String> getTuttiGeneri() {
-        List<GenereDTO> listGeneri = new ArrayList<>(genereService.getAllGeneri());
+        List<Genere> listGeneri = new ArrayList<>(genereService.getAllGeneri());
         Set<String> generiSet = new HashSet<>();
-        for(GenereDTO genereDTO: listGeneri){
+        for(Genere genereDTO: listGeneri){
             generiSet.add(genereDTO.getNome());
         }
         //todo perché non restituire direttamente i DTO, da controllare
@@ -179,7 +173,6 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @return la lista dei club del libro a cui partecipa
      */
     public List<ClubDelLibro> findAllByLettori(final Lettore lettore) {
-
         return clubDAO.findAllByLettori(lettore);
     }
 
@@ -190,8 +183,10 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @return la lista dei club del libro a cui partecipa
      */
     public List<ClubDelLibro> findAllByEsperto(final Esperto esperto) {
-
         return clubDAO.findAllByEsperto(esperto);
     }
+
+
+
 
 }

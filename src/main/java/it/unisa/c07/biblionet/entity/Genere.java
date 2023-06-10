@@ -1,21 +1,14 @@
-package it.unisa.c07.biblionet.GestioneGenere.repository;
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.Libro;
+package it.unisa.c07.biblionet.entity;
 import it.unisa.c07.biblionet.utils.Length;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-
-import java.util.List;
 
 /**
  * Questa classe rappresenta un Genere letterario.
@@ -33,7 +26,7 @@ import java.util.List;
 public class Genere {
 
     /**
-     * Rappresenta il nome nome del genere,
+     * Rappresenta il nome del genere,
      * nonchè il suo identificativo.
      */
     @Id
@@ -53,6 +46,5 @@ public class Genere {
      * Rappresenta la lista di lettori
      * a cui piace questo genere.
      */
-
 
 }

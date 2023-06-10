@@ -1,7 +1,7 @@
 
 package it.unisa.c07.biblionet.GestioneUtenti;
 
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
+import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;

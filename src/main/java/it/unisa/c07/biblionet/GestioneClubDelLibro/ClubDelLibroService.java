@@ -1,8 +1,8 @@
 package it.unisa.c07.biblionet.GestioneClubDelLibro;
 
-import it.unisa.c07.biblionet.GestioneGenere.GenereDTO;
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.entity.Esperto;
+import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public interface ClubDelLibroService {
      * @param generi Lista dei generi sottoforma di stringa
      * @return Lista dei generi sottoforma di entità
      */
-    Set<GenereDTO> getGeneri(List<String> generi);
+    Set<Genere> getGeneri(List<String> generi);
 
     /**
      * Implementa la funzionalità che permette

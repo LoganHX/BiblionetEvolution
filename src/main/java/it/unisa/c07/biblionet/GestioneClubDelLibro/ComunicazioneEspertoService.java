@@ -1,6 +1,5 @@
 package it.unisa.c07.biblionet.GestioneClubDelLibro;
 
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
 import it.unisa.c07.biblionet.entity.Esperto;
 
 import java.util.List;

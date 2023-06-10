@@ -2,7 +2,7 @@ package it.unisa.c07.biblionet;
 
 import it.unisa.c07.biblionet.GestionePrestitiLibro.service.bookApiAdapter.BookApiAdapter;
 import it.unisa.c07.biblionet.GestionePrestitiLibro.service.bookApiAdapter.GoogleBookApiAdapterImpl;
-import it.unisa.c07.biblionet.model.dao.LibroDAO;
+import it.unisa.c07.biblionet.GestioneClubDelLibro.repository.LibroEventoDAO;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +23,7 @@ public class BiblionetApplication {
 
     private static BookApiAdapter bookApiAdapter = new GoogleBookApiAdapterImpl();
 
-    private static LibroDAO libroDAO = null;
+    private static LibroEventoDAO libroEventoDAO = null;
 /*
     public static Libro getLibroFromAPI(String isbn, Genere... generi) {
         Libro libro = bookApiAdapter.getLibroDaBookApi(isbn);

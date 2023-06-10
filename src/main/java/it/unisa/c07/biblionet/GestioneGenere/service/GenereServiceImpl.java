@@ -1,13 +1,11 @@
 package it.unisa.c07.biblionet.GestioneGenere.service;
 
-import it.unisa.c07.biblionet.GestioneGenere.GenereDTO;
 import it.unisa.c07.biblionet.GestioneGenere.GenereService;
 import it.unisa.c07.biblionet.GestioneGenere.repository.GenereDAO;
-import it.unisa.c07.biblionet.GestioneGenere.repository.Genere;
+import it.unisa.c07.biblionet.entity.Genere;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,12 +27,12 @@ public class GenereServiceImpl implements GenereService {
      * presenti nel database
      */
     @Override
-    public Set<GenereDTO> getGeneriByName(final String[] generi) {
-        Set<GenereDTO> toReturn = new HashSet<>();
+    public Set<Genere> getGeneriByName(final String[] generi) {
+        Set<Genere> toReturn = new HashSet<>();
 
         for (String g: generi) {
             Genere gen = genereDAO.findByName(g);
-            GenereDTO dto = new GenereDTO();
+            Genere dto = new Genere();
             dto.setDescrizione(gen.getDescrizione());
             dto.setNome(gen.getNome());
             toReturn.add(dto);
@@ -44,15 +42,19 @@ public class GenereServiceImpl implements GenereService {
         return toReturn;
     }
 
+    @Override
+    public Genere getGenereByName(String nome) {
+       return genereDAO.findByName(nome);
+    }
 
 
     @Override
-    public Set<GenereDTO> getAllGeneri() {
+    public Set<Genere> getAllGeneri() {
         //todo si può fare di meglio
         List<Genere> list = genereDAO.findAll();
-        Set<GenereDTO> setGeneri =new HashSet<>();
+        Set<Genere> setGeneri =new HashSet<>();
         for(Genere genere: list){
-            GenereDTO genereDTO = new GenereDTO();
+            Genere genereDTO = new Genere();
             genereDTO.setNome(genere.getNome());
             genereDTO.setDescrizione(genere.getDescrizione());
         }

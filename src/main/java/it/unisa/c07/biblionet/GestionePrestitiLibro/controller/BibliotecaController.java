@@ -1,8 +1,10 @@
 package it.unisa.c07.biblionet.GestionePrestitiLibro.controller;
 
-import it.unisa.c07.biblionet.GestionePrestitiLibro.service.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.GestionePrestitiLibro.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.BibliotecaDAO;
-import it.unisa.c07.biblionet.entity.Libro;
+import it.unisa.c07.biblionet.entity.LibroBiblioteca;
+import it.unisa.c07.biblionet.entity.LibroEvento;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.GestionePrestitiLibro.form.LibroForm;
 import it.unisa.c07.biblionet.utils.Utils;
@@ -35,7 +37,8 @@ public class BibliotecaController {
      * persistenza.
      */
     private final PrenotazioneLibriService prenotazioneService;
-    private final BibliotecaDAO bibliotecaDAO;
+    private final AutenticazioneService autenticazioneService;
+
 
     /**
      * Implementa la funzionalità che permette di
@@ -47,7 +50,7 @@ public class BibliotecaController {
     @ResponseBody
     @CrossOrigin
     public List<Biblioteca> visualizzaListaBiblioteche() {
-        return prenotazioneService.getAllBiblioteche();
+        return autenticazioneService.findAllBiblioteche();
     }
 
     /**
@@ -74,10 +77,10 @@ public class BibliotecaController {
         if (isbn == null) {
             return new ResponseEntity<>("ISBN inesistente", HttpStatus.BAD_REQUEST);
         }
-        Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
+        Biblioteca b = prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
 
         List<String> glist = Arrays.asList(generi.clone());
-        Libro l = prenotazioneService.inserimentoPerIsbn(
+        LibroBiblioteca l = prenotazioneService.inserimentoPerIsbn(
                 isbn, b.getEmail(), numCopie, glist);
         if (l == null) {
             return new ResponseEntity<>("Libro non crato", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -104,8 +107,8 @@ public class BibliotecaController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
-        Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
-        Libro l = prenotazioneService.inserimentoDalDatabase(
+        Biblioteca b =  prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
+        LibroBiblioteca l = prenotazioneService.inserimentoDalDatabase(
                 idLibro, b.getEmail(), numCopie);
         return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
 
@@ -131,8 +134,8 @@ public class BibliotecaController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
         }
-        Biblioteca b = (Biblioteca) bibliotecaDAO.getOne(Utils.getSubjectFromToken(token));
-        Libro l = new Libro();
+        Biblioteca b = prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
+        LibroBiblioteca l = new LibroBiblioteca();
         l.setTitolo(libro.getTitolo());
         if (libro.getIsbn() != null) {
             l.setIsbn(libro.getIsbn());
@@ -155,8 +158,7 @@ public class BibliotecaController {
         LocalDateTime anno = LocalDateTime.of(
                 Integer.parseInt(annoPubblicazione), 1, 1, 1, 1);
         l.setAnnoDiPubblicazione(anno);
-        Libro newLibro = prenotazioneService.inserimentoManuale(
-                l, b.getEmail(), numCopie, libro.getGeneri());
+        LibroBiblioteca newLibro = prenotazioneService.inserimentoManuale(l, b.getEmail(), numCopie, libro.getGeneri());
         return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
 
     }
@@ -178,11 +180,11 @@ public class BibliotecaController {
 
         switch (filtro) {
             case "nome":
-                return prenotazioneService.getBibliotecheByNome(stringa);
+                return autenticazioneService.findBibliotecaByNome(stringa);
             case "citta":
-                return prenotazioneService.getBibliotecheByCitta(stringa);
+                return autenticazioneService.findBibliotecaByCitta(stringa);
             default:
-                return prenotazioneService.getAllBiblioteche();
+                return autenticazioneService.findAllBiblioteche();
         }
     }
 

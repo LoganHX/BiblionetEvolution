@@ -5,7 +5,7 @@ import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import it.unisa.c07.biblionet.GestioneUtenti.RegistrazioneService;
-import it.unisa.c07.biblionet.utils.validazione.RispettoVincoli;
+import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
