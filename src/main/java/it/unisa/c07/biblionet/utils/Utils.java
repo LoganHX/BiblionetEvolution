@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.impl.DefaultJwtParser;
 
 public class Utils {
+    public static final String chiaveSegreta = "pretzel"; //todo deve sparire da qua
     public static Claims getClaimsFromTokenWithoutKey(String token){
         token = token.substring(7);
         String[] splitToken = token.split("\\.");
