@@ -5,10 +5,9 @@ import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import it.unisa.c07.biblionet.GestioneUtenti.RegistrazioneService;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
@@ -81,19 +80,19 @@ public final class RegistrazioneController {
     @RequestMapping(value = "/esperto", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<String> registrazioneEsperto(final @Valid @ModelAttribute Esperto esperto,
-                                                       BindingResult bindingResult,
-                                                       final @RequestParam("conferma_password") String password,
-                                                       final @RequestParam("bibliotecaEmail") String bibliotecaEmail) {
+    public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute Esperto esperto,
+                                                  BindingResult bindingResult,
+                                                  final @RequestParam("conferma_password") String password,
+                                                  final @RequestParam("bibliotecaEmail") String bibliotecaEmail) {
 
         String s = controlliPreliminari(bindingResult, password, esperto);
         if(!s.isEmpty()){
-            return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse(s, false);
         }
         esperto.setBiblioteca(registrazioneService.getBibliotecaByEmail(bibliotecaEmail));
 
         registrazioneService.registraEsperto(esperto);
-        return new ResponseEntity<>("Registrazione ok", HttpStatus.OK);
+        return new BiblionetResponse("Registrazione ok", true);
     }
 
     /**
@@ -106,16 +105,16 @@ public final class RegistrazioneController {
     @RequestMapping(value = "/biblioteca", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<String> registrazioneBiblioteca(@Valid @ModelAttribute Biblioteca biblioteca,
-                                                          BindingResult bindingResult,
-                                                          @RequestParam("conferma_password") String password
+    public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute Biblioteca biblioteca,
+                                                     BindingResult bindingResult,
+                                                     @RequestParam("conferma_password") String password
     ) {
         String s = controlliPreliminari(bindingResult, password, biblioteca);
         if(!s.isEmpty()){
-            return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse(s, false);
         }
         registrazioneService.registraBiblioteca(biblioteca);
-        return new ResponseEntity<>("Registrazione effettuata correttamente", HttpStatus.OK);
+        return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 
 
@@ -133,18 +132,18 @@ public final class RegistrazioneController {
     @RequestMapping(value = "/lettore", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<String> registrazioneLettore(@Valid @ModelAttribute Lettore lettore,
+    public BiblionetResponse registrazioneLettore(@Valid @ModelAttribute Lettore lettore,
                                        BindingResult bindingResult,
                                        final @RequestParam("conferma_password")
                                                String password
     ) {
         String s = controlliPreliminari(bindingResult, password, lettore);
         if(!s.isEmpty()){
-            return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse(s, false);
         }
 
         registrazioneService.registraLettore(lettore);
-        return new ResponseEntity<>("Registrazione effettuata correttamente", HttpStatus.OK);
+        return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 
 private String controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistrato utenteRegistrato){

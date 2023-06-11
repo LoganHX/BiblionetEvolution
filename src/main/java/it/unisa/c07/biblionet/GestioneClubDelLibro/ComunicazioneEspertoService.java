@@ -11,28 +11,6 @@ import java.util.Set;
  */
 public interface ComunicazioneEspertoService {
 
-    /**
-     * Implementa la funzionalità di cercare degli esperti che hanno
-     * come generi preferiti quelli passati.
-     * @param generi i generi da cercare
-     * @return la lista di esperti
-     */
-    List<Esperto> getEspertiByGeneri(Set<String> generi);
-
-    /**
-     * Implementa la funzionalità che restituisce la lista
-     * di tutti gli Esperti del DB.
-     * @return la lista di esperti
-     */
-    List<Esperto> getAllEsperti();
-
-    /**
-     * Implementa la funzionalità che restituisce la lista
-     * di tutti gli Esperti del DB filtrati per nome.
-     * @param name il nome con cui filtrare
-     * @return la lista di esperti
-     */
-    List<Esperto> getEsperiByName(String name);
 
     /**
      * Implementa la funzionalità che permette

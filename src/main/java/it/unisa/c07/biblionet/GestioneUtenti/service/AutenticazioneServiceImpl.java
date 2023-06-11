@@ -5,22 +5,22 @@ import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.EspertoDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.LettoreDAO;
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Biblioteca;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
- *Implementa la classe che esplicita i metodi
+ * Implementa la classe che esplicita i metodi
  * definiti nell'interfaccia service per il
  * sottosistema Autenticazione.
+ *
  * @author Ciro Maiorino , Giulio Triggiani
  */
 @Service
@@ -28,7 +28,7 @@ import java.util.Optional;
 public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
-     *Si occupa delle operazioni CRUD per un lettore.
+     * Si occupa delle operazioni CRUD per un lettore.
      */
     private final LettoreDAO lettoreDAO;
 
@@ -41,6 +41,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * Si occupa delle operazioni CRUD un esperto.
      */
     private final EspertoDAO espertoDAO;
+    private final ClubDelLibroService clubDelLibroService;
 
     /**
      * I.
@@ -49,7 +50,8 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di login
      * per un Utente registrato.
-     * @param email dell'utente.
+     *
+     * @param email    dell'utente.
      * @param password dell'utente.
      * @return un utente registrato.
      */
@@ -80,6 +82,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di
      * identifica di un utente in sessione.
+     *
      * @param utente registrato che si trova già in sessione.
      * @return true se l'utente è un lettore altrimenti false.
      */
@@ -91,6 +94,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di
      * identifica di un utente in sessione.
+     *
      * @param utente registrato che si trova già in sessione.
      * @return true se l'utente è un esperto altrimenti false.
      */
@@ -102,6 +106,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di
      * identifica di un utente in sessione.
+     *
      * @param utente registrato che si trova già in sessione.
      * @return true se l'utente è una biblioteca altrimenti false.
      */
@@ -113,6 +118,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di salvataggio delle modifiche
      * all'account biblioteca.
+     *
      * @param utente La biblioteca da aggiornare
      * @return la biblioteca aggiornata
      */
@@ -123,6 +129,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di salvataggio delle modifiche
      * all'account esperto.
+     *
      * @param utente L'esperto da aggiornare
      * @return l'esperto aggiornato
      */
@@ -133,6 +140,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     /**
      * Implementa la funzionalità di salvataggio delle modifiche
      * all'account lettore.
+     *
      * @param utente Lettore da aggiornare
      * @return il lettore aggiornato
      */
@@ -152,12 +160,12 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     }
 
     @Override
-    public List<Esperto> findAllEsperti(){
+    public List<Esperto> findAllEsperti() {
         return espertoDAO.findAllEsperti();
     }
 
     @Override
-    public List<Esperto> findEspertiByNome(String nome){
+    public List<Esperto> findEspertiByNome(String nome) {
         return espertoDAO.findByNomeLike(nome);
     }
 
@@ -167,9 +175,9 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     }
 
 
-
     /**
      * Implementa la funzionalità di trovare una biblioteca.
+     *
      * @param email La mail della biblioteca
      * @return La biblioteca se c'è, altrimenti null
      */
@@ -182,6 +190,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * Implementa la funzionalità di trovare un esperto.
+     *
      * @param email La mail dell esperto
      * @return L'esperto se c'è, altrimenti null
      */
@@ -194,6 +203,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     /**
      * Implementa la funzionalità di trovare un lettore.
+     *
      * @param email La mail dell lettore
      * @return Il lettore se c'è, altrimenti null
      */
@@ -204,5 +214,28 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         return (Lettore) b.orElse(null);
     }
 
+    @Override
+    public final List<Esperto> findEspertiByGeneri(final Set<String> generi) {
+        List<Esperto> toReturn = new ArrayList<>();
 
+        for (Esperto esperto : espertoDAO.findAllEsperti()) {
+            for (String genere : esperto.getGeneri()) {
+                if (generi.contains(genere) && !toReturn.contains(esperto)) {
+                    toReturn.add(esperto);
+                }
+            }
+        }
+        return toReturn;
+    }
+
+
+    @Override
+    public final List<ClubDelLibro> getClubDelLibroLettore(Lettore lettore) {
+        return clubDelLibroService.findAllByLettori(lettore);
+    }
+
+    @Override
+    public final List<ClubDelLibro> getClubDelLibroEsperto(Esperto esperto) {
+        return clubDelLibroService.findAllByEsperto(esperto);
+    }
 }

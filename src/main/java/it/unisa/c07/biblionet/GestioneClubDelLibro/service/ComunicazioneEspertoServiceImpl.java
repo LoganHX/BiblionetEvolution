@@ -30,41 +30,8 @@ public class ComunicazioneEspertoServiceImpl
      */
     private final GenereService genereService;
 
-    @Override
-    public final List<Esperto> getEspertiByGeneri(final Set<String> generi) {
-        List<Esperto> toReturn = new ArrayList<>();
 
 
-        for (Esperto esperto: autenticazioneService.findAllEsperti()) {
-            for (String genere : esperto.getGeneri()) {
-                if (generi.contains(genere) && !toReturn.contains(esperto)) {
-                    toReturn.add(esperto);
-                }
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * Implementa la funzionalità che restituisce la lista
-     * di tutti gli Esperti del DB.
-     * @return la lista di esperti
-     */
-    @Override
-    public List<Esperto> getAllEsperti() {
-        return autenticazioneService.findAllEsperti();
-    }
-
-    /**
-     * Implementa la funzionalità che restituisce la lista
-     * di tutti gli Esperti del DB filtrati per nome.
-     * * @nome il nome con cui filtrare
-     * * @return la lista di esperti
-     */
-    @Override
-    public List<Esperto> getEsperiByName(final String nome) {
-        return autenticazioneService.findEspertiByNome(nome);
-    }
 
     /**
      * Implementa la funzionalità che permette

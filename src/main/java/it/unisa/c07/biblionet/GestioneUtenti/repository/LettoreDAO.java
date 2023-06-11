@@ -27,4 +27,6 @@ public interface LettoreDAO extends UtenteRegistratoDAO {
     Lettore findByID(String email);
 
 
+
+
 }

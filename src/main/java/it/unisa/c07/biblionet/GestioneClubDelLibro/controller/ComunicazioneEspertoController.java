@@ -1,16 +1,17 @@
 package it.unisa.c07.biblionet.GestioneClubDelLibro.controller;
 
 import it.unisa.c07.biblionet.GestioneClubDelLibro.ComunicazioneEspertoService;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,22 +28,20 @@ public class ComunicazioneEspertoController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final ComunicazioneEspertoService comunicazioneEspertoService;
+    private final AutenticazioneService autenticazioneService;
 
     /**
      * Implementa la funzionalità di mostrare gli esperti in base
      * ai generi preferiti del lettore.
-     * @param model utilizzato per gestire la sessione
      * @return la view contenente la lista
      */
-    @RequestMapping(value = "/visualizza-esperti-genere",
-                    method = RequestMethod.GET)
-    public final String visualizzaEspertiGeneri(final Model model) {
-
-        Lettore lettore = (Lettore) model.getAttribute("loggedUser");
-        List<Esperto> listaEsperti = comunicazioneEspertoService.
-                                       getEspertiByGeneri(lettore.getGeneri());
-        model.addAttribute("esperti", listaEsperti);
-        return "comunicazione-esperto/lista-esperti";
+    @GetMapping(value = "/visualizza-esperti-genere")
+    @ResponseBody
+    @CrossOrigin
+    public final List<Esperto> visualizzaEspertiGeneri(@RequestHeader(name = "Authorization") final String token) {
+        if(!Utils.isUtenteLettore(token)) return null;
+        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        return autenticazioneService.findEspertiByGeneri(lettore.getGeneri());
     }
 
     /**
@@ -54,7 +53,7 @@ public class ComunicazioneEspertoController {
     @RequestMapping(value = "/lista-esperti", method = RequestMethod.GET)
     public final String visualizzaListaEsperti(final Model model) {
         List<Esperto> listaEsperti =
-                comunicazioneEspertoService.getAllEsperti();
+                autenticazioneService.findAllEsperti();
         model.addAttribute("listaEsperti", listaEsperti);
         return "comunicazione-esperto/lista-completa-esperti";
     }
@@ -62,30 +61,24 @@ public class ComunicazioneEspertoController {
     /**
      * Implementa la funzionalità di visualizzare tutti gli Esperti
      * presenti sulla piattaforma.
-     * @param model il model per la richiesta
      * @param stringa il contenuto del filtro
      * @param filtro il nome del filtro
      * @return la view che visualizza tutti gli Esperti
      */
-    @RequestMapping(value = "/ricerca", method = RequestMethod.GET)
-    public final String visualizzaListaEspertiFiltrati(
+    @GetMapping(value = "/ricerca")
+    @ResponseBody
+    @CrossOrigin
+    public final List<Esperto> visualizzaListaEspertiFiltrati(
+            //todo check se loggato
             @RequestParam("stringa") final String stringa,
-            @RequestParam("filtro") final String filtro,
-                                    final Model model) {
+            @RequestParam("filtro") final String filtro) {
         switch (filtro) {
             case "nome":
-                model.addAttribute("listaEsperti", comunicazioneEspertoService.
-                        getEsperiByName(stringa));
-                break;
+                return autenticazioneService.findEspertiByNome(stringa);
             case "genere":
-                model.addAttribute("listaEsperti", comunicazioneEspertoService.
-                        visualizzaEspertiPerGenere(stringa));
-                break;
+                return autenticazioneService.findEspertiByGeneri(new HashSet<String>(Collections.singleton(stringa)));
             default:
-                model.addAttribute("listaEsperti", comunicazioneEspertoService.
-                        getAllEsperti());
-                break;
+                return autenticazioneService.findAllEsperti();
         }
-        return "comunicazione-esperto/lista-completa-esperti";
     }
 }

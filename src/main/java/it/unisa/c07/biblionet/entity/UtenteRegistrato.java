@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Set;
 
 /**
  * Questa classe rappresenta un utente registrato alla piattaforma.
@@ -27,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
 @EqualsAndHashCode
 @Inheritance(strategy = InheritanceType.JOINED)
 
-public class UtenteRegistrato {
+public abstract class UtenteRegistrato {
 
     /**
      * Rappresenta l'ID di un utente registrato.
@@ -141,6 +142,7 @@ public class UtenteRegistrato {
     public void setHashedPassword(final byte[] hashPassword) {
         this.password = hashPassword;
     }
+
 
 
 }

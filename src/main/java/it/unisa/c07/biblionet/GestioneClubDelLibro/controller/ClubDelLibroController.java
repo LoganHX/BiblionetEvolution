@@ -8,22 +8,18 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import it.unisa.c07.biblionet.GestioneClubDelLibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.GestioneClubDelLibro.GestioneEventiService;
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.entity.Evento;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import it.unisa.c07.biblionet.GestioneClubDelLibro.form.ClubForm;
 import it.unisa.c07.biblionet.GestioneClubDelLibro.form.EventoForm;
 import lombok.RequiredArgsConstructor;
@@ -70,16 +66,16 @@ public class ClubDelLibroController {
      *                   effettuare.
      * @return La view inserita.
      */
-    private ResponseEntity<String> modificaCreaEvento(final @Valid @ModelAttribute EventoForm eventoForm, BindingResult bindingResult,
-                                                      //@RequestParam final String view,
-                                                      @RequestParam final int idClub, @RequestParam final Optional<Integer> idEvento, @RequestParam final Consumer<Evento> operazione) {
+    private BiblionetResponse modificaCreaEvento(final @Valid @ModelAttribute EventoForm eventoForm, BindingResult bindingResult,
+                                                 //@RequestParam final String view,
+                                                 @RequestParam final int idClub, @RequestParam final Optional<Integer> idEvento, @RequestParam final Consumer<Evento> operazione) {
 
         if (bindingResult.hasErrors())
-            return new ResponseEntity<>("I dati inseriti non rispettano il formato atteso", HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse("I dati inseriti non rispettano il formato atteso", false);
         var club = this.clubService.getClubByID(idClub);
 
         if (club == null) {
-            return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse("", false);
         }
 
         var evento = new Evento();
@@ -94,7 +90,7 @@ public class ClubDelLibroController {
 
         var dataOra = LocalDateTime.of(eventoForm.getData(), eventoForm.getOra());
         if (dataOra.isBefore(LocalDateTime.now())) {
-            return new ResponseEntity<>("Data non valida", HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse("Data non valida", false);
         }
 
         evento.setDataOra(dataOra);
@@ -102,13 +98,13 @@ public class ClubDelLibroController {
         if (eventoForm.getLibro() != null) {
             var libro = this.eventiService.getLibroById(eventoForm.getLibro());
             if (libro.isEmpty()) {
-                return new ResponseEntity<>("Libro inserito non valido", HttpStatus.BAD_REQUEST);
+                return new BiblionetResponse("Libro inserito non valido", false);
             }
             evento.setLibro(libro.get());
         }
 
         operazione.accept(evento);
-        return new ResponseEntity<>("Evento creato/modificato", HttpStatus.OK);
+        return new BiblionetResponse("Evento creato/modificato", true);
 
     }
 
@@ -199,16 +195,18 @@ public class ClubDelLibroController {
      * @param clubForm Il club che si vuole creare
      * @return la pagina del Club
      */
-    @RequestMapping(value = "/crea", method = RequestMethod.POST)
-    public ResponseEntity<String> creaClubDelLibro(final @Valid @ModelAttribute ClubForm clubForm,
-                                                   @RequestHeader(name = "Authorization") final String token,
-                                                   BindingResult bindingResult) {
+    @PostMapping(value = "/crea")
+    @CrossOrigin
+    @ResponseBody
+    public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubForm clubForm,
+                                              @RequestHeader(name = "Authorization") final String token,
+                                              BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("Formato dati non valido", HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse("Formato dati non valido", false);
         }
         if (!Utils.isUtenteEsperto(token)) {
-            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.UNAUTHORIZED);
+            return new BiblionetResponse("Non sei autorizzato", false);
         }
         Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
 
@@ -220,10 +218,10 @@ public class ClubDelLibroController {
         if (copertina != null) cdl.setImmagineCopertina(copertina);
 
 
-        cdl.setGeneri(new HashSet<>(clubForm.getGeneri())); //todo ho i miei dubbi
+        cdl.setGeneri(new HashSet<>(clubForm.getGeneri()));
 
         this.clubService.creaClubDelLibro(cdl);
-        return new ResponseEntity<>("Club del Libro creato", HttpStatus.UNAUTHORIZED);
+        return new BiblionetResponse("Club del Libro creato", false);
 
     }
 
@@ -272,12 +270,12 @@ public class ClubDelLibroController {
      * @return La schermata del club
      */
     @RequestMapping(value = "/{id}/modifica", method = RequestMethod.POST)
-    public ResponseEntity<String> modificaDatiClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token, final @Valid @ModelAttribute ClubForm clubForm, BindingResult bindingResult) {
+    public BiblionetResponse modificaDatiClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token, final @Valid @ModelAttribute ClubForm clubForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("Formato dati non valido", HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse("Formato dati non valido", false);
         }
         if (!Utils.isUtenteEsperto(token)) {
-            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.UNAUTHORIZED);
+            return new BiblionetResponse("Non sei autorizzato", false);
         }
 
         ClubDelLibro clubPers = this.clubService.getClubByID(id);
@@ -290,7 +288,7 @@ public class ClubDelLibroController {
         clubPers.setNome(clubForm.getNome());
         clubPers.setDescrizione(clubForm.getDescrizione());
         this.clubService.modificaDatiClub(clubPers);
-        return new ResponseEntity<>("Modifiche apportate", HttpStatus.OK);
+        return new BiblionetResponse("Modifiche apportate", true);
     }
 
     /**
@@ -299,22 +297,19 @@ public class ClubDelLibroController {
      * Club del Libro.
      *
      * @param id    l'ID del Club a cui iscriversi
-     * @param model Il model da passare alla view
      * @return La view che visualizza la lista dei club
      */
-    @RequestMapping(value = "/{id}/iscrizione", method = RequestMethod.POST)
-    public String partecipaClub(final @PathVariable int id, final Model model) {
+    @PostMapping(value = "/{id}/iscrizione")
+    public BiblionetResponse partecipaClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
 
-        UtenteRegistrato lettore = (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (lettore == null || !lettore.getTipo().equals("Lettore")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        if(!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
+        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token)); //todo in questi casi andrebbero fatti i check per null
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
         if (clubDelLibro.getLettori().contains(lettore)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+            return new BiblionetResponse("Già iscritto.", false);
         }
-        this.clubService.partecipaClub(clubDelLibro, (Lettore) lettore);
-        return "redirect:/club-del-libro/";
+        this.clubService.partecipaClub(clubDelLibro, lettore);
+        return new BiblionetResponse("Iscrizione effettuata.", true);
     }
 
     /**
@@ -488,32 +483,29 @@ public class ClubDelLibroController {
      * @param id   L'identificativo dell'evento da eliminare
      * @return La view della lista degli eventi
      */
-    @RequestMapping(value = "/{club}/eventi/{id}", method = RequestMethod.GET)
-    public String eliminaEvento(final @PathVariable int club, final @PathVariable int id) {
+    @GetMapping(value = "/{club}/eventi/{id}")
+    public BiblionetResponse eliminaEvento(final @PathVariable int club, final @PathVariable int id) {
         Optional<Evento> eventoEliminato = this.eventiService.eliminaEvento(id);
 
         System.out.println(eventoEliminato);
-
-
         if (eventoEliminato.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento Inesistente");
+            return new BiblionetResponse("Evento inesistente", false);
         }
 
-        return "redirect:/club-del-libro/" + club;
+        return new BiblionetResponse("Evento eliminato", true);
     }
 
     /**
      * Implementa la funzionalità che permette di visualizzare
      * la lista degli iscritti a un club.
      *
-     * @param id    L'identificativo del club
-     * @param model il model la passare alla view
+     * @param id L'identificativo del club
      * @return La view della lista degli iscritti
      */
-    @RequestMapping(value = "/{id}/iscritti", method = RequestMethod.GET)
-    public String visualizzaIscrittiClub(final @PathVariable int id, final Model model) {
-        model.addAttribute("club", clubService.getClubByID(id));
-        return "club-del-libro/visualizza-iscritti";
+    @GetMapping(value = "/{id}/iscritti")
+    public ClubDelLibro visualizzaIscrittiClub(final @PathVariable int id) {
+        //todo non mi sembra faccia questo
+        return clubService.getClubByID(id);
     }
 
     /**
@@ -521,19 +513,17 @@ public class ClubDelLibroController {
      * la lista degli eventi di un club.
      *
      * @param id    l'ID del club
-     * @param model il model da passare alla view
      * @return la view che visualizza gli eventi
      */
-    @RequestMapping(value = "/{id}/eventi", method = RequestMethod.GET)
-    public String visualizzaListaEventiClub(final @PathVariable int id, final Model model) {
+    @GetMapping(value = "/{id}/eventi")
+    public BiblionetResponse visualizzaListaEventiClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
         if (clubService.getClubByID(id) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return new BiblionetResponse("Club inesistente", false);
         }
-        UtenteRegistrato utente = (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || !utente.getTipo().equals("Lettore")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        Lettore l = (Lettore) utente;
+        if(!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato", false);
+        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if(l == null) return new BiblionetResponse("Non sei autorizzato", false);
+
         List<Evento> tutti = clubService.getClubByID(id).getEventi();
         List<Evento> mieiEventi = l.getEventi();
         List<Evento> mieiEventiClub = new ArrayList<>();
@@ -547,11 +537,13 @@ public class ClubDelLibroController {
                 tutti.remove(e);
             }
         }
+        //todo trovare una soluzione con Giuseppe
+        /*
         model.addAttribute("club", clubService.getClubByID(id));
         model.addAttribute("eventi", tutti);
-        model.addAttribute("mieiEventi", mieiEventiClub);
+        model.addAttribute("mieiEventi", mieiEventiClub);*/
 
-        return "club-del-libro/visualizza-eventi";
+        return new BiblionetResponse("", true);
     }
 
     /**
@@ -561,17 +553,14 @@ public class ClubDelLibroController {
      *
      * @param idEvento l'evento a cui partecipare
      * @param idClub   il club dell'evento
-     * @param model    l'oggetto Model da cui ottenere il lettore autenticato
      * @return la view che visualizza la lista degli eventi
      */
     @RequestMapping(value = "/{idClub}/eventi/{idEvento}/iscrizione", method = RequestMethod.GET)
-    public String partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, final Model model) {
-        UtenteRegistrato utente = (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || !utente.getTipo().equals("Lettore")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        model.addAttribute("loggedUser", eventiService.partecipaEvento(utente.getEmail(), idEvento));
-        return "redirect:/club-del-libro/" + idClub + "/eventi";
+    public Lettore partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
+        if(!Utils.isUtenteLettore(token)) return null;
+        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if(l == null) return null;
+        return eventiService.partecipaEvento(l.getEmail(), idEvento);
     }
 
     /**
@@ -581,17 +570,16 @@ public class ClubDelLibroController {
      *
      * @param idEvento l'evento a cui disiscriversi
      * @param idClub   il club dell'evento
-     * @param model    l'oggetto Model da cui ottenere il lettore autenticato
      * @return la view che visualizza la lista degli eventi
      */
-    @RequestMapping(value = "/{idClub}/eventi/{idEvento}/abbandono", method = RequestMethod.GET)
-    public String abbandonaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, final Model model) {
-        UtenteRegistrato utente = (UtenteRegistrato) model.getAttribute("loggedUser");
-        if (utente == null || !utente.getTipo().equals("Lettore")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        model.addAttribute("loggedUser", eventiService.abbandonaEvento(utente.getEmail(), idEvento));
-        return "redirect:/club-del-libro/" + idClub + "/eventi";
+    @GetMapping(value = "/{idClub}/eventi/{idEvento}/abbandono")
+    @CrossOrigin
+    @ResponseBody
+    public Lettore abbandonaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
+        if(!Utils.isUtenteLettore(token)) return null;
+        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if(l == null) return null;
+        return eventiService.abbandonaEvento(l.getEmail(), idEvento);
     }
 
     private String getBase64Image(MultipartFile copertina) {

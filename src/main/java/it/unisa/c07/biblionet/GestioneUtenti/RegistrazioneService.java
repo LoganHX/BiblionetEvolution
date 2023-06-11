@@ -7,6 +7,7 @@ import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alessio Casolaro

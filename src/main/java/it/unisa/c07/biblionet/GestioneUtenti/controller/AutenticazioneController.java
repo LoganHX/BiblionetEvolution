@@ -3,9 +3,8 @@ package it.unisa.c07.biblionet.GestioneUtenti.controller;
 import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.config.JwtGeneratorInterface;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,15 +46,15 @@ public class AutenticazioneController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @CrossOrigin
     @ResponseBody
-    public ResponseEntity<?> login(@RequestParam String email,
+    public BiblionetResponse login(@RequestParam String email,
                                    @RequestParam String password) {
 
         UtenteRegistrato utente = autenticazioneService.login(email, password);
 
         if (utente == null) {
-            return new ResponseEntity<>("I dati di autenticazione non sono validi", HttpStatus.FORBIDDEN);
+            return new BiblionetResponse("I dati di autenticazione non sono validi", false);
         } else {
-            return new ResponseEntity<>(jwtGenerator.generateToken(utente), HttpStatus.OK);
+            return new BiblionetResponse(jwtGenerator.generateToken(utente), true);
         }
     }
 

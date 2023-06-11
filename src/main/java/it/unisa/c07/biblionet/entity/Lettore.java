@@ -28,7 +28,7 @@ import java.util.Set;
 @SuperBuilder
 @Data
 @NoArgsConstructor(force = true)
-public class Lettore extends UtenteRegistrato implements HaGenere {
+public class Lettore extends UtenteRegistrato {
 
     /**
      * Rappresenta un lettore sulla piattaforma.
@@ -126,7 +126,7 @@ public class Lettore extends UtenteRegistrato implements HaGenere {
     }
 
 
-    @Override
+
     public Set<String> getGeneri() {
         return getNomeGeneri();
     }

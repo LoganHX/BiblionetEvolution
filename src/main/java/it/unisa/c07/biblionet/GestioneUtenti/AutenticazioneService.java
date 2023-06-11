@@ -8,6 +8,7 @@ import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ciro Maiorino , Giulio Triggiani
@@ -98,4 +99,9 @@ public interface AutenticazioneService {
       */
      Biblioteca findBibliotecaByEmail(String email);
 
+     List<Esperto> findEspertiByGeneri(Set<String> generi);
+
+     List<ClubDelLibro> getClubDelLibroLettore(Lettore lettore);
+
+     List<ClubDelLibro> getClubDelLibroEsperto(Esperto esperto);
 }

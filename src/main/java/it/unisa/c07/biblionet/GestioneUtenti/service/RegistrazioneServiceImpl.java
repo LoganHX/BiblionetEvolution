@@ -1,8 +1,6 @@
 package it.unisa.c07.biblionet.GestioneUtenti.service;
 
 import it.unisa.c07.biblionet.GestioneGenere.GenereService;
-import it.unisa.c07.biblionet.GestioneGenere.repository.GenereDAO;
-import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.RegistrazioneService;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.GestioneUtenti.repository.EspertoDAO;
@@ -16,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alessio Casolaro
@@ -49,7 +48,6 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * Inject del service per simulare
      * le operazioni.
      */
-    private final AutenticazioneService autenticazioneService;
 
     /**
      * Implementa la funzionalità di registrazione un Esperto.
@@ -129,8 +127,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      */
     @Override
     public final Biblioteca getBibliotecaByEmail(final String email) {
-
-        return autenticazioneService.findBibliotecaByEmail(email);
+        return bibliotecaDAO.findByID(email);
     }
 
 

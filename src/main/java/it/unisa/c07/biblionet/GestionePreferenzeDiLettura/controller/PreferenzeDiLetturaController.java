@@ -1,15 +1,16 @@
 package it.unisa.c07.biblionet.GestionePreferenzeDiLettura.controller;
 
 import it.unisa.c07.biblionet.GestioneGenere.GenereService;
-import it.unisa.c07.biblionet.entity.*;
 import it.unisa.c07.biblionet.GestionePreferenzeDiLettura.PreferenzeDiLetturaService;
+import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
+import it.unisa.c07.biblionet.entity.Esperto;
+import it.unisa.c07.biblionet.entity.Genere;
+import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,79 +31,71 @@ public class PreferenzeDiLetturaController {
      */
     private final PreferenzeDiLetturaService preferenzeDiLetturaService;
     private final GenereService genereService;
+    private final AutenticazioneService autenticazioneService;
 
     /**
      * Implementa la funzionalità di controllare se l'utente in sessione
-     * è abilitato ad inserire dei generi, se lo è riceve tutti i generi
-     * presenti nel database e rimanda l'utente alla pagina di
-     * inserimento dei generi, altrimenti lo rimanda alla home.
+     * può modificare i generi e restituisce una lista dei generi che può aggiungere
+     * ottenuta dalla lista totale dei generi, da cui sono stati rimossi i generi già padroneggiati dall'utente
      *
-     * @param model utilizzato per ottenere l'utente in sessione
-     *
-     * @return la view di inserimento dei generi se l'utente è
+     * @return la view d'inserimento dei generi se l'utente è
      * Esperto o Lettore, la home altrimenti,
      */
     @RequestMapping("/generi")
-    public String generiLetterari(final Model model) {
-
-            UtenteRegistrato utenteRegistrato =
-                    (UtenteRegistrato) model.getAttribute("loggedUser");
-
-            if (utenteRegistrato != null
-                    && (utenteRegistrato.getTipo().equals("Esperto")
-                    ||  utenteRegistrato.getTipo().equals("Lettore"))) {
-
-                HaGenere utente = (HaGenere) utenteRegistrato;
-                Set<Genere> allGeneri =
-                        genereService.getAllGeneri();
-
-                List<String> generiUtente = new ArrayList<>(utente.getGeneri());
-
-                if (generiUtente != null) {
-
-                    for (String genere : generiUtente) {
-                        allGeneri.remove(genere);
-                    }
-                } else {
-                    generiUtente = new ArrayList<>();
-                }
+    @ResponseBody
+    @CrossOrigin
+    public List<String> generiLetterari(
+            @RequestHeader(name = "Authorization") final String token
+    ) {
+        List<String> generiUtente;
+        if (Utils.isUtenteEsperto(token)) {
+            Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+            generiUtente = new ArrayList<>(esperto.getGeneri());
+        } else if (Utils.isUtenteLettore(token)) {
+            Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+            generiUtente = new ArrayList<>(lettore.getGeneri());
+        } else return null;
 
 
-                model.addAttribute("generiUtente", generiUtente);
-                model.addAttribute("generi", allGeneri);
-                return "preferenze-lettura/modifica-generi";
-            } else {
-                return "index";
+        Set<Genere> allGeneri = genereService.getAllGeneri();
+        if (generiUtente != null) {
+            for (String genere : generiUtente) {
+                allGeneri.remove(genere);
             }
+        } else {
+            generiUtente = new ArrayList<>();
+        }
+
+        return generiUtente;
+
     }
 
     /**
-     * Implementa la funzionalità di inserire o rimuovere generi ad un esperto
-     * oppure ad un lettore.
+     * Implementa la funzionalità d'inserire o rimuovere generi a un esperto
+     * oppure a un lettore.
+     *
      * @param generi i generi che il lettore o l'esperto dovranno possedere
-     * @param model utilizzato per prendere l'utente loggato a cui modificare
-     *              i generi
      * @return la pagina home
      */
-    @RequestMapping(value = "/modifica-generi", method = RequestMethod.POST)
-    public String modificaGeneri(@RequestParam("genere") final String[]generi,
-                                            final Model model) {
+    @PostMapping(value = "/modifica-generi")
+    @CrossOrigin
+    @ResponseBody
+    public BiblionetResponse modificaGeneri(@RequestParam("genere") final String[] generi,
+                                            @RequestHeader(name = "Authorization") final String token) {
 
         Set<Genere> toAdd = genereService.getGeneriByName(generi);
-        UtenteRegistrato utenteRegistrato =
-                (UtenteRegistrato) model.getAttribute("loggedUser");
 
-        if (utenteRegistrato != null) {
-            if (utenteRegistrato.getTipo().equals("Esperto")) {
-
-                preferenzeDiLetturaService
-                        .addGeneriEsperto(toAdd, (Esperto) utenteRegistrato);
-
-            } else if (utenteRegistrato.getTipo().equals("Lettore")) {
-                preferenzeDiLetturaService
-                        .addGeneriLettore(toAdd, (Lettore) utenteRegistrato);
-            }
+        if (Utils.isUtenteEsperto(token)) {
+            preferenzeDiLetturaService
+                    .addGeneriEsperto(toAdd, autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
+            return new BiblionetResponse("Generi modificati", true);
         }
-        return "autenticazione/login";
+        if (Utils.isUtenteLettore(token)) {
+            preferenzeDiLetturaService
+                    .addGeneriLettore(toAdd, autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token)));
+            return new BiblionetResponse("Generi modificati", true);
+        }
+
+        return new BiblionetResponse("Errore modifica generi utente", false);
     }
 }

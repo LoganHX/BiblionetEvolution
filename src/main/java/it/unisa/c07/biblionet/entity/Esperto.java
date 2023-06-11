@@ -28,7 +28,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(force = true)
-public class Esperto extends UtenteRegistrato implements HaGenere {
+public class Esperto extends UtenteRegistrato {
 
     /**
      * Rappresenta l'username dell'esperto.
@@ -106,7 +106,6 @@ public class Esperto extends UtenteRegistrato implements HaGenere {
         this.biblioteca = biblioteca;
     }
 
-    @Override
     public Set<String> getGeneri() {
         return getNomeGeneri();
     }

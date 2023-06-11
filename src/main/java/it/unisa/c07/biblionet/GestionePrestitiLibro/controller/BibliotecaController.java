@@ -2,15 +2,12 @@ package it.unisa.c07.biblionet.GestionePrestitiLibro.controller;
 
 import it.unisa.c07.biblionet.GestionePrestitiLibro.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.GestioneUtenti.AutenticazioneService;
-import it.unisa.c07.biblionet.GestioneUtenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.entity.LibroBiblioteca;
-import it.unisa.c07.biblionet.entity.LibroEvento;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.GestionePrestitiLibro.form.LibroForm;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
@@ -45,8 +42,7 @@ public class BibliotecaController {
      * visualizzare tutte le biblioteche iscritte.
      * @return La view per visualizzare le biblioteche
      */
-    @RequestMapping(value = "/visualizza-biblioteche",
-            method = RequestMethod.GET)
+    @GetMapping(value = "/visualizza-biblioteche")
     @ResponseBody
     @CrossOrigin
     public List<Biblioteca> visualizzaListaBiblioteche() {
@@ -64,18 +60,18 @@ public class BibliotecaController {
     @PostMapping(value = "/inserimento-isbn")
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<String> inserisciPerIsbn(@RequestParam final String isbn,
-                                                   @RequestHeader (name="Authorization") final String token,
-                                                   @RequestParam final String[] generi,
-                                                   @RequestParam final int numCopie) {
+    public BiblionetResponse inserisciPerIsbn(@RequestParam final String isbn,
+                                              @RequestHeader (name="Authorization") final String token,
+                                              @RequestParam final String[] generi,
+                                              @RequestParam final int numCopie) {
 
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
+            return new BiblionetResponse("Non sei autorizzato", false);
         }
         //todo controllare scadenza token
 
         if (isbn == null) {
-            return new ResponseEntity<>("ISBN inesistente", HttpStatus.BAD_REQUEST);
+            return new BiblionetResponse("ISBN inesistente", false);
         }
         Biblioteca b = prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
 
@@ -83,9 +79,9 @@ public class BibliotecaController {
         LibroBiblioteca l = prenotazioneService.inserimentoPerIsbn(
                 isbn, b.getEmail(), numCopie, glist);
         if (l == null) {
-            return new ResponseEntity<>("Libro non crato", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new BiblionetResponse("Libro non crato", false);
         }
-        return new ResponseEntity<>("Libro creato con successo", HttpStatus.OK);
+        return new BiblionetResponse("Libro creato con successo", true);
 
     }
 
@@ -93,46 +89,48 @@ public class BibliotecaController {
      * Implementa la funzionalità che permette inserire
      * un libro alla lista dei possessi preso
      * dal db.
-     * @param idLibro l'ID del libro
+     *
+     * @param idLibro  l'ID del libro
      * @param numCopie il numero di copie possedute
      * @return La view per visualizzare il libro
      */
     @PostMapping(value = "/inserimento-archivio")
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<String> inserisciDaDatabase(@RequestParam final int idLibro,
-                                      @RequestHeader (name="Authorization") final String token,
-                                   @RequestParam final int numCopie) {
+    public BiblionetResponse inserisciDaDatabase(@RequestParam final int idLibro,
+                                                 @RequestHeader (name="Authorization") final String token,
+                                                 @RequestParam final int numCopie) {
 
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
+            return new BiblionetResponse("Non sei autorizzato", false);
         }
         Biblioteca b =  prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
         LibroBiblioteca l = prenotazioneService.inserimentoDalDatabase(
                 idLibro, b.getEmail(), numCopie);
-        return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
+        return new BiblionetResponse("Libro inserito con successo", true);
 
     }
 
     /**
      * Implementa la funzionalità che permette inserire
      * un libro manualmente tramite form.
-     * @param libro Il libro da salvare
-     * @param numCopie il numero di copie possedute
+     *
+     * @param libro             Il libro da salvare
+     * @param numCopie          il numero di copie possedute
      * @param annoPubblicazione l'anno di pubblicazione
      * @return La view per visualizzare il libro
      */
     @PostMapping(value = "/inserimento-manuale")
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<String> inserisciManualmente(
+    public BiblionetResponse inserisciManualmente(
             @RequestHeader (name="Authorization") final String token,
             @RequestParam final LibroForm libro,
             @RequestParam final int numCopie,
             @RequestParam final String annoPubblicazione) {
 
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new ResponseEntity<>("Non sei autorizzato", HttpStatus.FORBIDDEN);
+            return new BiblionetResponse("Non sei autorizzato", false);
         }
         Biblioteca b = prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
         LibroBiblioteca l = new LibroBiblioteca();
@@ -159,7 +157,8 @@ public class BibliotecaController {
                 Integer.parseInt(annoPubblicazione), 1, 1, 1, 1);
         l.setAnnoDiPubblicazione(anno);
         LibroBiblioteca newLibro = prenotazioneService.inserimentoManuale(l, b.getEmail(), numCopie, libro.getGeneri());
-        return new ResponseEntity<>("Libro inserito con successo", HttpStatus.OK);
+        if(newLibro == null) return new BiblionetResponse("Errore inserimento libro", false);
+        return new BiblionetResponse("Libro inserito con successo", true);
 
     }
 
