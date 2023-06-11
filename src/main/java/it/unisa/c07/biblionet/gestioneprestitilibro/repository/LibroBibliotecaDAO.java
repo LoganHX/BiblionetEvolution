@@ -1,7 +1,7 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.repository;
 
-import it.unisa.c07.biblionet.entity.LibroBiblioteca;
 import it.unisa.c07.biblionet.entity.ILibroIdAndName;
+import it.unisa.c07.biblionet.entity.LibroBiblioteca;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

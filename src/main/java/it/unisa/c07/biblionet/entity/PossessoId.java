@@ -1,6 +1,5 @@
 package it.unisa.c07.biblionet.entity;
 
-import it.unisa.c07.biblionet.entity.Possesso;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

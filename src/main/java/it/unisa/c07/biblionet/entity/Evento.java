@@ -20,16 +20,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- *  Questa classe rappresenta un evento relativo ad un club del libro.
+ *  Questa classe rappresenta un evento relativo a un club del libro.
  *  Un evento ha un id autogenerato, un nome, una descrzione, la data e l'ora
  *  di svolgimento, ed eventualmente un libro.
- *
  *
  */
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 public class Evento {
 

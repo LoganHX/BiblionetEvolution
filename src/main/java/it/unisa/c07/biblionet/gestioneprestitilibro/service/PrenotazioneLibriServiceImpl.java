@@ -1,9 +1,7 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.service;
 
 import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
-import it.unisa.c07.biblionet.gestioneprestitilibro.repository.LibroBibliotecaDAO;
-import it.unisa.c07.biblionet.gestioneprestitilibro.repository.PossessoDAO;
-import it.unisa.c07.biblionet.gestioneprestitilibro.repository.TicketPrestitoDAO;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.*;
 import it.unisa.c07.biblionet.gestioneprestitilibro.service.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.entity.*;

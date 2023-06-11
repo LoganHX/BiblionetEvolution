@@ -1,6 +1,5 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
-import it.unisa.c07.biblionet.gestionepreferenzedilettura.GenereService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.gestioneutenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.gestioneutenti.repository.EspertoDAO;

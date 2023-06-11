@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.gestioneutenti.service;
 
 import it.unisa.c07.biblionet.entity.*;
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
+import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.gestioneutenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.gestioneutenti.repository.EspertoDAO;
