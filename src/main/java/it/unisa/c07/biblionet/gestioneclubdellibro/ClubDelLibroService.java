@@ -18,7 +18,7 @@ public interface ClubDelLibroService {
 
     /**
      * Implementa la funzionalità che permette
-     * ad un Esperto di creare un Club del Libro.
+     * a un Esperto di creare un Club del Libro.
      * @param club Il Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
@@ -40,14 +40,6 @@ public interface ClubDelLibroService {
      */
     List<ClubDelLibro> visualizzaClubsDelLibro(Predicate<ClubDelLibro> filtro);
 
-    /**
-     * Implementa la funzionalità che permette
-     * di recuperare un oggetto
-     * della classe genere dato il nome.
-     * @param generi Lista dei generi sottoforma di stringa
-     * @return Lista dei generi sottoforma di entità
-     */
-    Set<Genere> getGeneri(List<String> generi);
 
     /**
      * Implementa la funzionalità che permette
@@ -85,11 +77,7 @@ public interface ClubDelLibroService {
      */
     String getCittaFromClubDelLibro(ClubDelLibro club);
 
-    /**
-     * Restituisce tutti i generi nel sistema.
-     * @return Tutti i generi nel sistema.
-     */
-    Set<String> getTuttiGeneri();
+
 
     /**
      * Restituisce tutte le citta nel sistema.
@@ -103,7 +91,7 @@ public interface ClubDelLibroService {
      * @param lettore il lettore preso in esame
      * @return la lista dei club del libro a cui partecipa
      */
-    List<ClubDelLibro> findAllByLettori(Lettore lettore);
+    List<ClubDelLibro> findAllByLettore(Lettore lettore);
 
     /**
      * Implementa la funzionalità di prendere una lista di club

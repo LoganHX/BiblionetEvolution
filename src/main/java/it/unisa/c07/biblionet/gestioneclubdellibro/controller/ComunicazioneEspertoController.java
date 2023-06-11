@@ -27,7 +27,6 @@ public class ComunicazioneEspertoController {
     /**
      * Il service per effettuare le operazioni di persistenza.
      */
-    private final ComunicazioneEspertoService comunicazioneEspertoService;
     private final AutenticazioneService autenticazioneService;
 
     /**

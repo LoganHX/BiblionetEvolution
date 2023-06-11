@@ -70,7 +70,7 @@ public class BibliotecaController {
         if (isbn == null) {
             return new BiblionetResponse("ISBN inesistente", false);
         }
-        Biblioteca b = prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
+        Biblioteca b = autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
         List<String> glist = Arrays.asList(generi.clone());
         LibroBiblioteca l = prenotazioneService.inserimentoPerIsbn(
@@ -101,7 +101,7 @@ public class BibliotecaController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse("Non sei autorizzato", false);
         }
-        Biblioteca b =  prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
+        Biblioteca b =  autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
         prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
         return new BiblionetResponse("Libro inserito con successo", true);
 
@@ -128,7 +128,7 @@ public class BibliotecaController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse("Non sei autorizzato", false);
         }
-        Biblioteca b = prenotazioneService.getBibliotecaById(Utils.getSubjectFromToken(token));
+        Biblioteca b = autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
         LibroBiblioteca l = new LibroBiblioteca();
         l.setTitolo(libro.getTitolo());
         if (libro.getIsbn() != null) {
@@ -193,6 +193,6 @@ public class BibliotecaController {
     @ResponseBody
     @CrossOrigin
     public Biblioteca visualizzaDatiBiblioteca(final @PathVariable String email) {
-        return prenotazioneService.getBibliotecaById(email);
+        return autenticazioneService.findBibliotecaByEmail(email);
     }
 }

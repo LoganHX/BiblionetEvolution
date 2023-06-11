@@ -23,32 +23,27 @@ public class ComunicazioneEspertoServiceImpl
     private final AutenticazioneService autenticazioneService;
 
     /**
-     * Si occupa delle funzioni CRUD per il genere.
-     */
-    private final GenereService genereService;
-
-
-
-
-    /**
      * Implementa la funzionalità che permette
      * di visualizzare la lista completa dei libri
      * prenotabili di un dato genere.
-     * @param gen Il nome del genere
+     * @param genere Il nome del genere
      * @return La lista di libri
+     *
+     * todo testo inesatto
      */
     @Override
     public List<Esperto> visualizzaEspertiPerGenere(
-            final String gen) {
-        String genere = gen.substring(0, 1).toUpperCase() + gen.substring(1);
+            final String genere) {
         List<Esperto> list = autenticazioneService.findAllEsperti();
         List<Esperto> list2 = new ArrayList<>();
-        String g = genereService.getGenereByName(genere).getNome();
         for (Esperto e : list) {
-            if (e.getGeneri().contains(g)) {
+            if (e.getGeneri().contains(this.primaLetteraMaiuscola(genere))) {
                 list2.add(e);
             }
         }
         return list2;
+    }
+    private String primaLetteraMaiuscola(String stringa){
+        return stringa.substring(0, 1).toUpperCase() + stringa.substring(1);
     }
 }

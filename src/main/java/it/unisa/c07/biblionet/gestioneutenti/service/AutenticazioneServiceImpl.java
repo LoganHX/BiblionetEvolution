@@ -1,11 +1,11 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
+import it.unisa.c07.biblionet.entity.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.gestioneutenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.gestioneutenti.repository.EspertoDAO;
 import it.unisa.c07.biblionet.gestioneutenti.repository.LettoreDAO;
-import it.unisa.c07.biblionet.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,6 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      * Si occupa delle operazioni CRUD un esperto.
      */
     private final EspertoDAO espertoDAO;
-    private final ClubDelLibroService clubDelLibroService;
 
     /**
      * I.
@@ -231,14 +230,13 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         return toReturn;
     }
 
-
     @Override
-    public final List<ClubDelLibro> getClubDelLibroLettore(Lettore lettore) {
-        return clubDelLibroService.findAllByLettori(lettore);
+    public final List<ClubDelLibro> findClubsEsperto(Esperto esperto) {
+        return esperto.getClubs();
     }
 
     @Override
-    public final List<ClubDelLibro> getClubDelLibroEsperto(Esperto esperto) {
-        return clubDelLibroService.findAllByEsperto(esperto);
+    public final List<ClubDelLibro> findClubsLettore(Lettore lettore) {
+        return lettore.getClubs();
     }
 }

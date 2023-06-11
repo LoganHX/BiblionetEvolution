@@ -30,7 +30,6 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Si occupa delle operazioni CRUD per un club.
      */
     private final ClubDelLibroDAO clubDAO;
-    private final GenereService genereService;
     private final RegistrazioneService registrazioneService;
 
 
@@ -73,17 +72,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     }
 
 
-    /**
-     * Implementa la funzionalità che permette
-     * di recuperare un oggetto
-     * della classe genere dato il nome.
-     * @param generi Lista dei generi sottoforma di stringa
-     * @return Lista dei generi sottoforma di entità
-     */
-    @Override
-    public Set<Genere> getGeneri(final List<String> generi) {
-        return genereService.getGeneriByName(generi.toArray(new String[0]));
-    }
+
 
     /**
      * Implementa la funzionalità che permette
@@ -141,18 +130,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         return club.getEsperto().getBiblioteca().getCitta();
     }
 
-    /**
-     * Restituisce tutti i generi nel sistema.
-     * @return Tutti i generi nel sistema
-     */
-    public Set<String> getTuttiGeneri() {
-        List<Genere> listGeneri = new ArrayList<>(genereService.getAllGeneri());
-        Set<String> generiSet = new HashSet<>();
-        for(Genere genereDTO: listGeneri){
-            generiSet.add(genereDTO.getNome());
-        }
-        return generiSet;
-    }
+
 
     /**
      * Restituisce tutte le citta nel sistema.
@@ -171,7 +149,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @param lettore il lettore preso in esame
      * @return la lista dei club del libro a cui partecipa
      */
-    public List<ClubDelLibro> findAllByLettori(final Lettore lettore) {
+    public List<ClubDelLibro> findAllByLettore(final Lettore lettore) {
         return clubDAO.findAllByLettori(lettore);
     }
 

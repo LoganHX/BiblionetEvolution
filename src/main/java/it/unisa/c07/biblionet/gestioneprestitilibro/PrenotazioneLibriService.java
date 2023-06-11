@@ -23,13 +23,7 @@ public interface PrenotazioneLibriService {
      */
     List<LibroBiblioteca> visualizzaListaLibriCompleta();
 
-    /**
-     * Implementa la funzionalità che permette
-     * di visualizzare il profilo di una singola biblioteca.
-     * @param email della biblioteca
-     * @return la biblioteca
-     */
-    Biblioteca getBibliotecaById(String email);
+
 
     /**
      * Implementa la funzionalità che permette
@@ -166,7 +160,7 @@ public interface PrenotazioneLibriService {
 
     /**
      * Implementa la funzionalità che permette
-     * di inserire un libro già memorizzato negli
+     * d'inserire un libro già memorizzato negli
      * archivi della piattaforma alla lista dei propri
      * libri prenotabili.
      * @param idLibro il Libro da inserire
@@ -179,7 +173,7 @@ public interface PrenotazioneLibriService {
 
     /**
      * Implementa la funzionalità che permette
-     * di inserire un libro attraverso un form.
+     * d'inserire un libro attraverso un form.
      * @param libro il Libro da memorizzare
      * @param idBiblioteca l'id della biblioteca che lo possiede
      * @param numCopie il numero di copie possedute

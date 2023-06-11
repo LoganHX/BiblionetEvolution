@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
 import io.jsonwebtoken.Claims;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.entity.*;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
@@ -225,7 +226,7 @@ public class AreaUtenteController {
     ) {
         if (!Utils.isUtenteLettore(Utils.getSubjectFromToken(token))) return new ArrayList<>();
         Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        return autenticazioneService.getClubDelLibroLettore(lettore);
+        return autenticazioneService.findClubsLettore(lettore);
     }
 
 
@@ -239,9 +240,9 @@ public class AreaUtenteController {
     @ResponseBody
     @CrossOrigin
     public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
+        //todo da controllare
         if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token))) return new ArrayList<>();
-        Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
-        return autenticazioneService.getClubDelLibroEsperto(esperto);
+        return autenticazioneService.findClubsEsperto(autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
     }
 
 }

@@ -20,11 +20,7 @@ import java.util.Set;
 public class PreferenzeDiLetturaServiceImpl implements
         PreferenzeDiLetturaService {
 
-
-
     private final AutenticazioneService autenticazioneService;
-
-
 
     /**
      * Implementa la funzionalità di restituire tutti i generi

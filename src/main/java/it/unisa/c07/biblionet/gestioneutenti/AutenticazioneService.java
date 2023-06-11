@@ -101,7 +101,8 @@ public interface AutenticazioneService {
 
      List<Esperto> findEspertiByGeneri(Set<String> generi);
 
-     List<ClubDelLibro> getClubDelLibroLettore(Lettore lettore);
 
-     List<ClubDelLibro> getClubDelLibroEsperto(Esperto esperto);
+     List<ClubDelLibro> findClubsEsperto(Esperto esperto);
+
+     List<ClubDelLibro> findClubsLettore(Lettore lettore);
 }

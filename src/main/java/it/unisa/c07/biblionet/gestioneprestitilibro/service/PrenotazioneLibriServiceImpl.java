@@ -60,17 +60,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         return libroBibliotecaDAO.findByTitoloLike(titolo);
     }
 
-    /**
-     * Implementa la funzionalità che permette
-     * di visualizzare il profilo di una singola biblioteca.
-     *
-     * @param email della biblioteca
-     * @return la biblioteca
-     */
-    @Override
-    public Biblioteca getBibliotecaById(final String email) {
-        return autenticazioneService.findBibliotecaByEmail(email);
-    }
+
 
     /**
      * Implementa la funzionalità che permette
@@ -292,10 +282,9 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * Implementa la funzionalità che permette di
      * ottenere una lista di id e titoli di libri
      * sulla base di un titolo dato
-     * <p>
      * ! Controllare prima di consegnare
      *
-     * @param titolo il titolo che deve mathcare
+     * @param titolo il titolo che deve matchcare
      * @return la lista di informazioni
      */
     public List<ILibroIdAndName> findByTitoloContains(final String titolo) {
@@ -376,7 +365,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
 
     /**
      * Implementa la funzionalità che permette
-     * di inserire un libro già memorizzato negli
+     * d'inserire un libro già memorizzato negli
      * archivi della piattaforma alla lista dei propri
      * libri prenotabili.
      *
@@ -417,7 +406,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
 
     /**
      * Implementa la funzionalità che permette
-     * di inserire un libro attraverso un form.
+     * d'inserire un libro attraverso un form.
      *
      * @param libro        il Libro da memorizzare
      * @param idBiblioteca l'id della biblioteca che lo possiede
@@ -472,20 +461,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         return l;
     }
 
-
-    /**
-     * Implementa la funzionalità che permette di
-     * recuperare la lista delle biblioteche dato un nome.
-     *
-     * @return la lista delle biblioteche.
-     */
-
-    /**
-     * Implementa la funzionalità che permette di
-     * recuperare la lista delle biblioteche data una citta.
-     *
-     * @return la lista delle biblioteche.
-     */
 
 }
 
