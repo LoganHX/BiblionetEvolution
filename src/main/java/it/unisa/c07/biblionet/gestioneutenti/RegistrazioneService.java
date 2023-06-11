@@ -1,12 +1,10 @@
 
 package it.unisa.c07.biblionet.gestioneutenti;
 
-import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
-import java.util.List;
 
 /**
  * @author Alessio Casolaro
@@ -42,12 +40,7 @@ public interface RegistrazioneService {
      */
     boolean isEmailRegistrata(String email);
 
-    /**
-     * Implementa la funzionalità di trovare dei generi.
-     * @param generi Un'array di nomi di generi da trovare
-     * @return Una lista contenente i generi trovati
-     */
-    List<Genere> findGeneriByName(String[] generi);
+
 
     /**
      * Implementa la funzionalità di prendere una biblioteca

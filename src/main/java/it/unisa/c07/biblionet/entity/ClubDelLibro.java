@@ -1,5 +1,8 @@
 package it.unisa.c07.biblionet.entity;
 
+import it.unisa.c07.biblionet.entity.Esperto;
+import it.unisa.c07.biblionet.entity.Evento;
+import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.utils.Length;
 import lombok.AllArgsConstructor;
 import lombok.Data;

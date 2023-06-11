@@ -1,6 +1,5 @@
-package it.unisa.c07.biblionet.gestionegenere.repository;
+package it.unisa.c07.biblionet.gestionepreferenzedilettura.repository;
 
-import it.unisa.c07.biblionet.entity.Genere;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

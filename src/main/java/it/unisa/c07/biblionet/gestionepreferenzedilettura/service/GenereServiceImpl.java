@@ -1,8 +1,8 @@
-package it.unisa.c07.biblionet.gestionegenere.service;
+package it.unisa.c07.biblionet.gestionepreferenzedilettura.service;
 
-import it.unisa.c07.biblionet.gestionegenere.GenereService;
-import it.unisa.c07.biblionet.gestionegenere.repository.GenereDAO;
-import it.unisa.c07.biblionet.entity.Genere;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.GenereService;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.GenereDAO;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.Genere;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,13 +50,12 @@ public class GenereServiceImpl implements GenereService {
 
     @Override
     public Set<Genere> getAllGeneri() {
-        //todo si può fare di meglio
         List<Genere> list = genereDAO.findAll();
         Set<Genere> setGeneri =new HashSet<>();
-        for(Genere genere: list){
-            Genere genereDTO = new Genere();
-            genereDTO.setNome(genere.getNome());
-            genereDTO.setDescrizione(genere.getDescrizione());
+        for(Genere g: list){
+            Genere genere = new Genere();
+            genere.setNome(g.getNome());
+            genere.setDescrizione(g.getDescrizione());
         }
         return setGeneri;
     }

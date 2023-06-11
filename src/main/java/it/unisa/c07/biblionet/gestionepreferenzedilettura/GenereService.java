@@ -1,6 +1,6 @@
-package it.unisa.c07.biblionet.gestionegenere;
+package it.unisa.c07.biblionet.gestionepreferenzedilettura;
 
-import it.unisa.c07.biblionet.entity.Genere;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.Genere;
 
 import java.util.Set;
 

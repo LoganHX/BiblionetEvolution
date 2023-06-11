@@ -3,7 +3,7 @@ package it.unisa.c07.biblionet.gestionepreferenzedilettura.service;
 import it.unisa.c07.biblionet.gestionepreferenzedilettura.PreferenzeDiLetturaService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Genere;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,6 @@ public class PreferenzeDiLetturaServiceImpl implements
         PreferenzeDiLetturaService {
 
     private final AutenticazioneService autenticazioneService;
-
-    /**
-     * Implementa la funzionalità di restituire tutti i generi
-     * presenti nel database.
-     * @return la lista di tutti i generi presenti nel database
-     */
-
 
 
     /**

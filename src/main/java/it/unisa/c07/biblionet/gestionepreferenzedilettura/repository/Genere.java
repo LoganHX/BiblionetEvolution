@@ -1,4 +1,4 @@
-package it.unisa.c07.biblionet.entity;
+package it.unisa.c07.biblionet.gestionepreferenzedilettura.repository;
 import it.unisa.c07.biblionet.utils.Length;
 import lombok.Data;
 import lombok.NoArgsConstructor;

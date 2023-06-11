@@ -2,9 +2,7 @@ package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.ComunicazioneEspertoService;
-import it.unisa.c07.biblionet.gestionegenere.GenereService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Esperto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

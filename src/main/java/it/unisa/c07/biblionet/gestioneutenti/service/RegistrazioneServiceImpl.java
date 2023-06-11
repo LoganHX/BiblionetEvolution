@@ -1,19 +1,16 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
-import it.unisa.c07.biblionet.gestionegenere.GenereService;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.GenereService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.gestioneutenti.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.gestioneutenti.repository.EspertoDAO;
 import it.unisa.c07.biblionet.gestioneutenti.repository.LettoreDAO;
-import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alessio Casolaro
@@ -32,11 +29,6 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * Si occupa di gestire le operazioni CRUD della Biblioteca.
      */
     private final BibliotecaDAO bibliotecaDAO;
-
-    /**
-     * Si occupa di gestire le operazioni CRUD del Genere.
-     */
-    private final GenereService genereService;
 
     /**
      * Si occupa delle operazioni CRUD.
@@ -101,23 +93,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
         return false;
     }
 
-    /**
-     * Implementa la funzionalità di trovare dei generi.
-     * @param generi Un'array di nomi di generi da trovare
-     * @return Una lista contenente i generi trovati
-     */
-    @Override
-    public final List<Genere> findGeneriByName(final String[] generi) {
-        List<Genere> toReturn = new ArrayList<>();
-        for (String g: generi) {
-            Genere gen = genereService.getGenereByName(g);
-            if (gen != null) {
-                toReturn.add(gen);
-            }
 
-        }
-        return toReturn;
-    }
 
     /**
      * Implementa la funzionalità di trovare una biblioteca.

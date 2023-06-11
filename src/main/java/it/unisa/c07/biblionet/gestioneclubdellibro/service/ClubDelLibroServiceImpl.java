@@ -2,11 +2,9 @@ package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibroDAO;
-import it.unisa.c07.biblionet.gestionegenere.GenereService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 import lombok.RequiredArgsConstructor;
 

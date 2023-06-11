@@ -1,10 +1,10 @@
 package it.unisa.c07.biblionet.gestionepreferenzedilettura.controller;
 
-import it.unisa.c07.biblionet.gestionegenere.GenereService;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.GenereService;
 import it.unisa.c07.biblionet.gestionepreferenzedilettura.PreferenzeDiLetturaService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Genere;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;

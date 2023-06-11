@@ -1,7 +1,7 @@
 package it.unisa.c07.biblionet.gestionepreferenzedilettura;
 
 import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Genere;
+import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 
 import java.util.Set;

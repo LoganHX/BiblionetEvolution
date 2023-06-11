@@ -2,7 +2,6 @@ package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import it.unisa.c07.biblionet.entity.ClubDelLibro;
 import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Genere;
 import it.unisa.c07.biblionet.entity.Lettore;
 
 import java.util.List;
