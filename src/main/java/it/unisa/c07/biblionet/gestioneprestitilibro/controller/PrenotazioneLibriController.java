@@ -176,7 +176,7 @@ public class PrenotazioneLibriController {
         TicketPrestito ticket = prenotazioneService.getTicketByID(id);
         ticket = prenotazioneService.accettaRichiesta(ticket, giorni);
         if(ticket!=null) return new BiblionetResponse("Richiesta accettata", true);
-        return new BiblionetResponse("Errore", false);
+        return new BiblionetResponse(BiblionetResponse.ERRORE, false);
     }
 
     /**

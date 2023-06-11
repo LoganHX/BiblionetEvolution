@@ -110,7 +110,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         return list;
     todo ripristinare genere
     */
-    return null;
+    return new ArrayList<>();
     }
 
 

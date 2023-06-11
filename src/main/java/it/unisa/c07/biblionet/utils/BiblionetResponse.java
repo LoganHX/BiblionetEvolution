@@ -18,6 +18,7 @@ public class BiblionetResponse {
     public static final String ISCRIZIONE_OK = "Iscrizione effettuata";
     public static final String ISCRIZIONE_FALLITA = "Iscrizione fallita";
     public static final String OPERAZIONE_OK = "Operazione effettuata con successo";
+    public static final String ERRORE = "Errore!";
 
 
     private Map<String, String> payload;

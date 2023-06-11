@@ -1,8 +1,6 @@
 package it.unisa.c07.biblionet.entity;
 
-import it.unisa.c07.biblionet.entity.Evento;
-import it.unisa.c07.biblionet.entity.Possesso;
-import it.unisa.c07.biblionet.entity.TicketPrestito;
+
 import it.unisa.c07.biblionet.utils.Length;
 import lombok.*;
 

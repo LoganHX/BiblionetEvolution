@@ -1,6 +1,5 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
-import it.unisa.c07.biblionet.gestioneclubdellibro.ComunicazioneEspertoService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
@@ -77,7 +76,7 @@ public class ComunicazioneEspertoController {
             case "nome":
                 return autenticazioneService.findEspertiByNome(stringa);
             case "genere":
-                return autenticazioneService.findEspertiByGeneri(new HashSet<String>(Collections.singleton(stringa)));
+                return autenticazioneService.findEspertiByGeneri(new HashSet<>(Collections.singleton(stringa)));
             default:
                 return autenticazioneService.findAllEsperti();
         }

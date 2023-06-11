@@ -77,7 +77,7 @@ public final class RegistrazioneController {
      *                        dove l'esperto lavora
      * @return la view per effettuare il login
      */
-    @RequestMapping(value = "/esperto", method = RequestMethod.POST)
+    @PostMapping(value = "/esperto")
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute Esperto esperto,
@@ -102,7 +102,7 @@ public final class RegistrazioneController {
      * @param password   la password di conferma
      * @return la view di login
      */
-    @RequestMapping(value = "/biblioteca", method = RequestMethod.POST)
+    @PostMapping(value = "/biblioteca")
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute Biblioteca biblioteca,
@@ -129,7 +129,7 @@ public final class RegistrazioneController {
      *                 il corretto inserimento della stessa.
      * @return La view per effettuare il login
      */
-    @RequestMapping(value = "/lettore", method = RequestMethod.POST)
+    @PostMapping(value = "/lettore")
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse registrazioneLettore(@Valid @ModelAttribute Lettore lettore,

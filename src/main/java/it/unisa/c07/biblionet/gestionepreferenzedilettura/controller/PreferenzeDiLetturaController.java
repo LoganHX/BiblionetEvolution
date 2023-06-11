@@ -3,17 +3,14 @@ package it.unisa.c07.biblionet.gestionepreferenzedilettura.controller;
 import it.unisa.c07.biblionet.gestionepreferenzedilettura.GenereService;
 import it.unisa.c07.biblionet.gestionepreferenzedilettura.PreferenzeDiLetturaService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.gestionepreferenzedilettura.repository.Genere;
-import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Set;
 
 /**
@@ -39,36 +36,39 @@ public class PreferenzeDiLetturaController {
      *
      * @return la view d'inserimento dei generi se l'utente è
      * Esperto o Lettore, la home altrimenti,
-     */
+
     @RequestMapping("/generi")
     @ResponseBody
     @CrossOrigin
     public List<String> generiLetterari(
             @RequestHeader(name = "Authorization") final String token
     ) {
-        List<String> generiUtente;
+        List<String> nomiGenere;
+
         if (Utils.isUtenteEsperto(token)) {
             Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
-            generiUtente = new ArrayList<>(esperto.getGeneri());
+            nomiGenere = new ArrayList<>(esperto.getGeneri());
         } else if (Utils.isUtenteLettore(token)) {
             Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-            generiUtente = new ArrayList<>(lettore.getGeneri());
+            nomiGenere = new ArrayList<>(lettore.getGeneri());
         } else return new ArrayList<>();
 
 
         Set<Genere> allGeneri = genereService.getAllGeneri();
+        Set<Genere> generiUtente = genereService.getGeneriByName(nomiGenere.toArray(new String[0]));
         if (generiUtente != null) {
-            for (String genere : generiUtente) {
-                allGeneri.remove(genere);
+            for (Genere g : generiUtente) {
+                allGeneri.remove(g);
             }
         } else {
-            generiUtente = new ArrayList<>();
+            generiUtente = new HashSet<>();
         }
 
-        return generiUtente;
+        return new ArrayList<Genere>(generiUtente);
 
     }
-
+     todo questa funzione non è mai usata
+*/
     /**
      * Implementa la funzionalità d'inserire o rimuovere generi a un esperto
      * oppure a un lettore.
