@@ -84,7 +84,7 @@ public class Evento {
     private LibroEvento libro;
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final Object obj) throws NullPointerException {
         if (obj.getClass().equals(this.getClass())) {
             Evento evento = (Evento) obj;
             return this.idEvento == evento.getIdEvento();

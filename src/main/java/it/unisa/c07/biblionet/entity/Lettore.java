@@ -114,7 +114,7 @@ public class Lettore extends UtenteRegistrato {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(final Object obj) throws NullPointerException {
         if (obj.getClass().equals(this.getClass())) {
             Lettore lettore = (Lettore) obj;
             return (this.getEmail().equals(lettore.getEmail())

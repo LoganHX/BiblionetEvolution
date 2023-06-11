@@ -16,7 +16,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Set;
 
 /**
  * Questa classe rappresenta un utente registrato alla piattaforma.
@@ -93,7 +92,7 @@ public abstract class UtenteRegistrato {
      * @param via la via dove vive l'utente.
      * @param recapitoTelefonico il recapito telefonico dell'utente.
      */
-    public UtenteRegistrato(final String email, final String password,
+    protected UtenteRegistrato(final String email, final String password,
                             final String provincia, final String citta,
                             final String via, final String recapitoTelefonico) {
 

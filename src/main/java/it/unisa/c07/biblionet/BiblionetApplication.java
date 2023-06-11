@@ -1,17 +1,14 @@
 package it.unisa.c07.biblionet;
 
-import it.unisa.c07.biblionet.GestionePrestitiLibro.service.bookApiAdapter.BookApiAdapter;
-import it.unisa.c07.biblionet.GestionePrestitiLibro.service.bookApiAdapter.GoogleBookApiAdapterImpl;
-import it.unisa.c07.biblionet.GestioneClubDelLibro.repository.LibroEventoDAO;
+import it.unisa.c07.biblionet.gestioneprestitilibro.service.bookapiadapter.BookApiAdapter;
+import it.unisa.c07.biblionet.gestioneprestitilibro.service.bookapiadapter.GoogleBookApiAdapterImpl;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 /**
@@ -23,7 +20,6 @@ public class BiblionetApplication {
 
     private static BookApiAdapter bookApiAdapter = new GoogleBookApiAdapterImpl();
 
-    private static LibroEventoDAO libroEventoDAO = null;
 /*
     public static Libro getLibroFromAPI(String isbn, Genere... generi) {
         Libro libro = bookApiAdapter.getLibroDaBookApi(isbn);
@@ -37,8 +33,8 @@ public class BiblionetApplication {
     }
    */
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        ConfigurableApplicationContext configurableApplicationContext =
+    public static void main(String[] args) {
+
                 SpringApplication.run(BiblionetApplication.class, args);
 
         //init(configurableApplicationContext);

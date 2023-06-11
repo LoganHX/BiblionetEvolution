@@ -5,6 +5,7 @@ package it.unisa.c07.biblionet.utils;
  * per evitare errori da parte di checkstyle.
  */
 public abstract class Length {
+    private Length(){}
 
     /**
      * Lunghezza 10.

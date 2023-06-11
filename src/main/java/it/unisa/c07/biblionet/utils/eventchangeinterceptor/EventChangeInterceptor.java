@@ -22,7 +22,7 @@ public class EventChangeInterceptor extends EmptyInterceptor {
     /**
      * L'istanza dell'Intercettore.
      */
-    private static EventChangeInterceptor instance;
+    private static EventChangeInterceptor istanza;
 
     /**
      * La lista dei Consumer collegati all'Intercettore.
@@ -42,10 +42,10 @@ public class EventChangeInterceptor extends EmptyInterceptor {
      * @return L'istanza dell'Intercettore
      */
     public static EventChangeInterceptor getInstance() {
-        if (EventChangeInterceptor.instance == null) {
-            EventChangeInterceptor.instance = new EventChangeInterceptor();
+        if (EventChangeInterceptor.istanza == null) {
+            EventChangeInterceptor.istanza = new EventChangeInterceptor();
         }
-        return EventChangeInterceptor.instance;
+        return EventChangeInterceptor.istanza;
     }
 
     /**

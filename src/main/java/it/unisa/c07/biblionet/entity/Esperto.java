@@ -111,14 +111,4 @@ public class Esperto extends UtenteRegistrato {
     }
 
 
-/*
-    public boolean equals (Object o){
-        if(o instanceof Esperto) {
-            Esperto e = (Esperto)o;
-            return e.getEmail().equals(this.getEmail());
-        }
-        else
-            return false;
-    }
-*/
 }

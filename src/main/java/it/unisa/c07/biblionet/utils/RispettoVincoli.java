@@ -10,6 +10,7 @@ import java.util.Arrays;
  * rispetti una regex.
  */
 public class RispettoVincoli {
+    private RispettoVincoli() {}
     public static final String NAME_REGEX = "^[A-zÀ-ù ‘-]{2,60}$";
     public static final String PHONE_REGEX = "^\\d{10}$";
     public static final String ADDRESS_REGEX = "^[0-9A-zÀ-ù ‘-]{2,30}$";
