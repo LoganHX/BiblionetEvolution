@@ -1,6 +1,6 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro;
 
-import it.unisa.c07.biblionet.entity.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 
 import java.util.List;
 

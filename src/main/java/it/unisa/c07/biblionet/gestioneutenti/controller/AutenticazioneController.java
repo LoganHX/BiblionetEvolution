@@ -2,7 +2,7 @@ package it.unisa.c07.biblionet.gestioneutenti.controller;
 
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.config.JwtGeneratorInterface;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -51,7 +51,7 @@ public class AutenticazioneController {
         UtenteRegistrato utente = autenticazioneService.login(email, password);
 
         if (utente == null) {
-            return new BiblionetResponse("I dati di autenticazione non sono validi", false);
+            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
         } else {
             return new BiblionetResponse(jwtGenerator.generateToken(utente), true);
         }

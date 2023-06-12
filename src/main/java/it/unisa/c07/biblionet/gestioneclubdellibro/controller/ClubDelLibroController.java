@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import org.springframework.http.HttpStatus;
@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Evento;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneclubdellibro.form.ClubForm;
 import it.unisa.c07.biblionet.gestioneclubdellibro.form.EventoForm;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,6 @@ public class ClubDelLibroController {
      * degli eventi.
      */
     private final GestioneEventiService eventiService;
-    private final AutenticazioneService autenticazioneService;
 
     /**
      * Metodo di utilità che modifica o crea un evento, validando
@@ -125,7 +123,7 @@ public class ClubDelLibroController {
                                                 @RequestParam(value = "citta") final Optional < List < String >> citta) {
 
         // Molto più pulito della concatenazione con gli stream
-        Predicate < ClubDelLibro > filtroGenere = x -> true;
+        Predicate <ClubDelLibro> filtroGenere = x -> true;
 
         if (generi.isPresent()) {
             filtroGenere = x -> false;
@@ -207,7 +205,7 @@ public class ClubDelLibroController {
         if (!Utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token));
 
         ClubDelLibro cdl = new ClubDelLibro();
         cdl.setNome(clubForm.getNome());
@@ -216,13 +214,45 @@ public class ClubDelLibroController {
         String copertina = getBase64Image(clubForm.getCopertina());
         if (copertina != null) cdl.setImmagineCopertina(copertina);
 
-        cdl.setGeneri(new HashSet < > (clubForm.getGeneri()));
+        cdl.setGeneri(new HashSet<>(clubForm.getGeneri()));
 
         this.clubService.creaClubDelLibro(cdl);
         return new BiblionetResponse("Club del Libro creato", false);
 
     }
 
+    /**
+     * Implementa la funzionalità di visualizzazione dei clubs
+     * a cui il lettore é iscritto.
+     *
+     * @return La view di visualizzazione dei clubs a cui é iscritto
+     */
+    @GetMapping(value = "area-utente/visualizza-clubs-personali-lettore")
+    @ResponseBody
+    @CrossOrigin
+    public List<ClubDelLibro> visualizzaClubsLettore(
+            final @RequestHeader(name = "Authorization") String token
+    ) {
+        if (!Utils.isUtenteLettore(Utils.getSubjectFromToken(token))) return new ArrayList<>();
+        Lettore lettore =  clubService.getLettoreByEmail(Utils.getSubjectFromToken(token));
+        return clubService.findClubsLettore(lettore);
+    }
+
+
+    /**
+     * Implementa la funzionalità di visualizzazione dei clubs
+     * che l'esperto gestisce.
+     *
+     * @return La view di visualizzazione dei clubs che gestisce
+     */
+    @GetMapping(value = "area-utente/visualizza-clubs-personali-esperto")
+    @ResponseBody
+    @CrossOrigin
+    public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
+        //todo da controllare
+        if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token))) return new ArrayList<>();
+        return clubService.findClubsEsperto(clubService.getEspertoByEmail(Utils.getSubjectFromToken(token)));
+    }
     /**
      * Implementa la funzionalità che permette
      * di re-indirizzare alla pagina di modifica
@@ -239,7 +269,7 @@ public class ClubDelLibroController {
                                                         final @ModelAttribute ClubForm club,
                                                         @RequestHeader(name = "Authorization") final String token
     ) {
-        Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token));
         var cdl = this.clubService.getClubByID(id);
         if (cdl == null || esperto == null) {
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -301,7 +331,7 @@ public class ClubDelLibroController {
     public BiblionetResponse partecipaClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
 
         if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
-        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token)); //todo in questi casi andrebbero fatti i check per null
+        Lettore lettore = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token)); //todo in questi casi andrebbero fatti i check per null
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
         if (clubDelLibro.getLettori().contains(lettore)) {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
@@ -329,7 +359,7 @@ public class ClubDelLibroController {
                                                       @RequestHeader(name = "Authorization") final String token) {
 
         var eventoBaseOpt = this.eventiService.getEventoById(idEvento);
-        Esperto esperto = autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token));
 
         if (eventoBaseOpt.isEmpty()) {
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -503,7 +533,7 @@ public class ClubDelLibroController {
             return new BiblionetResponse("Club inesistente", false);
         }
         if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato", false);
-        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        Lettore l = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         if (l == null) return new BiblionetResponse("Non sei autorizzato", false);
 
         List < Evento > tutti = clubService.getClubByID(id).getEventi();
@@ -540,7 +570,7 @@ public class ClubDelLibroController {
     @GetMapping(value = "/{idClub}/eventi/{idEvento}/iscrizione")
     public Lettore partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
         if (!Utils.isUtenteLettore(token)) return null;
-        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        Lettore l = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         if (l == null) return null;
         return eventiService.partecipaEvento(l.getEmail(), idEvento);
     }
@@ -559,7 +589,7 @@ public class ClubDelLibroController {
     @ResponseBody
     public Lettore abbandonaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
         if (!Utils.isUtenteLettore(token)) return null;
-        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        Lettore l = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         if (l == null) return null;
         return eventiService.abbandonaEvento(l.getEmail(), idEvento);
     }

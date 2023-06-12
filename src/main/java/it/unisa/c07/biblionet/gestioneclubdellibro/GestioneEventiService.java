@@ -2,9 +2,9 @@ package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import java.util.Optional;
 
-import it.unisa.c07.biblionet.entity.Evento;
-import it.unisa.c07.biblionet.entity.LibroEvento;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEvento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 
 /**
  * Implementa l'interfaccia service

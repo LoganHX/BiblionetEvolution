@@ -1,6 +1,6 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.service.bookapiadapter;
 
-import it.unisa.c07.biblionet.entity.LibroBiblioteca;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.LibroBiblioteca;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

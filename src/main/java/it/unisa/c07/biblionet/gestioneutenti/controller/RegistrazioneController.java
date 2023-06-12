@@ -1,9 +1,9 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
-import it.unisa.c07.biblionet.entity.Biblioteca;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
+import it.unisa.c07.biblionet.DTO.UtenteRegistratoDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
+import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
@@ -80,7 +80,7 @@ public final class RegistrazioneController {
     @PostMapping(value = "/esperto")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute Esperto esperto,
+    public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute EspertoDTO esperto,
                                                   BindingResult bindingResult,
                                                   final @RequestParam("conferma_password") String password,
                                                   final @RequestParam("bibliotecaEmail") String bibliotecaEmail) {
@@ -89,9 +89,9 @@ public final class RegistrazioneController {
         if(!s.isEmpty()){
             return new BiblionetResponse(s, false);
         }
-        esperto.setBiblioteca(registrazioneService.getBibliotecaByEmail(bibliotecaEmail));
+        //esperto.setBiblioteca(autenticazioneService.findUtenteByEmail(bibliotecaEmail));
 
-        registrazioneService.registraEsperto(esperto);
+        //registrazioneService.registraEsperto(esperto);
         return new BiblionetResponse("Registrazione ok", true);
     }
 
@@ -105,7 +105,8 @@ public final class RegistrazioneController {
     @PostMapping(value = "/biblioteca")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute Biblioteca biblioteca,
+    public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute BibliotecaDTO biblioteca,
+                                                     @RequestParam String nomeBiblioteca,
                                                      BindingResult bindingResult,
                                                      @RequestParam("conferma_password") String password
     ) {
@@ -113,7 +114,7 @@ public final class RegistrazioneController {
         if(!s.isEmpty()){
             return new BiblionetResponse(s, false);
         }
-        registrazioneService.registraBiblioteca(biblioteca);
+        registrazioneService.registraBiblioteca(biblioteca, nomeBiblioteca, password);
         return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 
@@ -132,7 +133,7 @@ public final class RegistrazioneController {
     @PostMapping(value = "/lettore")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse registrazioneLettore(@Valid @ModelAttribute Lettore lettore,
+    public BiblionetResponse registrazioneLettore(@Valid @ModelAttribute EspertoDTO lettore,
                                        BindingResult bindingResult,
                                        final @RequestParam("conferma_password")
                                                String password
@@ -142,18 +143,18 @@ public final class RegistrazioneController {
             return new BiblionetResponse(s, false);
         }
 
-        registrazioneService.registraLettore(lettore);
+        //registrazioneService.registraLettore(lettore);
         return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 
-private String controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistrato utenteRegistrato){
+private String controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistratoDTO utenteRegistrato){
     if(bindingResult.hasErrors()){
         return "Errore di validazione";
     }
     if (registrazioneService.isEmailRegistrata(utenteRegistrato.getEmail())) {
         return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
     }
-    if(!RispettoVincoli.passwordRispettaVincoli(utenteRegistrato, password)){
+    if(!RispettoVincoli.passwordRispettaVincoli(utenteRegistrato.getPassword(), password)){
         return "Password non adeguata";
     }
     return "";

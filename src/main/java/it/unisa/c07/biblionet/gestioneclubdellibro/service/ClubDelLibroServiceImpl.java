@@ -1,11 +1,11 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
+import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibroDAO;
-import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -28,9 +28,19 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Si occupa delle operazioni CRUD per un club.
      */
     private final ClubDelLibroDAO clubDAO;
-    private final RegistrazioneService registrazioneService;
+    private final EspertoDAO espertoDAO;
+    private final LettoreDAO lettoreDAO;
 
 
+    @Override
+    public final List<ClubDelLibro> findClubsEsperto(Esperto esperto) {
+        return esperto.getClubs();
+    }
+
+    @Override
+    public final List<ClubDelLibro> findClubsLettore(Lettore lettore) {
+        return lettore.getClubs();
+    }
     /**
      * Implementa la funzionalità che permette
      * a un Esperto di creare un Club del Libro.
@@ -114,7 +124,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         }
         listaClubs.add(club);
         lettore.setClubs(listaClubs);
-        registrazioneService.registraLettore(lettore);
+        //registrazioneService.registraLettore(lettore); TODO
         return true;
     }
 
@@ -147,6 +157,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @param lettore il lettore preso in esame
      * @return la lista dei club del libro a cui partecipa
      */
+    @Override
     public List<ClubDelLibro> findAllByLettore(final Lettore lettore) {
         return clubDAO.findAllByLettori(lettore);
     }
@@ -157,11 +168,85 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @param esperto l' esperto preso in esame
      * @return la lista dei club del libro a cui partecipa
      */
+    @Override
     public List<ClubDelLibro> findAllByEsperto(final Esperto esperto) {
         return clubDAO.findAllByEsperto(esperto);
     }
 
+    @Override
+    public UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca){
+        return espertoDAO.save(new Esperto(form, biblioteca));
+    }
+    /**
+     * Implementa la funzionalità di salvataggio delle modifiche
+     * all'account esperto.
+     *
+     * @param utente L'esperto da aggiornare
+     * @return l'esperto aggiornato
+     */
+    public Esperto aggiornaEsperto(final Esperto utente) {
+        return espertoDAO.save(utente);
+    }
+
+    @Override
+    public final List<Esperto> findEspertiByGeneri(final Set<String> generi) {
+        List<Esperto> toReturn = new ArrayList<>();
+
+        for (Esperto esperto : espertoDAO.findAllEsperti()) {
+            for (String genere : esperto.getGeneri()) {
+                if (generi.contains(genere) && !toReturn.contains(esperto)) {
+                    toReturn.add(esperto);
+                }
+            }
+        }
+        return toReturn;
+    }
+    /**
+     * Implementa la funzionalità di trovare un lettore.
+     *
+     * @param email La mail dell lettore
+     * @return Il lettore se c'è, altrimenti null
+     */
+    @Override
+    public final Lettore findLettoreByEmail(final String email) {
+
+        Optional<UtenteRegistrato> b = lettoreDAO.findById(email);
+        return (Lettore) b.orElse(null);
+    }
 
 
+
+    @Override
+    public Lettore aggiornaLettore(final Lettore utente) {
+        return lettoreDAO.save(utente);
+    }
+    @Override
+    public List<Esperto> findAllEsperti() {
+        return espertoDAO.findAllEsperti();
+    }
+
+    @Override
+    public List<Esperto> findEspertiByNome(String nome) {
+        return espertoDAO.findByNomeLike(nome);
+    }
+
+
+    @Override
+    public Esperto getEspertoByEmail(final String email) {
+        Optional<UtenteRegistrato> esperto = espertoDAO.findById(email);
+        return (Esperto) esperto.orElse(null);
+
+    }
+
+    @Override
+    public Lettore getLettoreByEmail(final String email) {
+        Optional<UtenteRegistrato> lettore = lettoreDAO.findById(email);
+        return (Lettore) lettore.orElse(null);
+    }
+
+    @Override
+    public UtenteRegistrato creaLettoreDaModel(LettoreDTO form) {
+        return espertoDAO.save(new Lettore(form));
+    }
 
 }

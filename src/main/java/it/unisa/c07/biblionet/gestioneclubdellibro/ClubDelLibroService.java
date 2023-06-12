@@ -1,8 +1,9 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro;
 
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,10 @@ import java.util.function.Predicate;
  * @author Viviana Pentangelo, Gianmario Voria
  */
 public interface ClubDelLibroService {
+
+    List<ClubDelLibro> findClubsEsperto(Esperto esperto);
+
+    List<ClubDelLibro> findClubsLettore(Lettore lettore);
 
     /**
      * Implementa la funzionalità che permette
@@ -100,4 +105,22 @@ public interface ClubDelLibroService {
      */
     List<ClubDelLibro> findAllByEsperto(Esperto esperto);
 
+    UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca);
+
+    List<Esperto> findEspertiByGeneri(Set<String> generi);
+
+    Lettore findLettoreByEmail(String email);
+
+    Lettore aggiornaLettore(Lettore utente);
+
+    List<Esperto> findAllEsperti();
+
+    List<Esperto> findEspertiByNome(String nome);
+
+    Esperto getEspertoByEmail(String email);
+
+
+    Lettore getLettoreByEmail(String email);
+
+    UtenteRegistrato creaLettoreDaModel(LettoreDTO lettore);
 }

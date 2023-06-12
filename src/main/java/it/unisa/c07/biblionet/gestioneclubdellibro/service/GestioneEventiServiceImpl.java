@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
-import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import org.springframework.stereotype.Service;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EventoDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEventoDAO;
-import it.unisa.c07.biblionet.entity.Evento;
-import it.unisa.c07.biblionet.entity.LibroEvento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEvento;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -31,18 +31,8 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * Si occupa delle operazioni CRUD per un evento.
      */
     private final EventoDAO eventoDAO;
-
-    /**
-     * Si occupa delle operazioni CRUD per un libro.
-     */
+    private final ClubDelLibroService clubDelLibroService;
     private final LibroEventoDAO libroEventoDAO;
-
-    private final AutenticazioneService autenticazioneService;
-
-    /**
-     * Si occupa delle operazioni CRUD per un lettore.
-     */
-
 
 
     /**
@@ -123,7 +113,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     @Override
     public Lettore partecipaEvento(final String idLettore, final int idEvento) {
         Evento evento = eventoDAO.getOne(idEvento);
-        Lettore lettore = autenticazioneService.findLettoreByEmail(idLettore);
+        Lettore lettore = clubDelLibroService.findLettoreByEmail(idLettore);
         List<Evento> listaEventi = lettore.getEventi();
         if (listaEventi == null) {
             listaEventi = new ArrayList<>();
@@ -135,7 +125,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         }
         listaEventi.add(evento);
         lettore.setEventi(listaEventi);
-        return autenticazioneService.aggiornaLettore(lettore);
+        return clubDelLibroService.aggiornaLettore(lettore);
     }
 
     /**
@@ -148,7 +138,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     @Override
     public Lettore abbandonaEvento(final String idLettore, final int idEvento) {
         Evento evento = eventoDAO.getOne(idEvento);
-        Lettore lettore = autenticazioneService.findLettoreByEmail(idLettore);
+        Lettore lettore = clubDelLibroService.findLettoreByEmail(idLettore);
         List<Evento> listaEventi = lettore.getEventi();
 
         //Per chiunque leggesse, non fate domande e non toccate. Grazie
@@ -163,7 +153,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         }
 
         lettore.setEventi(listaEventi);
-        return autenticazioneService.aggiornaLettore(lettore);
+        return clubDelLibroService.aggiornaLettore(lettore);
     }
 
 }

@@ -1,7 +1,5 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.repository;
 
-import it.unisa.c07.biblionet.entity.Possesso;
-import it.unisa.c07.biblionet.entity.PossessoId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

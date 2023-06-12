@@ -1,8 +1,8 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
-import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class ComunicazioneEspertoController {
     /**
      * Il service per effettuare le operazioni di persistenza.
      */
-    private final AutenticazioneService autenticazioneService;
+    private final ClubDelLibroService clubService;
 
     /**
      * Implementa la funzionalità di mostrare gli esperti in base
@@ -38,8 +38,8 @@ public class ComunicazioneEspertoController {
     @CrossOrigin
     public final List<Esperto> visualizzaEspertiGeneri(@RequestHeader(name = "Authorization") final String token) {
         if(!Utils.isUtenteLettore(token)) return new ArrayList<>();
-        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        return autenticazioneService.findEspertiByGeneri(lettore.getGeneri());
+        Lettore lettore = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        return clubService.findEspertiByGeneri(lettore.getGeneri());
     }
 
     /**
@@ -53,7 +53,7 @@ public class ComunicazioneEspertoController {
     @ResponseBody
     public final String visualizzaListaEsperti(final Model model) {
         List<Esperto> listaEsperti =
-                autenticazioneService.findAllEsperti();
+                clubService.findAllEsperti();
         model.addAttribute("listaEsperti", listaEsperti);
         return "comunicazione-esperto/lista-completa-esperti";
     }
@@ -74,11 +74,11 @@ public class ComunicazioneEspertoController {
             @RequestParam("filtro") final String filtro) {
         switch (filtro) {
             case "nome":
-                return autenticazioneService.findEspertiByNome(stringa);
+                return clubService.findEspertiByNome(stringa);
             case "genere":
-                return autenticazioneService.findEspertiByGeneri(new HashSet<>(Collections.singleton(stringa)));
+                return clubService.findEspertiByGeneri(new HashSet<>(Collections.singleton(stringa)));
             default:
-                return autenticazioneService.findAllEsperti();
+                return clubService.findAllEsperti();
         }
     }
 }

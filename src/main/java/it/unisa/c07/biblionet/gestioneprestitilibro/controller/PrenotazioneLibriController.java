@@ -1,12 +1,11 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.controller;
 
+import it.unisa.c07.biblionet.common.*;
 import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
-import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.entity.ILibroIdAndName;
-import it.unisa.c07.biblionet.entity.LibroBiblioteca;
-import it.unisa.c07.biblionet.entity.TicketPrestito;
-import it.unisa.c07.biblionet.entity.Biblioteca;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.Biblioteca;
+import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.LibroBiblioteca;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.TicketPrestito;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class PrenotazioneLibriController {
      * persistenza.
      */
     private final PrenotazioneLibriService prenotazioneService;
-    private final AutenticazioneService autenticazioneService;
+    private final UtenteRegistratoDAO utenteRegistratoDAO;
     /**
      * Implementa la funzionalità che permette di
      * visualizzare tutti i libri prenotabili.
@@ -114,7 +113,8 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteLettore(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        Lettore l = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        UtenteRegistrato l = utenteRegistratoDAO.findByEmail(Utils.getSubjectFromToken(token));
+        if(!l.getTipo().equals("Lettore")) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         TicketPrestito ticketPrestito = prenotazioneService.richiediPrestito(l,idBiblioteca,Integer.parseInt(idLibro));
         if(ticketPrestito != null) return new BiblionetResponse("OK", true);
         return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -136,7 +136,7 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new ArrayList<>();
         }
-        Biblioteca biblioteca = autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca biblioteca = prenotazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> lista = prenotazioneService.getTicketsByBiblioteca(biblioteca);
             /*
@@ -228,7 +228,7 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteLettore(token)) {
             return new ArrayList<>();
         }
-        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        UtenteRegistrato lettore = utenteRegistratoDAO.findByEmail(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> listaTicket =
                     prenotazioneService.getTicketsLettore(lettore);

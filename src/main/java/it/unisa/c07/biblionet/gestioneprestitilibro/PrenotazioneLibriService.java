@@ -1,10 +1,9 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro;
 
-import it.unisa.c07.biblionet.entity.ILibroIdAndName;
-import it.unisa.c07.biblionet.entity.LibroBiblioteca;
-import it.unisa.c07.biblionet.entity.TicketPrestito;
-import it.unisa.c07.biblionet.entity.Biblioteca;
-import it.unisa.c07.biblionet.entity.Lettore;
+import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.Biblioteca;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.LibroBiblioteca;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.TicketPrestito;
 
 import java.util.List;
 
@@ -14,6 +13,10 @@ import java.util.List;
  * @author Viviana Pentangelo, Gianmario Voria
  */
 public interface PrenotazioneLibriService {
+
+
+
+    UtenteRegistrato creaBibliotecaDaModel(BibliotecaDTO form, String nomeBiblioteca, String password);
 
     /**
      * Implementa la funzionalità che permette
@@ -62,7 +65,7 @@ public interface PrenotazioneLibriService {
      * @param idLibro id del libro
      * @return Il ticket aperto in attesa di approvazione
      */
-    TicketPrestito richiediPrestito(Lettore lettore,
+    TicketPrestito richiediPrestito(UtenteRegistrato lettore,
                                     String idBiblioteca,
                                     int idLibro);
 
@@ -131,7 +134,7 @@ public interface PrenotazioneLibriService {
      * @param lettore il Lettore di cui recuperare i ticket
      * @return la lista dei ticket
      */
-    List<TicketPrestito> getTicketsLettore(Lettore lettore);
+    List<TicketPrestito> getTicketsLettore(UtenteRegistrato lettore);
 
     /**
      * Implementa la funzionalità che permette di
@@ -184,6 +187,15 @@ public interface PrenotazioneLibriService {
                                    int numCopie, List<String> generi);
 
 
+    Biblioteca findBibliotecaByEmail(String email);
 
+    List<Biblioteca> findBibliotecaByNome(String nomeBiblioteca);
 
+    List<Biblioteca> findBibliotecaByCitta(String citta);
+
+    List<Biblioteca> findAllBiblioteche();
+
+    Biblioteca aggiornaBiblioteca(Biblioteca utente);
+
+    Biblioteca salvaBiblioteca(UtenteRegistrato utenteRegistrato);
 }

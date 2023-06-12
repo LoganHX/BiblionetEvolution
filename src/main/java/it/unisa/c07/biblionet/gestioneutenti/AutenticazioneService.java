@@ -1,14 +1,12 @@
 package it.unisa.c07.biblionet.gestioneutenti;
 
 
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Biblioteca;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Ciro Maiorino , Giulio Triggiani
@@ -44,65 +42,7 @@ public interface AutenticazioneService {
       */
      boolean isBiblioteca(UtenteRegistrato utente);
 
-     /**
-      * Implementa la funzionalità di salvataggio delle modifiche
-      * all'account biblioteca.
-      * @param utente La biblioteca da aggiornare
-      * @return la biblioteca aggiornata
-      */
-     Biblioteca aggiornaBiblioteca(Biblioteca utente);
 
-     /**
-      * Implementa la funzionalità di salvataggio delle modifiche
-      * all'account esperto.
-      * @param utente L'esperto da aggiornare
-      * @return l'esperto aggiornato
-      */
-     Esperto aggiornaEsperto(Esperto utente);
+     UtenteRegistrato findUtenteByEmail(String email);
 
-     /**
-      * Implementa la funzionalità di salvataggio delle modifiche
-      * all'account lettore.
-      * @param utente Lettore da aggiornare
-      * @return il lettore aggiornato
-      */
-     Lettore aggiornaLettore(Lettore utente);
-
-     List<Biblioteca> findBibliotecaByNome(String nomeBiblioteca);
-
-     List<Esperto> findAllEsperti();
-
-     List<Biblioteca> findAllBiblioteche();
-
-     /**
-      * Implementa la funzionalità di trovare un esperto.
-      * @param email La mail dell esperto
-      * @return L'esperto se c'è, altrimenti null
-      */
-     Esperto findEspertoByEmail(String email);
-
-     /**
-      * Implementa la funzionalità di trovare un lettore.
-      * @param email La mail dell lettore
-      * @return Il lettore se c'è, altrimenti null
-      */
-     Lettore findLettoreByEmail(String email);
-
-     List<Esperto> findEspertiByNome(String nome);
-
-     List<Biblioteca> findBibliotecaByCitta(String citta);
-
-     /**
-      * Implementa la funzionalità di trovare una biblioteca.
-      * @param email La mail della biblioteca
-      * @return La biblioteca se c'è, altrimenti null
-      */
-     Biblioteca findBibliotecaByEmail(String email);
-
-     List<Esperto> findEspertiByGeneri(Set<String> generi);
-
-
-     List<ClubDelLibro> findClubsEsperto(Esperto esperto);
-
-     List<ClubDelLibro> findClubsLettore(Lettore lettore);
 }

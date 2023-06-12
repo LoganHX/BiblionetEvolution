@@ -1,10 +1,18 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
-import io.jsonwebtoken.Claims;
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Biblioteca;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
+import it.unisa.c07.biblionet.DTO.UtenteRegistratoDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.Biblioteca;
+import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.entity.*;
+import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import it.unisa.c07.biblionet.utils.Utils;
@@ -29,6 +37,8 @@ public class AreaUtenteController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final AutenticazioneService autenticazioneService;
+    private final UtenteRegistratoDAO utenteRegistratoDAO; //todo i DAO è meglio gestirli nei service
+    private final PrenotazioneLibriService prenotazioneLibriService;
 
     /**
      * Implementa la funzionalità di smistare l'utente sulla view di
@@ -54,14 +64,7 @@ public class AreaUtenteController {
 
     private UtenteRegistrato selezionaUtente(String token){
 
-            if (Utils.isUtenteBiblioteca(token)) {
-                return autenticazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
-            } else if (Utils.isUtenteEsperto(token)) {
-                return autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token));
-            } else if (Utils.isUtenteLettore(token)) {
-                return autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-            }
-        return null;
+        return utenteRegistratoDAO.getOne(Utils.getSubjectFromToken(token));
     }
     /**
      * Implementa la funzionalità di visualizzazione area utente
@@ -79,7 +82,7 @@ public class AreaUtenteController {
 
     }
 
-    private String controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistrato utenteRegistrato) {
+    private String controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistratoDTO utenteRegistrato) {
         if (bindingResult.hasErrors()) {
             return "Errore di validazione";
         }
@@ -115,22 +118,20 @@ public class AreaUtenteController {
     @CrossOrigin
     public BiblionetResponse modificaDatiBiblioteca(
             final @RequestHeader(name = "Authorization") String token,
-            final @Valid @RequestParam("Biblioteca") Biblioteca biblioteca,
+            final @Valid @ModelAttribute("Biblioteca") BibliotecaDTO biblioteca,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
             final @RequestParam("nuova_password") String nuova,
             final @RequestParam("conferma_password") String conferma) {
 
-        Claims claims = Utils.getClaimsFromTokenWithoutKey(token);
-        if (!claims.getSubject().equalsIgnoreCase(biblioteca.getEmail()))
-            return new BiblionetResponse("Non sei autorizzato", false);
+        if(!Utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        biblioteca.setPassword(qualePassword(vecchia, nuova, conferma));
+        biblioteca.setPassword(qualePassword(vecchia, nuova, conferma).getBytes());
         String s = controlliPreliminari(bindingResult, vecchia, biblioteca);
         if (!s.isEmpty()) return new BiblionetResponse(s, false);
 
 
-        autenticazioneService.aggiornaBiblioteca(biblioteca);
+        //prenotazioneLibriService.salvaBiblioteca(biblioteca);
 
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
@@ -152,7 +153,7 @@ public class AreaUtenteController {
     @CrossOrigin
     public BiblionetResponse modificaDatiEsperto(
             final @RequestHeader(name = "Authorization") String token,
-            final @Valid @RequestParam("Esperto") Esperto esperto,
+            final @Valid @RequestParam("Esperto") EspertoDTO esperto,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
             final @RequestParam("nuova_password") String nuova,
@@ -160,24 +161,23 @@ public class AreaUtenteController {
             final @RequestParam("email_biblioteca") String emailBiblioteca) {
 
 
-        Esperto toUpdate = autenticazioneService.findEspertoByEmail(esperto.getEmail());
-        Claims claims = Utils.getClaimsFromTokenWithoutKey(token);
-        if (!claims.getSubject().equalsIgnoreCase(esperto.getEmail()))
+
+        if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token)))
             return new BiblionetResponse("Non sei autorizzato", false);
 
-        esperto.setPassword(qualePassword(vecchia, nuova, conferma));
+        esperto.setPassword(qualePassword(vecchia, nuova, conferma).getBytes());
         String s = controlliPreliminari(bindingResult, vecchia, esperto);
         if (!s.isEmpty()) return new BiblionetResponse(s, false);
 
 
-        Biblioteca b = autenticazioneService.findBibliotecaByEmail(emailBiblioteca);
+        Biblioteca b = prenotazioneLibriService.findBibliotecaByEmail(emailBiblioteca);
         if (b != null) {
-            esperto.setBiblioteca(b);
+            //esperto.setBiblioteca(b);
         } else {
-            esperto.setBiblioteca(toUpdate.getBiblioteca());
+            //esperto.setBiblioteca(toUpdate.getBiblioteca());
         }
 
-        autenticazioneService.aggiornaEsperto(esperto);
+        //autenticazioneService.aggiornaEsperto(esperto);
 
         return new BiblionetResponse("Dati aggiornati", true);
     }
@@ -196,54 +196,22 @@ public class AreaUtenteController {
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse confermaModificaLettore(final @RequestHeader(name = "Authorization") String token,
-                                                     final @Valid @ModelAttribute Lettore lettore,
+                                                     final @Valid @ModelAttribute LettoreDTO lettore,
                                                      BindingResult bindingResult,
                                                      final @RequestParam("vecchia_password") String vecchia,
                                                      final @RequestParam("nuova_password") String nuova,
                                                      final @RequestParam("conferma_password") String conferma) {
 
-        lettore.setPassword(qualePassword(vecchia, nuova, conferma));
+        lettore.setPassword(qualePassword(vecchia, nuova, conferma).getBytes());
         String s = controlliPreliminari(bindingResult, vecchia, lettore);
         if (!s.isEmpty()) return new BiblionetResponse(s, false);
 
 
-        autenticazioneService.aggiornaLettore(lettore);
+        //autenticazioneService.aggiornaLettore(lettore);
 
         return new BiblionetResponse("Dati aggiornati", true);
     }
 
 
-    /**
-     * Implementa la funzionalità di visualizzazione dei clubs
-     * a cui il lettore é iscritto.
-     *
-     * @return La view di visualizzazione dei clubs a cui é iscritto
-     */
-    @GetMapping(value = "area-utente/visualizza-clubs-personali-lettore")
-    @ResponseBody
-    @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubsLettore(
-            final @RequestHeader(name = "Authorization") String token
-    ) {
-        if (!Utils.isUtenteLettore(Utils.getSubjectFromToken(token))) return new ArrayList<>();
-        Lettore lettore = autenticazioneService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        return autenticazioneService.findClubsLettore(lettore);
-    }
-
-
-    /**
-     * Implementa la funzionalità di visualizzazione dei clubs
-     * che l'esperto gestisce.
-     *
-     * @return La view di visualizzazione dei clubs che gestisce
-     */
-    @GetMapping(value = "area-utente/visualizza-clubs-personali-esperto")
-    @ResponseBody
-    @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
-        //todo da controllare
-        if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token))) return new ArrayList<>();
-        return autenticazioneService.findClubsEsperto(autenticazioneService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
-    }
 
 }

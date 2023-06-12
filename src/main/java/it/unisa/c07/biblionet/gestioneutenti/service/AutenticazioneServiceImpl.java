@@ -1,51 +1,36 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
-import it.unisa.c07.biblionet.entity.*;
-import it.unisa.c07.biblionet.entity.ClubDelLibro;
-import it.unisa.c07.biblionet.entity.Biblioteca;
+import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.gestioneutenti.repository.BibliotecaDAO;
-import it.unisa.c07.biblionet.gestioneutenti.repository.EspertoDAO;
-import it.unisa.c07.biblionet.gestioneutenti.repository.LettoreDAO;
+import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
+import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Implementa la classe che esplicita i metodi
  * definiti nell'interfaccia service per il
  * sottosistema Autenticazione.
  *
- * @author Ciro Maiorino , Giulio Triggiani
+ * @author Ciro Maiorino, Giulio Triggiani
  */
 @Service
 @RequiredArgsConstructor
 public class AutenticazioneServiceImpl implements AutenticazioneService {
 
-    /**
-     * Si occupa delle operazioni CRUD per un lettore.
-     */
-    private final LettoreDAO lettoreDAO;
-
-    /**
-     * Si occupa delle operazioni CRUD per una biblioteca.
-     */
-    private final BibliotecaDAO bibliotecaDAO;
-
-    /**
-     * Si occupa delle operazioni CRUD un esperto.
-     */
-    private final EspertoDAO espertoDAO;
+    private final UtenteRegistratoDAO utenteRegistratoDAO;
 
     /**
      * I.
      */
+
 
     /**
      * Implementa la funzionalità di login
@@ -63,16 +48,9 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
             byte[] arr = md.digest(password.getBytes());
             UtenteRegistrato u;
 
-            if ((u = lettoreDAO.findByEmailAndPassword(email, arr)) != null) {
-                return u;
-            } else if ((u =
-                    bibliotecaDAO.findByEmailAndPassword(email, arr)) != null) {
-                return u;
-            } else {
-                u = espertoDAO.findByEmailAndPassword(email, arr);
+            if ((u = utenteRegistratoDAO.findByEmailAndPassword(email, arr)) != null) {
                 return u;
             }
-
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -80,20 +58,19 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     }
 
     /**
-     * Implementa la funzionalità di
-     * identifica di un utente in sessione.
+     * Implementa la funzionalità che
+     * identifica un utente in sessione.
      *
      * @param utente registrato che si trova già in sessione.
      * @return true se l'utente è un lettore altrimenti false.
      */
     @Override
     public boolean isLettore(final UtenteRegistrato utente) {
-        //"Lettore".equals(utente.getClass().getSimpleName());
-        return utente instanceof Lettore;
+        return utente.getTipo().equalsIgnoreCase("Lettore");
     }
 
     /**
-     * Implementa la funzionalità di
+     * Implementa la funzionalità che
      * identifica di un utente in sessione.
      *
      * @param utente registrato che si trova già in sessione.
@@ -102,12 +79,12 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     @Override
     public boolean isEsperto(final UtenteRegistrato utente) {
         //return "Esperto".equals(utente.getClass().getSimpleName());
-        return utente instanceof Esperto;
+        return utente.getTipo().equalsIgnoreCase("Esperto");
     }
 
     /**
-     * Implementa la funzionalità di
-     * identifica di un utente in sessione.
+     * Implementa la funzionalità che
+     * identifica un utente in sessione.
      *
      * @param utente registrato che si trova già in sessione.
      * @return true se l'utente è una biblioteca altrimenti false.
@@ -115,129 +92,15 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     @Override
     public boolean isBiblioteca(final UtenteRegistrato utente) {
         //return "Biblioteca".equals(utente.getClass().getSimpleName());
-        return utente instanceof Biblioteca;
+        return utente.getTipo().equalsIgnoreCase("Biblioteca");
     }
 
-    /**
-     * Implementa la funzionalità di salvataggio delle modifiche
-     * all'account biblioteca.
-     *
-     * @param utente La biblioteca da aggiornare
-     * @return la biblioteca aggiornata
-     */
-    public Biblioteca aggiornaBiblioteca(final Biblioteca utente) {
-        return bibliotecaDAO.save(utente);
-    }
-
-    /**
-     * Implementa la funzionalità di salvataggio delle modifiche
-     * all'account esperto.
-     *
-     * @param utente L'esperto da aggiornare
-     * @return l'esperto aggiornato
-     */
-    public Esperto aggiornaEsperto(final Esperto utente) {
-        return espertoDAO.save(utente);
-    }
-
-    /**
-     * Implementa la funzionalità di salvataggio delle modifiche
-     * all'account lettore.
-     *
-     * @param utente Lettore da aggiornare
-     * @return il lettore aggiornato
-     */
-    public Lettore aggiornaLettore(final Lettore utente) {
-        return lettoreDAO.save(utente);
-    }
-
-    @Override
-    public List<Biblioteca> findBibliotecaByNome(String nomeBiblioteca) {
-        return bibliotecaDAO.findByNome(nomeBiblioteca);
-    }
 
 
     @Override
-    public List<Biblioteca> findAllBiblioteche() {
-        return bibliotecaDAO.findAllBiblioteche();
-    }
-
-    @Override
-    public List<Esperto> findAllEsperti() {
-        return espertoDAO.findAllEsperti();
-    }
-
-    @Override
-    public List<Esperto> findEspertiByNome(String nome) {
-        return espertoDAO.findByNomeLike(nome);
-    }
-
-    @Override
-    public List<Biblioteca> findBibliotecaByCitta(String citta) {
-        return bibliotecaDAO.findByCitta(citta);
+    public final UtenteRegistrato findUtenteByEmail(String email){
+        return utenteRegistratoDAO.findByEmail(email);
     }
 
 
-    /**
-     * Implementa la funzionalità di trovare una biblioteca.
-     *
-     * @param email La mail della biblioteca
-     * @return La biblioteca se c'è, altrimenti null
-     */
-    @Override
-    public final Biblioteca findBibliotecaByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = bibliotecaDAO.findById(email);
-        return (Biblioteca) b.orElse(null);
-    }
-
-    /**
-     * Implementa la funzionalità di trovare un esperto.
-     *
-     * @param email La mail dell esperto
-     * @return L'esperto se c'è, altrimenti null
-     */
-    @Override
-    public final Esperto findEspertoByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = espertoDAO.findById(email);
-        return (Esperto) b.orElse(null);
-    }
-
-    /**
-     * Implementa la funzionalità di trovare un lettore.
-     *
-     * @param email La mail dell lettore
-     * @return Il lettore se c'è, altrimenti null
-     */
-    @Override
-    public final Lettore findLettoreByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = lettoreDAO.findById(email);
-        return (Lettore) b.orElse(null);
-    }
-
-    @Override
-    public final List<Esperto> findEspertiByGeneri(final Set<String> generi) {
-        List<Esperto> toReturn = new ArrayList<>();
-
-        for (Esperto esperto : espertoDAO.findAllEsperti()) {
-            for (String genere : esperto.getGeneri()) {
-                if (generi.contains(genere) && !toReturn.contains(esperto)) {
-                    toReturn.add(esperto);
-                }
-            }
-        }
-        return toReturn;
-    }
-
-    @Override
-    public final List<ClubDelLibro> findClubsEsperto(Esperto esperto) {
-        return esperto.getClubs();
-    }
-
-    @Override
-    public final List<ClubDelLibro> findClubsLettore(Lettore lettore) {
-        return lettore.getClubs();
-    }
 }

@@ -1,6 +1,6 @@
 package it.unisa.c07.biblionet.utils;
 
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -16,12 +16,15 @@ public class RispettoVincoli {
     public static final String ADDRESS_REGEX = "^[0-9A-zÀ-ù ‘-]{2,30}$";
 
 
-    public static boolean passwordRispettaVincoli(UtenteRegistrato utente, String password){
+    public static boolean passwordRispettaVincoli(byte[] passwordUtente, String password){
         if(password.length() <= 7) return false;
         try {
             MessageDigest md;
             md = MessageDigest.getInstance("SHA-256");
-            return Arrays.equals(md.digest(password.getBytes()), utente.getPassword());
+
+            //System.out.println("Bytes:" + passwordUtente + "   " + password.getBytes());
+            //todo what?
+            return Arrays.equals(password.getBytes(), passwordUtente);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

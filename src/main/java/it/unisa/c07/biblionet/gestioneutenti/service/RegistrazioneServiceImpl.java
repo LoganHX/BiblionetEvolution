@@ -1,13 +1,13 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
+import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
+import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
+import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
-import it.unisa.c07.biblionet.gestioneutenti.repository.BibliotecaDAO;
-import it.unisa.c07.biblionet.gestioneutenti.repository.EspertoDAO;
-import it.unisa.c07.biblionet.gestioneutenti.repository.LettoreDAO;
-import it.unisa.c07.biblionet.entity.Biblioteca;
-import it.unisa.c07.biblionet.entity.Esperto;
-import it.unisa.c07.biblionet.entity.Lettore;
-import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,45 +19,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RegistrazioneServiceImpl implements RegistrazioneService {
 
-    /**
-     * Si occupa di gestire le operazioni CRUD dell'Esperto.
-     */
-    private final EspertoDAO espertoDAO;
-
-    /**
-     * Si occupa di gestire le operazioni CRUD della Biblioteca.
-     */
-    private final BibliotecaDAO bibliotecaDAO;
-
+    private final PrenotazioneLibriService prenotazioneLibriService;
+    private final ClubDelLibroService clubDelLibroService;
     /**
      * Si occupa delle operazioni CRUD.
      */
-    private final LettoreDAO lettoreDAO;
-
-    /**
-     * Inject del service per simulare
-     * le operazioni.
-     */
-
-    /**
-     * Implementa la funzionalità di registrazione un Esperto.
-     * @param esperto L'Esperto da registrare
-     * @return L'utente registrato
-     */
-    @Override
-    public final UtenteRegistrato registraEsperto(final Esperto esperto) {
-        return espertoDAO.save(esperto);
-    }
-
-    /**
-     * Implementa la funzionalità di registrazione una Biblioteca.
-     * @param biblioteca La Biblioteca da registrare
-     * @return L'utente registrato
-     */
-    @Override
-    public UtenteRegistrato registraBiblioteca(final Biblioteca biblioteca) {
-        return bibliotecaDAO.save(biblioteca);
-    }
+    private final UtenteRegistratoDAO utenteRegistratoDAO;
 
     /**
      * Implementa la funzionalità di registrare un Lettore.
@@ -65,9 +32,33 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * @return Il lettore registrato
      */
     @Override
-    public final UtenteRegistrato registraLettore(final Lettore lettore) {
-        return lettoreDAO.save(lettore);
+    public final UtenteRegistrato registraLettore(final LettoreDTO lettore) {
+        return clubDelLibroService.creaLettoreDaModel(lettore);
     }
+
+    /**
+     * Implementa la funzionalità di registrazione un Esperto.
+     * @param esperto L'Esperto da registrare
+     * @return L'utente registrato
+     */
+    @Override
+    public final UtenteRegistrato registraEsperto(final EspertoDTO esperto, final UtenteRegistrato biblioteca) {
+        return clubDelLibroService.creaEspertoDaModel(esperto, biblioteca);
+    }
+
+
+
+    /**
+     * Implementa la funzionalità di registrazione una Biblioteca.
+     * @param biblioteca La Biblioteca da registrare
+     * @return L'utente registrato
+     */
+    @Override
+    public UtenteRegistrato registraBiblioteca(final BibliotecaDTO biblioteca, String nomeBiblioteca, String password) {
+        return prenotazioneLibriService.creaBibliotecaDaModel(biblioteca, nomeBiblioteca, password);
+    }
+
+
 
     /**
      * Implementa la funzionalità di controllare se una mail è
@@ -83,7 +74,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
         * degli utenti, poiché data la generalizzazione, la findAll
         * restituisce tutti gli utenti del sistema
         */
-        for (UtenteRegistrato u: lettoreDAO.findAll()) {
+        for (UtenteRegistrato u: utenteRegistratoDAO.findAll()) {
             if (u.getEmail().equals(email)) {
                 return true;
             }
@@ -93,16 +84,6 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     }
 
 
-
-    /**
-     * Implementa la funzionalità di trovare una biblioteca.
-     * @param email La mail della biblioteca
-     * @return La biblioteca se c'è, altrimenti null
-     */
-    @Override
-    public final Biblioteca getBibliotecaByEmail(final String email) {
-        return bibliotecaDAO.findByID(email);
-    }
 
 
 }
