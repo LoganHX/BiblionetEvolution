@@ -117,7 +117,11 @@ public interface ClubDelLibroService {
 
     List<Esperto> findEspertiByNome(String nome);
 
-    Esperto getEspertoByEmail(String email);
+    UtenteRegistrato findEspertoByEmailAndPassword(String email, byte[] password);
+
+    UtenteRegistrato findLettoreByEmailAndPassword(String email, byte[] password);
+
+    Esperto findEspertoByEmail(String email);
 
 
     Lettore getLettoreByEmail(String email);

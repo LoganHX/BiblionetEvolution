@@ -51,7 +51,7 @@ public class AutenticazioneController {
         UtenteRegistrato utente = autenticazioneService.login(email, password);
 
         if (utente == null) {
-            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+            return new BiblionetResponse("Login fallito.", false);
         } else {
             return new BiblionetResponse(jwtGenerator.generateToken(utente), true);
         }

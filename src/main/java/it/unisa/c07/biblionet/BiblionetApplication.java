@@ -47,7 +47,7 @@ public class BiblionetApplication {
         }
         catch (IOException ex){
             ex.printStackTrace();
-            return "noimage";
+            return "noImage";
         }
 
     }

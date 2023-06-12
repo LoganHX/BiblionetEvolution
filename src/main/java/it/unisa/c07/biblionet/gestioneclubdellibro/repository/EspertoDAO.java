@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.repository;
 
-import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * Questa classe rappresenta il DAO di un Esperto.
  */
 @Repository
-public interface EspertoDAO extends UtenteRegistratoDAO {
+public interface EspertoDAO extends JpaRepository<UtenteRegistrato, String> {
 
     /**
      * Implementa la funzionalità di ricerca di un utente Esperto nel DB.
@@ -37,5 +38,12 @@ public interface EspertoDAO extends UtenteRegistratoDAO {
             +  "WHERE UPPER(CONCAT(e.nome, ' ', e.cognome)) "
             + "LIKE UPPER(concat('%', ?1,'%'))")
     List<Esperto> findByNomeLike(String nome);
+
+    @Query("SELECT e FROM Esperto e WHERE e.email=?1")
+    Esperto findByID(String email);
+
+    @Query("SELECT e FROM Esperto e WHERE e.email=?1 and e.tipo=?2")
+    Esperto findEspertoByEmail(String email, String tipo);
+
 
 }

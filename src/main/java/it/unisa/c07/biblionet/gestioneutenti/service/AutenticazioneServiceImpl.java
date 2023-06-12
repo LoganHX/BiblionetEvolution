@@ -1,18 +1,14 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
 import it.unisa.c07.biblionet.common.*;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
+import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
-import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
-import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 /**
  * Implementa la classe che esplicita i metodi
@@ -25,7 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AutenticazioneServiceImpl implements AutenticazioneService {
 
-    private final UtenteRegistratoDAO utenteRegistratoDAO;
+    private final ClubDelLibroService clubDelLibroService;
+    private final PrenotazioneLibriService prenotazioneLibriService;
 
     /**
      * I.
@@ -45,12 +42,19 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         try {
             MessageDigest md;
             md = MessageDigest.getInstance("SHA-256");
-            byte[] arr = md.digest(password.getBytes());
+            byte[] arr = (password.getBytes());
             UtenteRegistrato u;
 
-            if ((u = utenteRegistratoDAO.findByEmailAndPassword(email, arr)) != null) {
+            if ((u = clubDelLibroService.findEspertoByEmailAndPassword(email, arr)) != null) {
                 return u;
             }
+            else if ((u = prenotazioneLibriService.findBibliotecaByEmailAndPassword(email, arr)) != null) {
+                return u;
+            } else {
+                u = clubDelLibroService.findLettoreByEmailAndPassword(email, arr);
+                return u;
+            }
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -96,11 +100,6 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
     }
 
 
-
-    @Override
-    public final UtenteRegistrato findUtenteByEmail(String email){
-        return utenteRegistratoDAO.findByEmail(email);
-    }
 
 
 }

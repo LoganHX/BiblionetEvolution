@@ -17,8 +17,7 @@ public interface RegistrazioneService {
      * Implementa la funzionalità di registrazione un Esperto.
      * @return L'utente registrato
      */
-    UtenteRegistrato registraEsperto(EspertoDTO esperto, UtenteRegistrato biblioteca);
-
+    public UtenteRegistrato registraEsperto(final EspertoDTO esperto, final String emailBiblioteca);
     /**
      * Implementa la funzionalità di registrazione una Biblioteca.
      * @param biblioteca La biblioteca da registrare

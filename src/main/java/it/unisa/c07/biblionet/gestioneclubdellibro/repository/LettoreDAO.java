@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.repository;
 
-import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * Questa classe rappresenta il DAO di un Lettore.
  */
 @Repository
-public interface LettoreDAO extends UtenteRegistratoDAO {
+public interface LettoreDAO extends JpaRepository<UtenteRegistrato, String> {
     /**
      * Implementa la funzionalità di ricerca di un utente Lettore nel DB.
      * @param email dell'utente da cercare.
@@ -25,6 +26,9 @@ public interface LettoreDAO extends UtenteRegistratoDAO {
      */
     @Query("SELECT l FROM Lettore l WHERE l.email=?1")
     Lettore findByID(String email);
+
+    @Query("SELECT l FROM Lettore l WHERE l.email=?1 and l.tipo=?2")
+    Lettore findLettoreByEmail(String email, String tipo);
 
 
 

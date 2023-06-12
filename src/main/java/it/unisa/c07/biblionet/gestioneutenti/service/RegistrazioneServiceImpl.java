@@ -1,11 +1,11 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
-import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
 
     private final PrenotazioneLibriService prenotazioneLibriService;
     private final ClubDelLibroService clubDelLibroService;
-    /**
-     * Si occupa delle operazioni CRUD.
-     */
-    private final UtenteRegistratoDAO utenteRegistratoDAO;
+
 
     /**
      * Implementa la funzionalità di registrare un Lettore.
@@ -42,8 +39,8 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      * @return L'utente registrato
      */
     @Override
-    public final UtenteRegistrato registraEsperto(final EspertoDTO esperto, final UtenteRegistrato biblioteca) {
-        return clubDelLibroService.creaEspertoDaModel(esperto, biblioteca);
+    public final UtenteRegistrato registraEsperto(final EspertoDTO esperto, final String emailBiblioteca) {
+        return clubDelLibroService.creaEspertoDaModel(esperto, prenotazioneLibriService.findBibliotecaByEmail(emailBiblioteca));
     }
 
 
@@ -68,18 +65,15 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
      */
     @Override
     public boolean isEmailRegistrata(final String email) {
-
-       /*
-        * Utilizzo il LettoreDAO, ma potrei usare qualsiasi altro DAO
-        * degli utenti, poiché data la generalizzazione, la findAll
-        * restituisce tutti gli utenti del sistema
-        */
-        for (UtenteRegistrato u: utenteRegistratoDAO.findAll()) {
-            if (u.getEmail().equals(email)) {
-                return true;
-            }
+        if ((clubDelLibroService.findLettoreByEmail(email)) != null) {
+            return true;
         }
-
+        if ((prenotazioneLibriService.findBibliotecaByEmail(email)) != null) {
+            return true;
+        }
+        if ((clubDelLibroService.findEspertoByEmail(email)) != null) {
+            return true;
+        }
         return false;
     }
 

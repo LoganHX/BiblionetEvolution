@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.repository;
 
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
 import it.unisa.c07.biblionet.utils.Length;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Pattern;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,5 +81,11 @@ public class Biblioteca extends UtenteRegistrato {
         super(email, password, provincia, citta, via, recapitoTelefonico, "Biblioteca");
         this.nomeBiblioteca = nomeBiblioteca;
     }
+
+    public Biblioteca(final BibliotecaDTO dto) {
+        super(dto.getEmail(), Arrays.toString(dto.getPassword()), dto.getProvincia(), dto.getCitta(), dto.getVia(), dto.getRecapitoTelefonico(), "Biblioteca");
+        this.nomeBiblioteca = dto.getNomeBiblioteca();
+    }
+
 
 }

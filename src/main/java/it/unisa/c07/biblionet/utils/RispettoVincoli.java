@@ -21,10 +21,7 @@ public class RispettoVincoli {
         try {
             MessageDigest md;
             md = MessageDigest.getInstance("SHA-256");
-
-            //System.out.println("Bytes:" + passwordUtente + "   " + password.getBytes());
-            //todo what?
-            return Arrays.equals(password.getBytes(), passwordUtente);
+            return Arrays.equals(md.digest(password.getBytes()), passwordUtente);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

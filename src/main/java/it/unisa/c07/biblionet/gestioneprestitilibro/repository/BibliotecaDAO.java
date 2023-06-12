@@ -1,6 +1,8 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.repository;
 
-import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +12,7 @@ import java.util.List;
  * Questa classe rappresenta il DAO di una Biblioteca.
  */
 @Repository
-public interface BibliotecaDAO extends UtenteRegistratoDAO {
+public interface BibliotecaDAO extends JpaRepository<UtenteRegistrato, String> {
     /**
      * Implementa la funzionalità di ricerca di un utente Biblioteca nel DB.
      * @param email dell'utente da cercare.
@@ -47,6 +49,11 @@ public interface BibliotecaDAO extends UtenteRegistratoDAO {
      */
     @Query("SELECT b FROM Biblioteca b WHERE b.email=?1")
     Biblioteca findByID(String email);
+
+
+    @Query("SELECT b FROM Biblioteca b WHERE b.email=?1 and b.tipo=?2")
+    Biblioteca findBibliotecaByEmail(String email, String tipo);
+
 
     /**
      * Query custom che recupera dal DB la liste di tutte

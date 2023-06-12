@@ -205,7 +205,7 @@ public class ClubDelLibroController {
         if (!Utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        Esperto esperto = (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = (Esperto) clubService.findEspertoByEmail(Utils.getSubjectFromToken(token));
 
         ClubDelLibro cdl = new ClubDelLibro();
         cdl.setNome(clubForm.getNome());
@@ -251,7 +251,7 @@ public class ClubDelLibroController {
     public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
         //todo da controllare
         if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token))) return new ArrayList<>();
-        return clubService.findClubsEsperto(clubService.getEspertoByEmail(Utils.getSubjectFromToken(token)));
+        return clubService.findClubsEsperto(clubService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
     }
     /**
      * Implementa la funzionalità che permette
@@ -269,7 +269,7 @@ public class ClubDelLibroController {
                                                         final @ModelAttribute ClubForm club,
                                                         @RequestHeader(name = "Authorization") final String token
     ) {
-        Esperto esperto = (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = (Esperto) clubService.findEspertoByEmail(Utils.getSubjectFromToken(token));
         var cdl = this.clubService.getClubByID(id);
         if (cdl == null || esperto == null) {
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -359,7 +359,7 @@ public class ClubDelLibroController {
                                                       @RequestHeader(name = "Authorization") final String token) {
 
         var eventoBaseOpt = this.eventiService.getEventoById(idEvento);
-        Esperto esperto = (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = (Esperto) clubService.findEspertiByNome(Utils.getSubjectFromToken(token));
 
         if (eventoBaseOpt.isEmpty()) {
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);

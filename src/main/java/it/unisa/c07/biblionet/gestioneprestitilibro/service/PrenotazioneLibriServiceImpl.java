@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneprestitilibro.service;
 
 import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneprestitilibro.repository.*;
@@ -36,13 +37,16 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
 
     @Override
     public UtenteRegistrato creaBibliotecaDaModel(BibliotecaDTO form, String nomeBiblioteca, String password){
-        Biblioteca biblioteca = new Biblioteca(form.getEmail(), password, form.getProvincia(), form.getCitta(), form.getVia(), form.getRecapitoTelefonico(), nomeBiblioteca);
+        Biblioteca biblioteca = new Biblioteca(form);
         biblioteca.setTipo("Biblioteca");
-        System.out.println(form);
         biblioteca.setNomeBiblioteca(nomeBiblioteca);
 
        return bibliotecaDAO.save(biblioteca);
 
+    }
+    @Override
+    public UtenteRegistrato findBibliotecaByEmailAndPassword(String email, byte[] password){
+        return bibliotecaDAO.findByEmailAndPassword(email, password);
     }
     /**
      * Implementa la funzionalità che permette
@@ -477,9 +481,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      */
     @Override
     public final Biblioteca findBibliotecaByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = bibliotecaDAO.findById(email);
-        return (Biblioteca) b.orElse(null);
+        return bibliotecaDAO.findBibliotecaByEmail(email, "Biblioteca"); //todo usare una costante
     }
 
     @Override

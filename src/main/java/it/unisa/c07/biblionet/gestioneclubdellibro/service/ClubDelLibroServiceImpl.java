@@ -1,16 +1,18 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
-import it.unisa.c07.biblionet.common.*;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
+import it.unisa.c07.biblionet.gestioneprestitilibro.repository.Biblioteca;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
  * Implementa la classe che esplicita i metodi
  * definiti nell'interfaccia service per il
  * sottosistema ClubDelLibro.
+ *
  * @author Viviana Pentangelo, Gianmario Voria
  */
 @Service
@@ -41,9 +44,11 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     public final List<ClubDelLibro> findClubsLettore(Lettore lettore) {
         return lettore.getClubs();
     }
+
     /**
      * Implementa la funzionalità che permette
      * a un Esperto di creare un Club del Libro.
+     *
      * @param club Il Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
@@ -55,6 +60,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     /**
      * Implementa la funzionalità che permette
      * di visualizzare tutti i club del libro.
+     *
      * @return La lista dei club
      */
     @Override
@@ -65,27 +71,27 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     /**
      * Implementa la funzionalità che permette
      * di filtrare tutti i club del libro.
+     *
      * @param filtro Un predicato che descrive come filtrare i Club
      * @return La lista dei club
      */
     public List<ClubDelLibro> visualizzaClubsDelLibro(
-                        final Predicate<ClubDelLibro> filtro) {
+            final Predicate<ClubDelLibro> filtro) {
 
         var clubs = this.clubDAO.findAll();
 
         return clubs.stream().filter(
-            filtro
+                filtro
         ).collect(Collectors.toList());
 
     }
-
-
 
 
     /**
      * Implementa la funzionalità che permette
      * di modificare ed
      * effettuare l'update di un club.
+     *
      * @param club Il club da modificare
      * @return Il club modificato
      */
@@ -98,6 +104,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Implementa la funzionalità che permette
      * di recuperare un
      * club dato il suo ID.
+     *
      * @param id L'ID del club da recuperare
      * @return Il club recuperato
      */
@@ -111,7 +118,8 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Implementa la funzionalità che permette
      * a un lettore di effettuare
      * l'iscrizione a un club del libro.
-     * @param club Il club al quale iscriversi
+     *
+     * @param club    Il club al quale iscriversi
      * @param lettore Il lettore che si iscrive
      * @return true se è andato a buon fine, false altrimenti
      */
@@ -131,6 +139,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     /**
      * Funzione di utilità che permette di leggere la città
      * in cui si trova un Club del Libro.
+     *
      * @param club il club da cui prendere la città
      * @return la città del club
      */
@@ -139,21 +148,22 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     }
 
 
-
     /**
      * Restituisce tutte le citta nel sistema.
+     *
      * @return Tutte le citta nel sistema
      */
     public Set<String> getCitta() {
         return this.clubDAO.findAll().stream()
-                                     .map(this::getCittaFromClubDelLibro)
-                                     .collect(Collectors.toSet());
+                .map(this::getCittaFromClubDelLibro)
+                .collect(Collectors.toSet());
     }
 
 
     /**
      * Implementa la funzionalità di prendere una lista di club
      * del libro a cui un lettore partecipa.
+     *
      * @param lettore il lettore preso in esame
      * @return la lista dei club del libro a cui partecipa
      */
@@ -165,6 +175,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     /**
      * Implementa la funzionalità di prendere una lista di club
      * del libro di cui un esperto è proprietario.
+     *
      * @param esperto l' esperto preso in esame
      * @return la lista dei club del libro a cui partecipa
      */
@@ -174,9 +185,11 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     }
 
     @Override
-    public UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca){
-        return espertoDAO.save(new Esperto(form, biblioteca));
+    public UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
+        System.out.println(biblioteca.getVia());
+        return espertoDAO.save(new Esperto(form, (Biblioteca) biblioteca));
     }
+
     /**
      * Implementa la funzionalità di salvataggio delle modifiche
      * all'account esperto.
@@ -201,6 +214,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         }
         return toReturn;
     }
+
     /**
      * Implementa la funzionalità di trovare un lettore.
      *
@@ -209,17 +223,15 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      */
     @Override
     public final Lettore findLettoreByEmail(final String email) {
-
-        Optional<UtenteRegistrato> b = lettoreDAO.findById(email);
-        return (Lettore) b.orElse(null);
+        return lettoreDAO.findLettoreByEmail(email, "Lettore");
     }
-
 
 
     @Override
     public Lettore aggiornaLettore(final Lettore utente) {
         return lettoreDAO.save(utente);
     }
+
     @Override
     public List<Esperto> findAllEsperti() {
         return espertoDAO.findAllEsperti();
@@ -230,12 +242,20 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         return espertoDAO.findByNomeLike(nome);
     }
 
+    @Override
+    public UtenteRegistrato findEspertoByEmailAndPassword(String email, byte[] password) {
+        //return espertoDAO.findByEmailAndPassword(email, password); todo
+        return findEspertoByEmail(email);
+    }
 
     @Override
-    public Esperto getEspertoByEmail(final String email) {
-        Optional<UtenteRegistrato> esperto = espertoDAO.findById(email);
-        return (Esperto) esperto.orElse(null);
+    public UtenteRegistrato findLettoreByEmailAndPassword(String email, byte[] password) {
+        return lettoreDAO.findByEmailAndPassword(email, password);
+    }
 
+    @Override
+    public Esperto findEspertoByEmail(final String email) {
+        return espertoDAO.findEspertoByEmail(email, "Esperto");
     }
 
     @Override

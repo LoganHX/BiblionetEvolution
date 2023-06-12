@@ -1,4 +1,4 @@
-package it.unisa.c07.biblionet.DTO;
+package it.unisa.c07.biblionet.common;
 
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.*;

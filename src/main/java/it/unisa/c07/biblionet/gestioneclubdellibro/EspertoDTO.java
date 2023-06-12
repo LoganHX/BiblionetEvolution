@@ -1,5 +1,5 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro;
-import it.unisa.c07.biblionet.DTO.UtenteRegistratoDTO;
+import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -88,7 +88,7 @@ public class PreferenzeDiLetturaController {
 
         if (Utils.isUtenteEsperto(token)) {
             preferenzeDiLetturaService
-                    .addGeneriEsperto(toAdd, (Esperto) clubService.getEspertoByEmail(Utils.getSubjectFromToken(token)));
+                    .addGeneriEsperto(toAdd, (Esperto) clubService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
             return new BiblionetResponse("Generi modificati", true);
         }
         if (Utils.isUtenteLettore(token)) {

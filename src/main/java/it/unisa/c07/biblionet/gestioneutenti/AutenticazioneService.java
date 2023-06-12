@@ -43,6 +43,5 @@ public interface AutenticazioneService {
      boolean isBiblioteca(UtenteRegistrato utente);
 
 
-     UtenteRegistrato findUtenteByEmail(String email);
 
 }

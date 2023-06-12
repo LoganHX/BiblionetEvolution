@@ -1,18 +1,14 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
-import it.unisa.c07.biblionet.DTO.UtenteRegistratoDTO;
+import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneprestitilibro.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestioneprestitilibro.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneprestitilibro.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.common.*;
-import it.unisa.c07.biblionet.common.UtenteRegistratoDAO;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
 import it.unisa.c07.biblionet.utils.Utils;
@@ -22,8 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -37,8 +31,8 @@ public class AreaUtenteController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final AutenticazioneService autenticazioneService;
-    private final UtenteRegistratoDAO utenteRegistratoDAO; //todo i DAO è meglio gestirli nei service
     private final PrenotazioneLibriService prenotazioneLibriService;
+    private final ClubDelLibroService clubService;
 
     /**
      * Implementa la funzionalità di smistare l'utente sulla view di
@@ -57,14 +51,15 @@ public class AreaUtenteController {
     @CrossOrigin
     @ResponseBody
     public UtenteRegistrato modificaDati(@RequestHeader(name = "Authorization") final String token) {
-        //todo a me sembra simile alla sottostante, quindi le ho collassate in una sola, l'ideale sarebbe
-        //semplificare tutto anche lato client
         return selezionaUtente(token);
     }
 
     private UtenteRegistrato selezionaUtente(String token){
+        if(Utils.isUtenteLettore(token)) return clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        else if (Utils.isUtenteEsperto(token)) return clubService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+        else if (Utils.isUtenteBiblioteca(token)) return prenotazioneLibriService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
-        return utenteRegistratoDAO.getOne(Utils.getSubjectFromToken(token));
+        return null;
     }
     /**
      * Implementa la funzionalità di visualizzazione area utente
