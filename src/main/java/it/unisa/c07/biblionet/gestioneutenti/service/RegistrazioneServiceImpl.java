@@ -94,15 +94,6 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
 
 
 
-    /**
-     * Implementa la funzionalità di trovare una biblioteca.
-     * @param email La mail della biblioteca
-     * @return La biblioteca se c'è, altrimenti null
-     */
-    @Override
-    public final Biblioteca getBibliotecaByEmail(final String email) {
-        return bibliotecaDAO.findByID(email);
-    }
 
 
 }

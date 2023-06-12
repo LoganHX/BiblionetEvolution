@@ -4,6 +4,7 @@ import it.unisa.c07.biblionet.entity.Biblioteca;
 import it.unisa.c07.biblionet.entity.Esperto;
 import it.unisa.c07.biblionet.entity.Lettore;
 import it.unisa.c07.biblionet.entity.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.RispettoVincoli;
@@ -25,6 +26,7 @@ public final class RegistrazioneController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final RegistrazioneService registrazioneService;
+    private final AutenticazioneService autenticazioneService;
 
     /**
      * Implementa la funzionalità di visualizzare
@@ -89,7 +91,7 @@ public final class RegistrazioneController {
         if(!s.isEmpty()){
             return new BiblionetResponse(s, false);
         }
-        esperto.setBiblioteca(registrazioneService.getBibliotecaByEmail(bibliotecaEmail));
+        esperto.setBiblioteca(autenticazioneService.findBibliotecaByEmail(bibliotecaEmail));
 
         registrazioneService.registraEsperto(esperto);
         return new BiblionetResponse("Registrazione ok", true);

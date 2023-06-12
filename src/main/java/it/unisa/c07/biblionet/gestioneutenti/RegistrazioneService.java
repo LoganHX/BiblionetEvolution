@@ -41,16 +41,4 @@ public interface RegistrazioneService {
     boolean isEmailRegistrata(String email);
 
 
-
-    /**
-     * Implementa la funzionalità di prendere una biblioteca
-     * data la sua mail, utilizzando il service del package
-     * Autenticazione.
-     * @param email la mail dell'account
-     * @return la biblioteca se presente, null altrimenti
-     */
-    Biblioteca getBibliotecaByEmail(String email);
-
-
-
 }
