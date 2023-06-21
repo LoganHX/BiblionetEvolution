@@ -9,20 +9,21 @@ import java.util.stream.Collectors;
 
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.events.ConfermaPrenotazioneEvent;
+import it.unisa.c07.biblionet.events.CreateEsperto;
+import it.unisa.c07.biblionet.events.CreateLettore;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EventoDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
@@ -50,6 +51,16 @@ public class ClubDelLibroController {
     private final GestioneEventiService eventiService;
     private final ApplicationEventPublisher events;
 
+    @Async
+    @EventListener
+    public void on(CreateLettore createLettore){
+        clubService.creaLettoreDaModel(createLettore.getLettoreDTO());
+    }
+    @Async
+    @EventListener
+    public void on(CreateEsperto createEsperto) {
+        clubService.creaEspertoDaModel(createEsperto.getEspertoDTO(), createEsperto.getBiblioteca());
+    }
 
     /**
      * Metodo di utilità che modifica o crea un evento, validando

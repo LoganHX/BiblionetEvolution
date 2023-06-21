@@ -31,52 +31,9 @@ public class AreaUtenteController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final AutenticazioneService autenticazioneService;
-    private final PrenotazioneLibriService prenotazioneLibriService;
-    private final ClubDelLibroService clubService;
     private final RegistrazioneService registrazioneService;
 
-    /**
-     * Implementa la funzionalità di smistare l'utente sulla view di
-     * modifica dati corretta.
-     *
-     * @return modifica_dati_biblioteca se l'account
-     * da modificare é una biblioteca.
-     * <p>
-     * modifica_dati_esperto se l'account
-     * da modificare é un esperto.
-     * <p>
-     * modifica_dati_lettore se l'account
-     * da modificare é un lettore.
-     */
-    @GetMapping(value = "/modifica-dati")
-    @CrossOrigin
-    @ResponseBody
-    public UtenteRegistrato modificaDati(@RequestHeader(name = "Authorization") final String token) {
-        return selezionaUtente(token);
-    }
 
-    private UtenteRegistrato selezionaUtente(String token){
-        if(Utils.isUtenteLettore(token)) return clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        else if (Utils.isUtenteEsperto(token)) return clubService.findEspertoByEmail(Utils.getSubjectFromToken(token));
-        else if (Utils.isUtenteBiblioteca(token)) return prenotazioneLibriService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
-
-        return null;
-    }
-    /**
-     * Implementa la funzionalità di visualizzazione area utente
-     * in base al tipo.
-     *
-     * @return La view di visualizzazione area utente
-     */
-    @GetMapping(value = "/area-utente")
-    @ResponseBody
-    @CrossOrigin
-    public UtenteRegistrato datiAreaUtente(
-            @RequestHeader(name = "Authorization") final String token
-    ) {
-        return selezionaUtente(token);
-
-    }
 
     private String controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistratoDTO utenteRegistrato) {
         if (bindingResult.hasErrors()) {
@@ -127,7 +84,7 @@ public class AreaUtenteController {
         if (!s.isEmpty()) return new BiblionetResponse(s, false);
 
 
-        registrazioneService.registraBiblioteca(biblioteca);
+        //registrazioneService.agg(biblioteca); todo
 
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }

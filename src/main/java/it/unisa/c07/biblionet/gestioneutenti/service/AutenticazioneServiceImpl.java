@@ -37,6 +37,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
      */
     @Override
     public UtenteRegistrato login(final String email, final String password) {
+
         byte[] arr = BiblionetConstraints.trasformaPassword(password);
         UtenteRegistrato u;
 

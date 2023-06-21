@@ -22,54 +22,19 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     private final ClubDelLibroService clubDelLibroService;
 
 
-    /**
-     * Implementa la funzionalità di registrare un Lettore.
-     * @param lettore Il lettore da registrare
-     * @return Il lettore registrato
-     */
-    @Override
-    public final UtenteRegistrato registraLettore(final LettoreDTO lettore) {
-        return clubDelLibroService.creaLettoreDaModel(lettore);
-    }
 
-    /**
-     * Implementa la funzionalità di registrazione un Esperto.
-     * @param esperto L'Esperto da registrare
-     * @return L'utente registrato
-     */
-    @Override
-    public final UtenteRegistrato registraEsperto(final EspertoDTO esperto, final String emailBiblioteca) {
-        return clubDelLibroService.creaEspertoDaModel(esperto, prenotazioneLibriService.findBibliotecaByEmail(emailBiblioteca));
-    }
 
     @Override
     public final UtenteRegistrato aggiornaEsperto(final EspertoDTO esperto, final String emailBiblioteca) {
         return clubDelLibroService.aggiornaEspertoDaModel(esperto, prenotazioneLibriService.findBibliotecaByEmail(emailBiblioteca));
+        //todo controllare se sono inutili
     }
 
     @Override
     public final UtenteRegistrato aggiornaLettore(final LettoreDTO lettore) {
         return clubDelLibroService.aggiornaLettoreDaModel(lettore);
+        //todo controllare se inutile
     }
-
-
-
-
-    /**
-     * Implementa la funzionalità di registrazione una Biblioteca.
-     * @param biblioteca La Biblioteca da registrare
-     * @return L'utente registrato
-     */
-    @Override
-    public UtenteRegistrato registraBiblioteca(final BibliotecaDTO biblioteca) {
-        return prenotazioneLibriService.bibliotecaDaModel(biblioteca);
-    }
-    @Override
-    public UtenteRegistrato aggiornaBiblioteca(final BibliotecaDTO biblioteca) {
-        return registraBiblioteca(biblioteca);
-    }
-
-
 
 
     /**

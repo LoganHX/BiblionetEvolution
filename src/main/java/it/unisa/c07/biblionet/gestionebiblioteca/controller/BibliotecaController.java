@@ -1,5 +1,8 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
+import it.unisa.c07.biblionet.events.CreateBiblioteca;
+import it.unisa.c07.biblionet.events.CreateEsperto;
+import it.unisa.c07.biblionet.events.MiddleEsperto;
 import it.unisa.c07.biblionet.gestionebiblioteca.LibroBibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
@@ -7,6 +10,9 @@ import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +34,25 @@ import java.util.List;
 @RequestMapping("/biblioteca")
 public class BibliotecaController {
 
+
+
     /**
      * Il service per effettuare le operazioni di
      * persistenza.
      */
     private final PrenotazioneLibriService prenotazioneService;
+    private final ApplicationEventPublisher events;
 
-
+    @Async
+    @EventListener
+    public void on(CreateBiblioteca createBiblioteca) {
+        prenotazioneService.bibliotecaDaModel(createBiblioteca.getBibliotecaDTO());
+    }
+    @Async
+    @EventListener
+    public void on(MiddleEsperto middleEsperto){
+        events.publishEvent(new CreateEsperto(middleEsperto.getEspertoDTO(), prenotazioneService.findBibliotecaByEmail(middleEsperto.getEmailBiblioteca())));
+    }
     /**
      * Implementa la funzionalità che permette di
      * visualizzare tutte le biblioteche iscritte.
