@@ -59,6 +59,7 @@ public class ClubDelLibroController {
     @Async
     @EventListener
     public void on(CreateEsperto createEsperto) {
+        System.err.println("er");
         clubService.creaEspertoDaModel(createEsperto.getEspertoDTO(), createEsperto.getBiblioteca());
     }
 
@@ -226,8 +227,10 @@ public class ClubDelLibroController {
 
         cdl.setGeneri(new HashSet<>(clubDTO.getGeneri()));
 
-        this.clubService.creaClubDelLibro(cdl);
-        return new BiblionetResponse("Club del Libro creato", false);
+        ClubDelLibro clubDelLibro =  clubService.creaClubDelLibro(cdl);
+        System.err.println(clubDelLibro.getNome());
+        if(clubDelLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+        return new BiblionetResponse("Club del Libro creato", true);
 
     }
 
