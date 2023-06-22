@@ -23,18 +23,6 @@ public class AutenticazioneController {
      */
     private final AutenticazioneService autenticazioneService;
     private final JwtGeneratorInterface jwtGenerator;
-    /**
-     * Implementa la funzionalità che permette
-     * di visualizzare la view del login.
-     * @param model il Model
-     * @return la pagina dove è visualizzato
-
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String visualizzaLogin(final Model model) {
-        model.addAttribute("loggedUser", null);
-        return "autenticazione/login";
-    }
-   */
 
     /**
      * Implementa la funzionalità di login come utente.
@@ -57,29 +45,4 @@ public class AutenticazioneController {
         }
     }
 
-    /**
-     * Implenta la funzionalità che permette
-     * di effettuare il logout dell'utente
-     * togliendolo dalla sessione.
-     * @param status contiene i dati della sessione.
-     * @return Rimanda alla pagina di index.
-
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-
-    public String logout(final SessionStatus status) {
-        status.setComplete();
-        return "index";
-    }
-    */
-
-    /**
-     * Implementa la funzionalità che permette
-     * di aggiungere un utente alla sessione.
-     * @return dell'utente in sessione.
-
-    @ModelAttribute("loggedUser")
-    public UtenteRegistrato utenteRegistrato() {
-        return new UtenteRegistrato();
-    }
-     */
 }

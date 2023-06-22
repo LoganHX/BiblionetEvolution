@@ -185,12 +185,13 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
 
     @Override
     public UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
+        if(biblioteca == null) return null;
         return espertoDAO.save(new Esperto(form, biblioteca));
     }
 
     @Override
     public UtenteRegistrato aggiornaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
-        if(biblioteca == null) biblioteca = findEspertoByEmail(form.getEmail()).getBiblioteca(); //todo ok, e se cambio anche la mail?
+        if(biblioteca == null) biblioteca = findEspertoByEmail(form.getEmail()).getBiblioteca(); //todo non la utilizzo, ma dovrei
         return espertoDAO.save(new Esperto(form, biblioteca));
     }
 

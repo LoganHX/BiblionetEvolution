@@ -1,5 +1,8 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
+import it.unisa.c07.biblionet.events.CreateBiblioteca;
+import it.unisa.c07.biblionet.events.CreateLettore;
+import it.unisa.c07.biblionet.events.MiddleEsperto;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
@@ -13,6 +16,7 @@ import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +36,8 @@ public class AreaUtenteController {
      */
     private final AutenticazioneService autenticazioneService;
     private final RegistrazioneService registrazioneService;
+
+    private final ApplicationEventPublisher events;
 
 
 
@@ -69,7 +75,7 @@ public class AreaUtenteController {
     @PostMapping(value = "/conferma-modifica-biblioteca")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse modificaDatiBiblioteca(
+    public void modificaDatiBiblioteca(
             final @RequestHeader(name = "Authorization") String token,
             final @Valid @ModelAttribute("Biblioteca") BibliotecaDTO biblioteca,
             BindingResult bindingResult,
@@ -77,16 +83,15 @@ public class AreaUtenteController {
             final @RequestParam("nuova_password") String nuova,
             final @RequestParam("conferma_password") String conferma) {
 
-        if(!Utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        if(!Utils.isUtenteBiblioteca(token)) return;
 
         biblioteca.setPassword(qualePassword(vecchia, nuova, conferma));
         String s = controlliPreliminari(bindingResult, vecchia, biblioteca);
-        if (!s.isEmpty()) return new BiblionetResponse(s, false);
+        if (!s.isEmpty()) return;
 
 
-        //registrazioneService.agg(biblioteca); todo
+        events.publishEvent(new CreateBiblioteca(biblioteca));
 
-        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
 
@@ -104,7 +109,7 @@ public class AreaUtenteController {
     @PostMapping(value = "/conferma-modifica-esperto")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse modificaDatiEsperto(
+    public void modificaDatiEsperto(
             final @RequestHeader(name = "Authorization") String token,
             final @Valid @RequestParam("Esperto") EspertoDTO esperto,
             BindingResult bindingResult,
@@ -116,18 +121,18 @@ public class AreaUtenteController {
 
 
         if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token)))
-            return new BiblionetResponse("Non sei autorizzato", false);
+            return;
 
         if (!Utils.getSubjectFromToken(token).equals(esperto.getEmail()))
-            return new BiblionetResponse("Non puoi cambiare email", false); //todo
+            return; //todo
 
         esperto.setPassword(qualePassword(vecchia, nuova, conferma));
         String s = controlliPreliminari(bindingResult, vecchia, esperto);
-        if (!s.isEmpty()) return new BiblionetResponse(s, false);
+        if (!s.isEmpty()) return;
 
-        registrazioneService.aggiornaEsperto(esperto, emailBiblioteca); //todo qualche check in più sull'esistenza dell'esperto, anche se se ha il token è autoamticamente registrato
+        //registrazioneService.aggiornaEsperto(esperto, emailBiblioteca); //todo qualche check in più sull'esistenza dell'esperto, anche se se ha il token è autoamticamente registrato
 
-        return new BiblionetResponse("Dati aggiornati", true);
+        events.publishEvent(new MiddleEsperto(esperto, emailBiblioteca));
     }
 
     /**
@@ -143,7 +148,7 @@ public class AreaUtenteController {
     @PostMapping(value = "/conferma-modifica-lettore")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse confermaModificaLettore(final @RequestHeader(name = "Authorization") String token,
+    public void confermaModificaLettore(final @RequestHeader(name = "Authorization") String token,
                                                      final @Valid @ModelAttribute LettoreDTO lettore,
                                                      BindingResult bindingResult,
                                                      final @RequestParam("vecchia_password") String vecchia,
@@ -152,12 +157,11 @@ public class AreaUtenteController {
 
         lettore.setPassword(qualePassword(vecchia, nuova, conferma));
         String s = controlliPreliminari(bindingResult, vecchia, lettore);
-        if (!s.isEmpty()) return new BiblionetResponse(s, false);
+        if (!s.isEmpty()) return;
 
 
-        registrazioneService.aggiornaLettore(lettore);
+        events.publishEvent(new CreateLettore(lettore));
 
-        return new BiblionetResponse("Dati aggiornati", true);
     }
 
 

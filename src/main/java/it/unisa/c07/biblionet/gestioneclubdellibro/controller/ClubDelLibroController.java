@@ -246,6 +246,7 @@ public class ClubDelLibroController {
                                                   @RequestParam final String idLibro,
                                                   @RequestHeader (name="Authorization") final String token) {
 
+        //todo siamo sicuri sia fatto bene?
         if (!Utils.isUtenteLettore(token)) {
             return;
         }

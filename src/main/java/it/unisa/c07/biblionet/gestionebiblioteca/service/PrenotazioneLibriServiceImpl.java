@@ -152,7 +152,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                 this.findBibliotecaByEmail(idBiblioteca);
         LibroBiblioteca libro = libroBibliotecaDAO.getOne(idLibro);
 
-        ticket.setBiblioteca(biblioteca);
+        //ticket.setBiblioteca(biblioteca);
         ticket.setLibro(libro);
 
         ticketPrestitoDAO.save(ticket);

@@ -7,9 +7,7 @@ import it.unisa.c07.biblionet.events.MiddleEsperto;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
-import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
-import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -53,7 +51,6 @@ public final class RegistrazioneController {
      *
      * @param biblioteca la biblioteca da registrare
      * @param password   la password di conferma
-     * @return la view di login
      */
     @PostMapping(value = "/biblioteca")
     @ResponseBody
@@ -79,7 +76,6 @@ public final class RegistrazioneController {
      * @param lettore  Il lettore da registrare
      * @param password il campo conferma password del form per controllare
      *                 il corretto inserimento della stessa.
-     * @return La view per effettuare il login
      */
     @PostMapping(value = "/lettore")
     @ResponseBody
