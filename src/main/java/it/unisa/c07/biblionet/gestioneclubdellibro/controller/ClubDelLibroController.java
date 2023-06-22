@@ -255,6 +255,7 @@ public class ClubDelLibroController {
         }
         UtenteRegistrato l = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         events.publishEvent(new ConfermaPrenotazioneEvent(l, idBiblioteca, idLibro));
+        return;
     }
 
     /**
