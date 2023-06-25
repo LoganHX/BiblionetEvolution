@@ -566,6 +566,17 @@ public class ClubDelLibroController {
         }
         return lettoriDTO;
     }
+
+    @GetMapping(value = "/eventi-club")
+    @CrossOrigin
+    @ResponseBody
+    public List<Evento> visualizzaEventiClub(final @PathVariable int id) {
+        List<Evento> eventi = clubService.getClubByID(id).getEventi();
+        for(Evento e: eventi){
+            e.getLibro().setEventi(null);
+        }
+        return eventi;
+    }
     /**
      * Implementa la funzionalità che permette di eliminare
      * un evento.
