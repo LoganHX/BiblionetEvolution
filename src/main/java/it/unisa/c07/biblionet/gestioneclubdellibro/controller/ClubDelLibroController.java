@@ -342,7 +342,7 @@ public class ClubDelLibroController {
 
         club.setNome(cdl.getNome());
         club.setDescrizione(cdl.getDescrizione());
-        club.setGeneri(new ArrayList < > (cdl.getGeneri()));
+        club.setGeneri(cdl.getGeneri());
     /*
             model.addAttribute("club", club);
             model.addAttribute("id", id);
@@ -389,16 +389,18 @@ public class ClubDelLibroController {
      * @param id l'ID del Club a cui iscriversi
      * @return La view che visualizza la lista dei club
      */
-    @PostMapping(value = "/{id}/iscrizione")
-    public BiblionetResponse partecipaClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
+    @PostMapping(value = "/iscrizione")
+    @CrossOrigin
+    @ResponseBody
+    public BiblionetResponse partecipaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
         if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
-        Lettore lettore = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token)); //todo in questi casi andrebbero fatti i check per null
+        Lettore lettore = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
         if (clubDelLibro.getLettori().contains(lettore)) {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
-        this.clubService.partecipaClub(clubDelLibro, lettore);
+        clubService.partecipaClub(clubDelLibro, lettore);
         return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_OK, true);
     }
 
@@ -452,6 +454,7 @@ public class ClubDelLibroController {
         return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
     }
 
+
     /**
      * Implementa la funzionalità che permette
      * di gestire la chiamata POST
@@ -461,10 +464,10 @@ public class ClubDelLibroController {
      * @param eventoDTO il form dell'evento
      * @return la view della lista degli eventi
      */
-    @PostMapping(value = "/{id}/eventi/crea")
+    @PostMapping(value = "/eventi/crea")
     @CrossOrigin
     @ResponseBody
-    public BiblionetResponse creaEvento(final @PathVariable int id,
+    public BiblionetResponse creaEvento(final @RequestParam int id,
                                         final @Valid @ModelAttribute EventoDTO eventoDTO,
                                         BindingResult bindingResult) {
         return this.modificaCreaEvento(
@@ -537,19 +540,32 @@ public class ClubDelLibroController {
 
     }
 
+
+
     /**
      * Implementa la funzionalità che permette di gestire
      * la visualizzazione dei dati di un Club del Libro.
      * @param id l'ID del Club di cui visualizzare i dati
      * @return La view che visualizza i dati
-*/
-     @GetMapping(value = "/{id}")
-     @CrossOrigin
-     @ResponseBody
-     public ClubDelLibro visualizzaDatiClub(final @PathVariable int id) {
-        return clubService.getClubByID(id);
-     }
+     */
+    @GetMapping(value = "/{id}")
+    @CrossOrigin
+    @ResponseBody
+    public ClubDTO visualizzaDatiClub(final @PathVariable int id) {
+        return new ClubDTO(clubService.getClubByID(id));
+    }
 
+    @GetMapping(value = "/lettori-club")
+    @CrossOrigin
+    @ResponseBody
+    public List<LettoreDTO> visualizzaLettoriClub(final @PathVariable int id) {
+        List<LettoreDTO> lettoriDTO = new ArrayList<>();
+        for(Lettore l: clubService.getClubByID(id).getLettori()){
+            lettoriDTO.add(new LettoreDTO(l));
+
+        }
+        return lettoriDTO;
+    }
     /**
      * Implementa la funzionalità che permette di eliminare
      * un evento.
