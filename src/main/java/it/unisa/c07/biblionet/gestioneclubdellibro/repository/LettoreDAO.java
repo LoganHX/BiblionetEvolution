@@ -33,4 +33,6 @@ public interface LettoreDAO extends JpaRepository<UtenteRegistrato, String> {
 
 
 
+
+
 }

@@ -13,7 +13,7 @@ import it.unisa.c07.biblionet.events.CreateEsperto;
 import it.unisa.c07.biblionet.events.CreateLettore;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,9 +24,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -130,8 +127,8 @@ public class ClubDelLibroController {
     @GetMapping(value = "")
     @ResponseBody
     @CrossOrigin
-    public List < Object > visualizzaListaClubs(@RequestParam(value = "generi") final Optional < List < String >> generi,
-                                                @RequestParam(value = "citta") final Optional < List < String >> citta) {
+    public List < Object > visualizzaListaClubs(@RequestParam(value = "generi") final Optional <List<String>> generi,
+                                                @RequestParam(value = "citta") final Optional <List<String>> citta) {
 
         // Molto più pulito della concatenazione con gli stream
         Predicate <ClubDelLibro> filtroGenere = x -> true;
@@ -163,7 +160,7 @@ public class ClubDelLibroController {
             public final String descrizione = club.getDescrizione();
             public final String nomeEsperto = club.getEsperto().getNome() + " " + club.getEsperto().getCognome();
             public final String immagineCopertina = club.getImmagineCopertina();
-            public final Set < String > generi = club.getGeneri();
+            public final Set <String> generi = club.getGeneri();
             public final int idClub = club.getIdClub();
             public final int iscritti = club.getLettori().size();
             public final String email = club.getEsperto().getEmail();
@@ -551,8 +548,12 @@ public class ClubDelLibroController {
     @GetMapping(value = "/{id}")
     @CrossOrigin
     @ResponseBody
-    public ClubDTO visualizzaDatiClub(final @PathVariable int id) {
-        return new ClubDTO(clubService.getClubByID(id));
+    public Map<String, Object> visualizzaDatiClub(final @PathVariable int id) {
+        Map<String, Object> mappa = new HashMap<>();
+        mappa.put("Esperto", new EspertoDTO(clubService.getClubByID(id).getEsperto()));
+        mappa.put("Club",  new ClubDTO(clubService.getClubByID(id)));
+        return mappa;
+
     }
 
     @PostMapping(value = "/lettori-club")
@@ -570,12 +571,25 @@ public class ClubDelLibroController {
     @PostMapping(value = "/eventi-club")
     @CrossOrigin
     @ResponseBody
-    public List<Evento> visualizzaEventiClub(final @RequestParam int id) {
-        List<Evento> eventi = clubService.getClubByID(id).getEventi();
-        for(Evento e: eventi){
-            e.getLibro().setEventi(new ArrayList<>());
+    public Map<String, Object> visualizzaEventiClub(final @RequestParam int id) {
+        List<EventoDTO> eventiDTO = new ArrayList<>();
+        List<LibroEventoDTO> libriEventoDTO = new ArrayList<>();
+
+        for(Evento e: clubService.getClubByID(id).getEventi()){
+            eventiDTO.add(new EventoDTO(e));
+            if(e.getLibro()!=null){
+                Optional<LibroEvento> l = eventiService.getLibroById(id);
+                if (l.isPresent()) {
+                    LibroEvento libroEvento = l.get();
+                    libriEventoDTO.add(new LibroEventoDTO(libroEvento));
+                }
+            }
         }
-        return eventi;
+
+        Map<String, Object> mappa = new HashMap<>();
+        mappa.put("eventi",eventiDTO);
+        mappa.put("libri",  libriEventoDTO);
+        return mappa;
     }
     /**
      * Implementa la funzionalità che permette di eliminare
