@@ -555,10 +555,10 @@ public class ClubDelLibroController {
         return new ClubDTO(clubService.getClubByID(id));
     }
 
-    @GetMapping(value = "/lettori-club")
+    @PostMapping(value = "/lettori-club")
     @CrossOrigin
     @ResponseBody
-    public List<LettoreDTO> visualizzaLettoriClub(final @PathVariable int id) {
+    public List<LettoreDTO> visualizzaLettoriClub(final @RequestParam int id) {
         List<LettoreDTO> lettoriDTO = new ArrayList<>();
         for(Lettore l: clubService.getClubByID(id).getLettori()){
             lettoriDTO.add(new LettoreDTO(l));
@@ -567,13 +567,13 @@ public class ClubDelLibroController {
         return lettoriDTO;
     }
 
-    @GetMapping(value = "/eventi-club")
+    @PostMapping(value = "/eventi-club")
     @CrossOrigin
     @ResponseBody
-    public List<Evento> visualizzaEventiClub(final @PathVariable int id) {
+    public List<Evento> visualizzaEventiClub(final @RequestParam int id) {
         List<Evento> eventi = clubService.getClubByID(id).getEventi();
         for(Evento e: eventi){
-            e.getLibro().setEventi(null);
+            e.getLibro().setEventi(new ArrayList<>());
         }
         return eventi;
     }
@@ -607,44 +607,6 @@ public class ClubDelLibroController {
     @GetMapping(value = "/{id}/iscritti")
     public ClubDelLibro visualizzaIscrittiClub(final @PathVariable int id) {
         return clubService.getClubByID(id);
-    }
-
-    /**
-     * Implementa la funzionalità che permette di visualizzare
-     * la lista degli eventi di un club.
-     *
-     * @param id l'ID del club
-     * @return la view che visualizza gli eventi
-     */
-    @GetMapping(value = "/{id}/eventi")
-    public BiblionetResponse visualizzaListaEventiClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
-        if (clubService.getClubByID(id) == null) {
-            return new BiblionetResponse("Club inesistente", false);
-        }
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato", false);
-        Lettore l = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        if (l == null) return new BiblionetResponse("Non sei autorizzato", false);
-
-        List < Evento > tutti = clubService.getClubByID(id).getEventi();
-        List < Evento > mieiEventi = l.getEventi();
-        List < Evento > mieiEventiClub = new ArrayList < > ();
-        for (Evento e: mieiEventi) {
-            if (e.getClub().getIdClub() == id) {
-                mieiEventiClub.add(e);
-            }
-        }
-        for (Evento e: mieiEventiClub) {
-            if (tutti.contains(e)) {
-                tutti.remove(e);
-            }
-        }
-        //todo trovare una soluzione con Giuseppe
-    /*
-    model.addAttribute("club", clubService.getClubByID(id));
-    model.addAttribute("eventi", tutti);
-    model.addAttribute("mieiEventi", mieiEventiClub);*/
-
-        return new BiblionetResponse("", true);
     }
 
     /**
