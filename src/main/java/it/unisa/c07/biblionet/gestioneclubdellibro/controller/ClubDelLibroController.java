@@ -166,9 +166,6 @@ public class ClubDelLibroController {
             public final String email = club.getEsperto().getEmail();
         }).collect(Collectors.toList());
 
-        //model.addAttribute("generi", this.clubService.getTuttiGeneri()); todo
-        // model.addAttribute("citta", this.clubService.getCitta()); todo
-
     }
 
     /**
@@ -252,7 +249,6 @@ public class ClubDelLibroController {
         }
         UtenteRegistrato l = clubService.findLettoreByEmail(Utils.getSubjectFromToken(token));
         events.publishEvent(new ConfermaPrenotazioneEvent(l, idBiblioteca, idLibro));
-        return;
     }
 
     /**
@@ -267,24 +263,42 @@ public class ClubDelLibroController {
     public List<ClubDelLibro> visualizzaClubsLettore(
             final @RequestHeader(name = "Authorization") String token
     ) {
-        if (!Utils.isUtenteLettore(Utils.getSubjectFromToken(token))) return new ArrayList<>();
+        if (!Utils.isUtenteLettore(token)) return new ArrayList<>();
         Lettore lettore =  clubService.getLettoreByEmail(Utils.getSubjectFromToken(token));
         return clubService.findClubsLettore(lettore);
+    }
+
+    @GetMapping(value = "/partecipazione-lettore")
+    @ResponseBody
+    @CrossOrigin
+    public boolean visualizzaPartecipazioneClubsLettore(
+            final @RequestHeader(name = "Authorization") String token, final @RequestParam int idClub
+    ) {
+        if (!Utils.isUtenteLettore(token)) return false;
+        List<ClubDelLibro> clubs =  clubService.getLettoreByEmail(Utils.getSubjectFromToken(token)).getClubs();
+        for(ClubDelLibro club: clubs){
+            if(idClub == club.getIdClub()) return true;
+        }
+        return false;
     }
 
     @GetMapping(value = "/visualizza-esperti-biblioteca")
     @ResponseBody
     @CrossOrigin
-    public List<Esperto> visualizzaEspertiBiblioteca(
+    public List<EspertoDTO> visualizzaEspertiBiblioteca(
             @RequestParam final String emailBiblioteca
     ) {
-        return clubService.getEspertiByBiblioteca(emailBiblioteca);
+        List<EspertoDTO> espertiDTO = new ArrayList<>();
+        for(Esperto e: clubService.getEspertiByBiblioteca(emailBiblioteca)){
+            espertiDTO.add(new EspertoDTO(e));
+        }
+        return espertiDTO;
     }
 
     @GetMapping(value = "/visualizza-clubs-biblioteca")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubBiblioteca(
+    public List<ClubDTO> visualizzaClubBiblioteca(
             @RequestParam final String emailBiblioteca
     ) {
         Set<ClubDelLibro> clubs= new HashSet<>();
@@ -292,7 +306,11 @@ public class ClubDelLibroController {
         for(Esperto esperto: esperti){
             clubs.addAll(clubService.getClubsByEsperto(esperto));
         }
-        return new ArrayList<>(clubs);
+        Set<ClubDTO> clubDTOS = new HashSet<>();
+        for(ClubDelLibro clubDelLibro: clubs){
+            clubDTOS.add(new ClubDTO(clubDelLibro));
+        }
+        return new ArrayList<>(clubDTOS);
     }
 
 
@@ -573,7 +591,7 @@ public class ClubDelLibroController {
     @ResponseBody
     public Map<String, Object> visualizzaEventiClub(final @RequestParam int id) {
         List<EventoDTO> eventiDTO = new ArrayList<>();
-        List<LibroEventoDTO> libriEventoDTO = new ArrayList<>();
+        List <LibroEventoDTO> libriEventoDTO = new ArrayList<>();
 
         for(Evento e: clubService.getClubByID(id).getEventi()){
             eventiDTO.add(new EventoDTO(e));
@@ -583,12 +601,13 @@ public class ClubDelLibroController {
                     LibroEvento libroEvento = l.get();
                     libriEventoDTO.add(new LibroEventoDTO(libroEvento));
                 }
+                else libriEventoDTO.add(null);
             }
         }
 
         Map<String, Object> mappa = new HashMap<>();
         mappa.put("eventi",eventiDTO);
-        mappa.put("libri",  libriEventoDTO);
+        mappa.put("libri", libriEventoDTO);
         return mappa;
     }
     /**

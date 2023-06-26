@@ -28,5 +28,4 @@ public interface ClubDelLibroDAO extends JpaRepository<ClubDelLibro, Integer> {
     List<ClubDelLibro> findAllByEsperto(Esperto esperto);
 
 
-
 }

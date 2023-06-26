@@ -35,7 +35,6 @@ public class AreaUtenteController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final AutenticazioneService autenticazioneService;
-    private final RegistrazioneService registrazioneService;
 
     private final ApplicationEventPublisher events;
 

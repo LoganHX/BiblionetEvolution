@@ -62,7 +62,8 @@ public class EventoDTO {
         this.data = LocalDate.from(evento.getDataOra());
         this.ora = LocalTime.from(evento.getDataOra());
         this.nome = evento.getNomeEvento();
-        this.libro = evento.getLibro().getIdLibro();
+        if(evento.getLibro() != null)
+            this.libro = evento.getLibro().getIdLibro();
         this.descrizione = evento.getDescrizione();
     }
 }
