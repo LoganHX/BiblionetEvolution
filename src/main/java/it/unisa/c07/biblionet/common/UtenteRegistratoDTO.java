@@ -55,17 +55,17 @@ public abstract class UtenteRegistratoDTO {
     private String recapitoTelefonico;
 
     protected UtenteRegistratoDTO(String email,
-                                String password,
-                                String provincia,
-                                String citta,
-                                String via,
-                                String recapitoTelefonico) {
-            this.email = email;
-            this.provincia = provincia;
-            this.via = via;
-            this.recapitoTelefonico = recapitoTelefonico;
-            this.citta = citta;
-            this.password = BiblionetConstraints.trasformaPassword(password);
+                                  String password,
+                                  String provincia,
+                                  String citta,
+                                  String via,
+                                  String recapitoTelefonico) {
+        this.email = email;
+        this.provincia = provincia;
+        this.via = via;
+        this.recapitoTelefonico = recapitoTelefonico;
+        this.citta = citta;
+        this.password = BiblionetConstraints.trasformaPassword(password);
     }
 
     public void setPassword(final String password) {

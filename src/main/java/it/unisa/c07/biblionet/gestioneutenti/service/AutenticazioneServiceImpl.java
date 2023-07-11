@@ -3,6 +3,8 @@ package it.unisa.c07.biblionet.gestioneutenti.service;
 import it.unisa.c07.biblionet.common.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AutenticazioneServiceImpl implements AutenticazioneService {
 
-    private final ClubDelLibroService clubDelLibroService;
+    private final EspertoService espertoService;
+    private final LettoreService lettoreService;
     private final PrenotazioneLibriService prenotazioneLibriService;
 
     /**
@@ -41,13 +44,13 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         byte[] arr = BiblionetConstraints.trasformaPassword(password);
         UtenteRegistrato u;
 
-        if ((u = clubDelLibroService.findEspertoByEmailAndPassword(email, arr)) != null) {
+        if ((u = espertoService.findEspertoByEmailAndPassword(email, arr)) != null) {
             return u;
         }
         else if ((u = prenotazioneLibriService.findBibliotecaByEmailAndPassword(email, arr)) != null) {
             return u;
         } else {
-            u = clubDelLibroService.findLettoreByEmailAndPassword(email, arr);
+            u = lettoreService.findLettoreByEmailAndPassword(email, arr);
             return u;
         }
 

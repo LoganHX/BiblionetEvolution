@@ -1,14 +1,9 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
-import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,19 +25,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Si occupa delle operazioni CRUD per un club.
      */
     private final ClubDelLibroDAO clubDAO;
-    private final EspertoDAO espertoDAO;
-    private final LettoreDAO lettoreDAO;
 
-
-    @Override
-    public final List<ClubDelLibro> findClubsEsperto(Esperto esperto) {
-        return esperto.getClubs();
-    }
-
-    @Override
-    public final List<ClubDelLibro> findClubsLettore(Lettore lettore) {
-        return lettore.getClubs();
-    }
 
     /**
      * Implementa la funzionalità che permette
@@ -113,27 +96,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         return club.orElse(null);
     }
 
-    /**
-     * Implementa la funzionalità che permette
-     * a un lettore di effettuare
-     * l'iscrizione a un club del libro.
-     *
-     * @param club    Il club al quale iscriversi
-     * @param lettore Il lettore che si iscrive
-     * @return true se è andato a buon fine, false altrimenti
-     */
-    @Override
-    public Boolean partecipaClub(final ClubDelLibro club,
-                                 final Lettore lettore) {
-        List<ClubDelLibro> listaClubs = lettore.getClubs();
-        if (listaClubs == null) {
-            listaClubs = new ArrayList<>();
-        }
-        listaClubs.add(club);
-        lettore.setClubs(listaClubs);
-        this.aggiornaLettore(lettore);
-        return true;
-    }
+
 
     /**
      * Funzione di utilità che permette di leggere la città
@@ -159,140 +122,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     }
 
 
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro a cui un lettore partecipa.
-     *
-     * @param lettore il lettore preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    @Override
-    public List<ClubDelLibro> findAllByLettore(final Lettore lettore) {
-        return clubDAO.findAllByLettori(lettore);
-    }
-
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro di cui un esperto è proprietario.
-     *
-     * @param esperto l' esperto preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    @Override
-    public List<ClubDelLibro> findAllByEsperto(final Esperto esperto) {
-        return clubDAO.findAllByEsperto(esperto);
-    }
-
-    @Override
-    public UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
-        if(biblioteca == null) return null;
-        return espertoDAO.save(new Esperto(form, biblioteca));
-    }
-
-    @Override
-    public UtenteRegistrato aggiornaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
-        if(biblioteca == null) biblioteca = findEspertoByEmail(form.getEmail()).getBiblioteca(); //todo non la utilizzo, ma dovrei
-        return espertoDAO.save(new Esperto(form, biblioteca));
-    }
 
 
-    /**
-     * Implementa la funzionalità di salvataggio delle modifiche
-     * all'account esperto.
-     *
-     * @param utente L'esperto da aggiornare
-     * @return l'esperto aggiornato
-     */
-    @Override
-    public Esperto aggiornaEsperto(final Esperto utente) {
-        return espertoDAO.save(utente);
-    }
-
-    @Override
-    public final List<Esperto> findEspertiByGeneri(final Set<String> generi) {
-        List<Esperto> toReturn = new ArrayList<>();
-
-        for (Esperto esperto : espertoDAO.findAllEsperti()) {
-            for (String genere : esperto.getGeneri()) {
-                if (generi.contains(genere) && !toReturn.contains(esperto)) {
-                    toReturn.add(esperto);
-                }
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * Implementa la funzionalità di trovare un lettore.
-     *
-     * @param email La mail dell lettore
-     * @return Il lettore se c'è, altrimenti null
-     */
-    @Override
-    public final Lettore findLettoreByEmail(final String email) {
-        return lettoreDAO.findLettoreByEmail(email, "Lettore");
-    }
-
-
-    @Override
-    public Lettore aggiornaLettore(final Lettore utente) {
-        return lettoreDAO.save(utente);
-    }
-
-    @Override
-    public List<Esperto> findAllEsperti() {
-        return espertoDAO.findAllEsperti();
-    }
-
-    @Override
-    public List<Esperto> findEspertiByNome(String nome) {
-        return espertoDAO.findByNomeLike(nome);
-    }
-
-    @Override
-    public UtenteRegistrato findEspertoByEmailAndPassword(String email, byte[] password) {
-        return espertoDAO.findByEmailAndPassword(email, password);
-    }
-
-    @Override
-    public UtenteRegistrato findLettoreByEmailAndPassword(String email, byte[] password) {
-        return lettoreDAO.findByEmailAndPassword(email, password);
-    }
-
-    @Override
-    public Esperto findEspertoByEmail(final String email) {
-        return espertoDAO.findEspertoByEmail(email, "Esperto");
-    }
-
-    @Override
-    public Lettore getLettoreByEmail(final String email) {
-        Optional<UtenteRegistrato> lettore = lettoreDAO.findById(email);
-        return (Lettore) lettore.orElse(null);
-    }
-
-    @Override
-    public List<Esperto> getEspertiByBiblioteca(String email){
-        return espertoDAO.findEspertoByBibliotecaEmail(email);
-    }
-
-    @Override
-    public List<String> getEspertiEmailByBiblioteca(String email){
-        return espertoDAO.findEspertoEmailByBibliotecaEmail(email);
-    }
-
-    @Override
-    public List<ClubDelLibro> getClubsByEsperto(Esperto esperto){
-        return clubDAO.findAllByEsperto(esperto);
-    }
-
-    @Override
-    public UtenteRegistrato creaLettoreDaModel(LettoreDTO form) {
-        return lettoreDAO.save(new Lettore(form));
-    }
-
-    @Override
-    public UtenteRegistrato aggiornaLettoreDaModel(LettoreDTO form) {
-        return creaLettoreDaModel(form);
-    }
 
 }

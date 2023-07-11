@@ -1,9 +1,6 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
-import it.unisa.c07.biblionet.common.UtenteRegistrato;
 
 import java.util.List;
 import java.util.Set;
@@ -16,9 +13,6 @@ import java.util.function.Predicate;
  */
 public interface ClubDelLibroService {
 
-    List<ClubDelLibro> findClubsEsperto(Esperto esperto);
-
-    List<ClubDelLibro> findClubsLettore(Lettore lettore);
 
     /**
      * Implementa la funzionalità che permette
@@ -63,15 +57,6 @@ public interface ClubDelLibroService {
      */
     ClubDelLibro getClubByID(int id);
 
-    /**
-     * Implementa la funzionalità che permette
-     * ad un lettore di effettuare
-     * l'iscrizione ad un club del libro.
-     * @param club Il club al quale iscriversi
-     * @param lettore Il lettore che si iscrive
-     * @return true se è andato a buon fine, false altrimenti
-     */
-    Boolean partecipaClub(ClubDelLibro club, Lettore lettore);
 
     /**
      * Funzione di utilità che permette di leggere la città
@@ -89,54 +74,7 @@ public interface ClubDelLibroService {
      */
     Set<String> getCitta();
 
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro a cui un lettore partecipa.
-     * @param lettore il lettore preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    List<ClubDelLibro> findAllByLettore(Lettore lettore);
-
-    /**
-     * Implementa la funzionalità di prendere una lista di club
-     * del libro di cui un esperto è proprietario.
-     * @param esperto l' esperto preso in esame
-     * @return la lista dei club del libro a cui partecipa
-     */
-    List<ClubDelLibro> findAllByEsperto(Esperto esperto);
-
-    UtenteRegistrato creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca);
-
-    UtenteRegistrato aggiornaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca);
-
-    Esperto aggiornaEsperto(Esperto utente);
-
-    List<Esperto> findEspertiByGeneri(Set<String> generi);
-
-    Lettore findLettoreByEmail(String email);
-
-    Lettore aggiornaLettore(Lettore utente);
-
-    List<Esperto> findAllEsperti();
-
-    List<Esperto> findEspertiByNome(String nome);
-
-    UtenteRegistrato findEspertoByEmailAndPassword(String email, byte[] password);
-
-    UtenteRegistrato findLettoreByEmailAndPassword(String email, byte[] password);
-
-    Esperto findEspertoByEmail(String email);
 
 
-    Lettore getLettoreByEmail(String email);
 
-    List<Esperto> getEspertiByBiblioteca(String email);
-
-    List<String> getEspertiEmailByBiblioteca(String email);
-
-    List<ClubDelLibro> getClubsByEsperto(Esperto esperto);
-
-    UtenteRegistrato creaLettoreDaModel(LettoreDTO lettore);
-
-    UtenteRegistrato aggiornaLettoreDaModel(LettoreDTO form);
 }

@@ -1,16 +1,17 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
-import it.unisa.c07.biblionet.events.CreateBiblioteca;
-import it.unisa.c07.biblionet.events.CreateLettore;
-import it.unisa.c07.biblionet.events.MiddleEsperto;
+import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,42 +30,55 @@ public final class RegistrazioneController {
      * Il service per effettuare le operazioni di persistenza.
      */
     private final RegistrazioneService registrazioneService;
-    private final ApplicationEventPublisher events;
+    private final LettoreService lettoreService;
+    private final EspertoService espertoService;
+    private final PrenotazioneLibriService prenotazioneLibriService;
 
-    @PostMapping(value = "/esperto")
-    @ResponseBody
-    @CrossOrigin
-    public void registrazioneEsperto(final @Valid @ModelAttribute EspertoDTO esperto,
-                                                  BindingResult bindingResult,
-                                                  final @RequestParam("conferma_password") String password,
-                                                  final @RequestParam("email_biblioteca") String bibliotecaEmail) {
+    /**
+     * Implementa la funzionalità di registrazione di un esperto.*/
 
-        String s = controlliPreliminari(bindingResult, password, esperto);
-        if (!s.isEmpty()) {
-            return;
-        }
-        events.publishEvent(new MiddleEsperto(esperto, bibliotecaEmail));
-    }
+     @PostMapping(value = "/esperto")
+     @ResponseBody
+     @CrossOrigin
+     public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute EspertoDTO esperto,
+     BindingResult bindingResult,
+     final @RequestParam("conferma_password") String password,
+     final @RequestParam("email_biblioteca") String bibliotecaEmail) {
+
+     if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+
+     if(!BiblionetConstraints.passwordRispettaVincoli(esperto.getPassword(), password))
+     return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+
+     UtenteRegistrato e = espertoService.creaEspertoDaModel(esperto, prenotazioneLibriService.findBibliotecaByEmail(bibliotecaEmail));
+     if(e == null) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+     return new BiblionetResponse("Registrazione ok", true);
+     }
+
+
 
     /**
      * Implementa la funzionalità di registrazione di una biblioteca.
      *
      * @param biblioteca la biblioteca da registrare
      * @param password   la password di conferma
+     * @return la view di login
      */
-    @PostMapping(value = "/biblioteca")
+    @PostMapping(value = "/registrazione")
     @ResponseBody
     @CrossOrigin
-    public void registrazioneBiblioteca(@Valid @ModelAttribute BibliotecaDTO biblioteca,
+    public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute BibliotecaDTO biblioteca,
                                                      BindingResult bindingResult,
                                                      @RequestParam("conferma_password") String password
     ) {
-        String s = controlliPreliminari(bindingResult, password, biblioteca);
-        if (!s.isEmpty()) {
-            return;
+        if (bindingResult.hasErrors()) {
+            return new BiblionetResponse("Errore di validazione", false);
         }
-        events.publishEvent(new CreateBiblioteca(biblioteca));
+        if(! BiblionetConstraints.passwordRispettaVincoli(biblioteca.getPassword(), password)) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+        prenotazioneLibriService.bibliotecaDaModel(biblioteca);
+        return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
+
 
 
     /**
@@ -76,19 +90,23 @@ public final class RegistrazioneController {
      * @param lettore  Il lettore da registrare
      * @param password il campo conferma password del form per controllare
      *                 il corretto inserimento della stessa.
+     * @return La view per effettuare il login
      */
     @PostMapping(value = "/lettore")
     @ResponseBody
     @CrossOrigin
-    public void registrazioneLettore(@Valid @ModelAttribute LettoreDTO lettore,
+    public BiblionetResponse registrazioneLettore(@Valid @ModelAttribute LettoreDTO lettore,
                                                   BindingResult bindingResult,
                                                   final @RequestParam("conferma_password")
                                                   String password
     ) {
-        String s = controlliPreliminari(bindingResult, password, lettore);
-        if (!s.isEmpty()) return;
+        if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
-        events.publishEvent(new CreateLettore(lettore));
+        if(!BiblionetConstraints.passwordRispettaVincoli(lettore.getPassword(), password))
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+
+        lettoreService.creaLettoreDaModel(lettore);
+        return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 
     private String controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistratoDTO utenteRegistrato) {

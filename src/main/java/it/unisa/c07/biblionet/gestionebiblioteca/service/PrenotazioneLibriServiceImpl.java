@@ -123,7 +123,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
             }
         }
         return list;
-    todo ripristinare genere
     */
         return new ArrayList<>();
     }
@@ -144,6 +143,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                                            final String idBiblioteca,
                                            final int idLibro) {
         TicketPrestito ticket = new TicketPrestito();
+        if(!lettore.getTipo().equals("Lettore")) return null;
         ticket.setLettore(lettore);
         ticket.setDataRichiesta(LocalDateTime.now());
         ticket.setStato(TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA);
