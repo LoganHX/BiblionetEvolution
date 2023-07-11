@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
 import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
@@ -23,7 +24,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
-    private final PrenotazioneLibriService prenotazioneLibriService;
+    private final BibliotecaService bibliotecaService;
 
     /**
      * I.
@@ -47,7 +48,7 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
         if ((u = espertoService.findEspertoByEmailAndPassword(email, arr)) != null) {
             return u;
         }
-        else if ((u = prenotazioneLibriService.findBibliotecaByEmailAndPassword(email, arr)) != null) {
+        else if ((u = bibliotecaService.findBibliotecaByEmailAndPassword(email, arr)) != null) {
             return u;
         } else {
             u = lettoreService.findLettoreByEmailAndPassword(email, arr);

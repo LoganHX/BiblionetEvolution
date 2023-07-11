@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.gestioneutenti.controller;
 
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
@@ -32,7 +33,7 @@ public final class RegistrazioneController {
     private final RegistrazioneService registrazioneService;
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
-    private final PrenotazioneLibriService prenotazioneLibriService;
+    private final BibliotecaService bibliotecaService;
 
     /**
      * Implementa la funzionalità di registrazione di un esperto.*/
@@ -50,7 +51,7 @@ public final class RegistrazioneController {
      if(!BiblionetConstraints.passwordRispettaVincoli(esperto.getPassword(), password))
      return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
-     UtenteRegistrato e = espertoService.creaEspertoDaModel(esperto, prenotazioneLibriService.findBibliotecaByEmail(bibliotecaEmail));
+     UtenteRegistrato e = espertoService.creaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(bibliotecaEmail));
      if(e == null) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
      return new BiblionetResponse("Registrazione ok", true);
      }
@@ -75,7 +76,7 @@ public final class RegistrazioneController {
             return new BiblionetResponse("Errore di validazione", false);
         }
         if(! BiblionetConstraints.passwordRispettaVincoli(biblioteca.getPassword(), password)) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
-        prenotazioneLibriService.bibliotecaDaModel(biblioteca);
+        bibliotecaService.creabibliotecaDaModel(biblioteca);
         return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 

@@ -18,6 +18,6 @@ public interface PossessoDAO extends JpaRepository<Possesso, PossessoId> {
      * @param bibliotecaID L'ID della biblioteca
      * @return La lista di possessi di quella biblioteca
      */
-    @Query("SELECT p FROM Possesso p WHERE p.possessoID.bibliotecaID=?1")
-    List<Possesso> findByBibliotecaID(String bibliotecaID);
+    //@Query("SELECT p FROM Possesso p WHERE p.possessoID.bibliotecaID=?1")
+    //List<Possesso> findByBibliotecaID(String bibliotecaID);
 }

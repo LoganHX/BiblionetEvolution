@@ -6,7 +6,7 @@
 <title>AutenticazioneServiceImpl</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2021-01-18">
-<meta name="description" content="declaration: package: it.unisa.c07.biblionet.autenticazione.service, class: AutenticazioneServiceImpl">
+<meta name="description" content="declaration: package: it.unisa.c07.biblionet.gestioneutenti.service, class: AutenticazioneServiceImpl">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
@@ -73,22 +73,22 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">it.unisa.c07.biblionet.autenticazione.service</a></div>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">it.unisa.c07.biblionet.gestioneutenti.service</a></div>
 <h1 title="Class AutenticazioneServiceImpl" class="title">Class AutenticazioneServiceImpl</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance">it.unisa.c07.biblionet.autenticazione.service.AutenticazioneServiceImpl</div>
+<div class="inheritance">it.unisa.c07.biblionet.gestioneutenti.service.AutenticazioneServiceImpl</div>
 </div>
 <section class="description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 </dl>
 <hr>
 <pre>@Service
 public class <span class="type-name-label">AutenticazioneServiceImpl</span>
 extends java.lang.Object
-implements <a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></pre>
+implements <a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></pre>
 <div class="block">Implementa la classe che esplicita i metodi
  definiti nell'interfaccia service per il
  sottosistema Autenticazione.</div>
@@ -273,7 +273,7 @@ java.lang.String&nbsp;password)</span></div>
  per un Utente registrato.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#login(java.lang.String,java.lang.String)">login</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#login(java.lang.String,java.lang.String)">login</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>email</code> - dell'utente.</dd>
 <dd><code>password</code> - dell'utente.</dd>
@@ -290,7 +290,7 @@ java.lang.String&nbsp;password)</span></div>
  identifica di un utente in sessione.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#isLettore(it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato)">isLettore</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#isLettore(it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato)">isLettore</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>utente</code> - registrato che si trova già in sessione.</dd>
 <dt>Returns:</dt>
@@ -306,7 +306,7 @@ java.lang.String&nbsp;password)</span></div>
  identifica di un utente in sessione.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#isEsperto(it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato)">isEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#isEsperto(it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato)">isEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>utente</code> - registrato che si trova già in sessione.</dd>
 <dt>Returns:</dt>
@@ -322,7 +322,7 @@ java.lang.String&nbsp;password)</span></div>
  identifica di un utente in sessione.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#isBiblioteca(it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato)">isBiblioteca</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#isBiblioteca(it.unisa.c07.biblionet.model.entity.utente.UtenteRegistrato)">isBiblioteca</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>utente</code> - registrato che si trova già in sessione.</dd>
 <dt>Returns:</dt>
@@ -338,7 +338,7 @@ java.lang.String&nbsp;password)</span></div>
  all'account biblioteca.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#aggiornaBiblioteca(it.unisa.c07.biblionet.model.entity.utente.Biblioteca)">aggiornaBiblioteca</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#aggiornaBiblioteca(it.unisa.c07.biblionet.model.entity.utente.Biblioteca)">aggiornaBiblioteca</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>utente</code> - La biblioteca da aggiornare</dd>
 <dt>Returns:</dt>
@@ -354,7 +354,7 @@ java.lang.String&nbsp;password)</span></div>
  all'account esperto.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#aggiornaEsperto(it.unisa.c07.biblionet.model.entity.utente.Esperto)">aggiornaEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#aggiornaEsperto(it.unisa.c07.biblionet.model.entity.utente.Esperto)">aggiornaEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>utente</code> - L'esperto da aggiornare</dd>
 <dt>Returns:</dt>
@@ -370,7 +370,7 @@ java.lang.String&nbsp;password)</span></div>
  all'account lettore.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#aggiornaLettore(it.unisa.c07.biblionet.model.entity.utente.Lettore)">aggiornaLettore</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#aggiornaLettore(it.unisa.c07.biblionet.model.entity.utente.Lettore)">aggiornaLettore</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>utente</code> - Lettore da aggiornare</dd>
 <dt>Returns:</dt>
@@ -385,7 +385,7 @@ java.lang.String&nbsp;password)</span></div>
 <div class="block">Implementa la funzionalità di trovare una biblioteca.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#findBibliotecaByEmail(java.lang.String)">findBibliotecaByEmail</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#findBibliotecaByEmail(java.lang.String)">findBibliotecaByEmail</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>email</code> - La mail della biblioteca</dd>
 <dt>Returns:</dt>
@@ -400,7 +400,7 @@ java.lang.String&nbsp;password)</span></div>
 <div class="block">Implementa la funzionalità di trovare un esperto.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#findEspertoByEmail(java.lang.String)">findEspertoByEmail</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#findEspertoByEmail(java.lang.String)">findEspertoByEmail</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>email</code> - La mail dell esperto</dd>
 <dt>Returns:</dt>
@@ -415,7 +415,7 @@ java.lang.String&nbsp;password)</span></div>
 <div class="block">Implementa la funzionalità di trovare un lettore.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#findLettoreByEmail(java.lang.String)">findLettoreByEmail</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#findLettoreByEmail(java.lang.String)">findLettoreByEmail</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>email</code> - La mail dell lettore</dd>
 <dt>Returns:</dt>
@@ -431,7 +431,7 @@ java.lang.String&nbsp;password)</span></div>
  del libro a cui un lettore partecipa.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#findAllByLettori(it.unisa.c07.biblionet.model.entity.utente.Lettore)">findAllByLettori</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#findAllByLettori(it.unisa.c07.biblionet.model.entity.utente.Lettore)">findAllByLettori</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>lettore</code> - il lettore preso in esame</dd>
 <dt>Returns:</dt>
@@ -447,7 +447,7 @@ java.lang.String&nbsp;password)</span></div>
  del libro di cui un esperto è proprietario.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="AutenticazioneService.html#findAllByEsperto(it.unisa.c07.biblionet.model.entity.utente.Esperto)">findAllByEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.autenticazione.service">AutenticazioneService</a></code></dd>
+<dd><code><a href="AutenticazioneService.html#findAllByEsperto(it.unisa.c07.biblionet.model.entity.utente.Esperto)">findAllByEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="AutenticazioneService.html" title="interface in it.unisa.c07.biblionet.gestioneutenti.service">AutenticazioneService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>esperto</code> - l' esperto preso in esame</dd>
 <dt>Returns:</dt>

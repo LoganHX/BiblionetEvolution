@@ -1,8 +1,8 @@
 it.unisa.c07.biblionet
-it.unisa.c07.biblionet.autenticazione.controller
-it.unisa.c07.biblionet.autenticazione.service
-it.unisa.c07.biblionet.clubDelLibro.controller
-it.unisa.c07.biblionet.clubDelLibro.service
+it.unisa.c07.biblionet.gestioneutenti.controller
+it.unisa.c07.biblionet.gestioneutenti.service
+it.unisa.c07.biblionet.gestioneclubdellibro.controller
+it.unisa.c07.biblionet.gestioneclubdellibro.service
 it.unisa.c07.biblionet.comunicazioneEsperto.controller
 it.unisa.c07.biblionet.comunicazioneEsperto.service
 it.unisa.c07.biblionet.gestioneEventi.service

@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @RequiredArgsConstructor
-public abstract class Libro {
+public class Libro {
 
     /**
      * Rappresenta l'ID autogenerato di un libro.

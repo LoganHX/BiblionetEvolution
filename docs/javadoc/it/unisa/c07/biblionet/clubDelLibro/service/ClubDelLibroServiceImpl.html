@@ -6,7 +6,7 @@
 <title>ClubDelLibroServiceImpl</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2021-01-18">
-<meta name="description" content="declaration: package: it.unisa.c07.biblionet.clubDelLibro.service, class: ClubDelLibroServiceImpl">
+<meta name="description" content="declaration: package: it.unisa.c07.biblionet.gestioneclubdellibro.service, class: ClubDelLibroServiceImpl">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../../../script-dir/jquery-ui.min.css" title="Style">
@@ -73,22 +73,22 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">it.unisa.c07.biblionet.clubDelLibro.service</a></div>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">it.unisa.c07.biblionet.gestioneclubdellibro.service</a></div>
 <h1 title="Class ClubDelLibroServiceImpl" class="title">Class ClubDelLibroServiceImpl</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance">it.unisa.c07.biblionet.clubDelLibro.service.ClubDelLibroServiceImpl</div>
+<div class="inheritance">it.unisa.c07.biblionet.gestioneclubdellibro.service.ClubDelLibroServiceImpl</div>
 </div>
 <section class="description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 </dl>
 <hr>
 <pre>@Service
 public class <span class="type-name-label">ClubDelLibroServiceImpl</span>
 extends java.lang.Object
-implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></pre>
+implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></pre>
 <div class="block">Implementa la classe che esplicita i metodi
  definiti nell'interfaccia service per il
  sottosustema ClubDelLibro.</div>
@@ -277,7 +277,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  ad un Esperto di creare un Club del Libro.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#creaClubDelLibro(it.unisa.c07.biblionet.model.entity.ClubDelLibro)">creaClubDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#creaClubDelLibro(it.unisa.c07.biblionet.model.entity.ClubDelLibro)">creaClubDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>club</code> - Il Club del Libro da memorizzare</dd>
 <dt>Returns:</dt>
@@ -293,7 +293,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  di visualizzare tutti i club del libro.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#visualizzaClubsDelLibro()">visualizzaClubsDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#visualizzaClubsDelLibro()">visualizzaClubsDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Returns:</dt>
 <dd>La lista dei club</dd>
 </dl>
@@ -307,7 +307,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  di filtrare tutti i club del libro.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#visualizzaClubsDelLibro(java.util.function.Predicate)">visualizzaClubsDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#visualizzaClubsDelLibro(java.util.function.Predicate)">visualizzaClubsDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>filtro</code> - Un predicato che descrive come filtrare i Club</dd>
 <dt>Returns:</dt>
@@ -324,7 +324,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  della classe genere dato il nome.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#getGeneri(java.util.List)">getGeneri</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#getGeneri(java.util.List)">getGeneri</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>generi</code> - Lista dei generi sottoforma di stringa</dd>
 <dt>Returns:</dt>
@@ -341,7 +341,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  effettuare l'update di un club.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#modificaDatiClub(it.unisa.c07.biblionet.model.entity.ClubDelLibro)">modificaDatiClub</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#modificaDatiClub(it.unisa.c07.biblionet.model.entity.ClubDelLibro)">modificaDatiClub</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>club</code> - Il club da modificare</dd>
 <dt>Returns:</dt>
@@ -358,7 +358,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  club dato il suo ID.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#getClubByID(int)">getClubByID</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#getClubByID(int)">getClubByID</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>id</code> - L'ID del club da recuperare</dd>
 <dt>Returns:</dt>
@@ -376,7 +376,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  l'iscrizione ad un club del libro.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#partecipaClub(it.unisa.c07.biblionet.model.entity.ClubDelLibro,it.unisa.c07.biblionet.model.entity.utente.Lettore)">partecipaClub</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#partecipaClub(it.unisa.c07.biblionet.model.entity.ClubDelLibro,it.unisa.c07.biblionet.model.entity.utente.Lettore)">partecipaClub</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>club</code> - Il club al quale iscriversi</dd>
 <dd><code>lettore</code> - Il lettore che si iscrive</dd>
@@ -393,7 +393,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  in cui si trova un Club del Libro.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#getCittaFromClubDelLibro(it.unisa.c07.biblionet.model.entity.ClubDelLibro)">getCittaFromClubDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#getCittaFromClubDelLibro(it.unisa.c07.biblionet.model.entity.ClubDelLibro)">getCittaFromClubDelLibro</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>club</code> - il club da cui prendere la città</dd>
 <dt>Returns:</dt>
@@ -408,7 +408,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
 <div class="block">Restituisce tutti i generi nel sistema.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#getTuttiGeneri()">getTuttiGeneri</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#getTuttiGeneri()">getTuttiGeneri</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Returns:</dt>
 <dd>Tutti i generi nel sistema</dd>
 </dl>
@@ -421,7 +421,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
 <div class="block">Restituisce tutte le citta nel sistema.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#getCitta()">getCitta</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#getCitta()">getCitta</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Returns:</dt>
 <dd>Tutte le citta nel sistema</dd>
 </dl>
@@ -435,7 +435,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  del libro a cui un lettore partecipa.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#findAllByLettori(it.unisa.c07.biblionet.model.entity.utente.Lettore)">findAllByLettori</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#findAllByLettori(it.unisa.c07.biblionet.model.entity.utente.Lettore)">findAllByLettori</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>lettore</code> - il lettore preso in esame</dd>
 <dt>Returns:</dt>
@@ -451,7 +451,7 @@ implements <a href="ClubDelLibroService.html" title="interface in it.unisa.c07.b
  del libro di cui un esperto è proprietario.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ClubDelLibroService.html#findAllByEsperto(it.unisa.c07.biblionet.model.entity.utente.Esperto)">findAllByEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.clubDelLibro.service">ClubDelLibroService</a></code></dd>
+<dd><code><a href="ClubDelLibroService.html#findAllByEsperto(it.unisa.c07.biblionet.model.entity.utente.Esperto)">findAllByEsperto</a></code>&nbsp;in interface&nbsp;<code><a href="ClubDelLibroService.html" title="interface in it.unisa.c07.biblionet.gestioneclubdellibro.service">ClubDelLibroService</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>esperto</code> - l' esperto preso in esame</dd>
 <dt>Returns:</dt>

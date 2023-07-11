@@ -1,5 +1,6 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
 
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RegistrazioneServiceImpl implements RegistrazioneService {
 
-    private final PrenotazioneLibriService prenotazioneLibriService;
+    private final BibliotecaService bibliotecaService;
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
 
@@ -25,7 +26,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
 
     @Override
     public final UtenteRegistrato aggiornaEsperto(final EspertoDTO esperto, final String emailBiblioteca) {
-        return espertoService.aggiornaEspertoDaModel(esperto, prenotazioneLibriService.findBibliotecaByEmail(emailBiblioteca));
+        return espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(emailBiblioteca));
         //todo controllare se sono inutili
     }
 
@@ -45,7 +46,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     @Override
     public boolean isEmailRegistrata(final String email) {
         if (lettoreService.findLettoreByEmail(email) != null ||
-        prenotazioneLibriService.findBibliotecaByEmail(email) != null ||
+        bibliotecaService.findBibliotecaByEmail(email) != null ||
         espertoService.findEspertoByEmail(email) != null)
             return true;
 

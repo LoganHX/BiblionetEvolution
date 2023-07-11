@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
@@ -31,6 +32,7 @@ public class PrenotazioneLibriController {
      * persistenza.
      */
     private final PrenotazioneLibriService prenotazioneService;
+    private final BibliotecaService bibliotecaService;
 
 
 
@@ -117,7 +119,7 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new ArrayList<>();
         }
-        Biblioteca biblioteca = prenotazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> lista = prenotazioneService.getTicketsByBiblioteca(biblioteca);
             /*

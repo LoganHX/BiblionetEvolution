@@ -15,12 +15,6 @@ import java.util.List;
 public interface PrenotazioneLibriService {
 
 
-
-
-    UtenteRegistrato bibliotecaDaModel(BibliotecaDTO form);
-
-    UtenteRegistrato findBibliotecaByEmailAndPassword(String email, byte[] password);
-
     /**
      * Implementa la funzionalità che permette
      * di visualizzare la lista completa dei libri
@@ -190,14 +184,7 @@ public interface PrenotazioneLibriService {
                                    int numCopie, List<String> generi);
 
 
-    Biblioteca findBibliotecaByEmail(String email);
 
-    List<Biblioteca> findBibliotecaByNome(String nomeBiblioteca);
 
-    List<Biblioteca> findBibliotecaByCitta(String citta);
-
-    List<Biblioteca> findAllBiblioteche();
-
-    Biblioteca aggiornaBiblioteca(Biblioteca utente);
 
 }

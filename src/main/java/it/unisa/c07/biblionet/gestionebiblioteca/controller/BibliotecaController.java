@@ -1,5 +1,6 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.LibroBibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
@@ -35,8 +36,8 @@ public class BibliotecaController {
      * Il service per effettuare le operazioni di
      * persistenza.
      */
+    private final BibliotecaService bibliotecaService;
     private final PrenotazioneLibriService prenotazioneService;
-    private final ApplicationEventPublisher events;
 
 
 
@@ -49,7 +50,7 @@ public class BibliotecaController {
     @ResponseBody
     @CrossOrigin
     public List<Biblioteca> visualizzaListaBiblioteche() {
-        return prenotazioneService.findAllBiblioteche();
+        return bibliotecaService.findAllBiblioteche();
     }
 
     /**
@@ -74,7 +75,7 @@ public class BibliotecaController {
         if (isbn == null) {
             return new BiblionetResponse("L'ISBN inserito non è valido", false);
         }
-        Biblioteca b = prenotazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
         List<String> glist = Arrays.asList(generi.clone());
         LibroBiblioteca l = prenotazioneService.inserimentoPerIsbn(
@@ -105,7 +106,7 @@ public class BibliotecaController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse("Non sei autorizzato", false);
         }
-        Biblioteca b =  prenotazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca b =  bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
         prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
         return new BiblionetResponse("Libro inserito con successo", true);
 
@@ -132,7 +133,7 @@ public class BibliotecaController {
         if (!Utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse("Non sei autorizzato", false);
         }
-        Biblioteca b = prenotazioneService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
         LibroBiblioteca l = new LibroBiblioteca();
         l.setTitolo(libro.getTitolo());
         l.setIsbn(libro.getIsbn());
@@ -171,11 +172,11 @@ public class BibliotecaController {
 
         switch (filtro) {
             case "nome":
-                return prenotazioneService.findBibliotecaByNome(stringa);
+                return bibliotecaService.findBibliotecaByNome(stringa);
             case "citta":
-                return prenotazioneService.findBibliotecaByCitta(stringa);
+                return bibliotecaService.findBibliotecaByCitta(stringa);
             default:
-                return prenotazioneService.findAllBiblioteche();
+                return bibliotecaService.findAllBiblioteche();
         }
     }
 
@@ -189,6 +190,6 @@ public class BibliotecaController {
     @ResponseBody
     @CrossOrigin
     public Biblioteca visualizzaDatiBiblioteca(final @PathVariable String email) {
-        return prenotazioneService.findBibliotecaByEmail(email);
+        return bibliotecaService.findBibliotecaByEmail(email);
     }
 }
