@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.common.LibroDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEvento;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEventoDAO;
 import org.springframework.stereotype.Service;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EventoDAO;
@@ -34,7 +34,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     private final EventoDAO eventoDAO;
     private final ClubDelLibroService clubDelLibroService;
     private final LettoreService lettoreService;
-    private final LibroEventoDAO libroEventoDAO;
+    private final LibroDAO libroDAO;
 
 
     /**
@@ -82,8 +82,8 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * @return Il libro recuperato
      */
     @Override
-    public Optional<LibroEvento> getLibroById(final int id) {
-        return libroEventoDAO.findById(id);
+    public Optional<Libro> getLibroById(final int id) {
+        return libroDAO.findById(id);
     }
 
     /**

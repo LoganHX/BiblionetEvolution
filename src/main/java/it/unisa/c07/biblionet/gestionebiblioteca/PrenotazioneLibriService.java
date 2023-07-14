@@ -2,10 +2,10 @@ package it.unisa.c07.biblionet.gestionebiblioteca;
 
 import it.unisa.c07.biblionet.common.*;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementa l'interfaccia service
@@ -21,7 +21,7 @@ public interface PrenotazioneLibriService {
      * prenotabili sulla piattaforma.
      * @return La lista di libri
      */
-    List<LibroBiblioteca> visualizzaListaLibriCompleta();
+    List<Libro> visualizzaListaLibriCompleta();
 
 
 
@@ -33,7 +33,7 @@ public interface PrenotazioneLibriService {
      * nel titolo
      * @return La lista di libri
      */
-    List<LibroBiblioteca> visualizzaListaLibriPerTitolo(String titolo);
+    List<Libro> visualizzaListaLibriPerTitolo(String titolo);
 
     /**
      * Implementa la funzionalità che permette
@@ -42,7 +42,7 @@ public interface PrenotazioneLibriService {
      * @param nomeBiblioteca Il nome della biblioteca
      * @return La lista di libri
      */
-    List<LibroBiblioteca> visualizzaListaLibriPerBiblioteca(String nomeBiblioteca);
+    List<Libro> visualizzaListaLibriPerBiblioteca(String nomeBiblioteca);
 
     /**
      * Implementa la funzionalità che permette
@@ -51,18 +51,18 @@ public interface PrenotazioneLibriService {
      * @param genere Il nome del genere
      * @return La lista di libri
      */
-    List<LibroBiblioteca> visualizzaListaLibriPerGenere(String genere);
+    List<Libro> visualizzaListaLibriPerGenere(String genere);
 
     /**
      * Implementa la funzionalità che permette
      * di richiedere un prestito per un libro
      * da una biblioteca.
-     * @param lettore Il lettore che lo richiede
+     * @param emailLettore la chiave del lettore che lo richiede
      * @param idBiblioteca id della biblioteca
      * @param idLibro id del libro
      * @return Il ticket aperto in attesa di approvazione
      */
-    TicketPrestito richiediPrestito(UtenteRegistrato lettore,
+    TicketPrestito richiediPrestito(String emailLettore,
                                     String idBiblioteca,
                                     int idLibro);
 
@@ -73,7 +73,7 @@ public interface PrenotazioneLibriService {
      * @param libro Il libro di cui estrarre le biblioteche
      * @return La lista delle biblioteche che possiedono il libro
      */
-    List<Biblioteca> getBibliotecheLibro(LibroBiblioteca libro);
+    List<Biblioteca> getBibliotecheLibro(Libro libro);
 
     /**
      * Implementa la funzionalità che permette
@@ -81,7 +81,7 @@ public interface PrenotazioneLibriService {
      * @param id L'ID del libro da ottenere
      * @return Il libro da ottenere
      */
-    LibroBiblioteca getLibroByID(int id);
+    Libro getLibroByID(int id);
 
     /**
      * Implementa la funzionalità che permette
@@ -155,8 +155,8 @@ public interface PrenotazioneLibriService {
      * @param generi la lista dei generi del libro
      * @return il libro creato
      */
-    LibroBiblioteca inserimentoPerIsbn(String isbn, String idBiblioteca,
-                                   int numCopie, List<String> generi);
+    Libro inserimentoPerIsbn(String isbn, String idBiblioteca,
+                                   int numCopie, Set<String> generi);
 
     /**
      * Implementa la funzionalità che permette
@@ -168,7 +168,7 @@ public interface PrenotazioneLibriService {
      * @param numCopie il numero di copie possedute
      * @return il libro inserito
      */
-    LibroBiblioteca inserimentoDalDatabase(int idLibro,
+    Libro inserimentoDalDatabase(int idLibro,
                                        String idBiblioteca, int numCopie);
 
     /**
@@ -180,8 +180,8 @@ public interface PrenotazioneLibriService {
      * @param generi la lista dei generi del libro
      * @return il libro inserito
      */
-    LibroBiblioteca inserimentoManuale(LibroBiblioteca libro, String idBiblioteca,
-                                   int numCopie, List<String> generi);
+    Libro inserimentoManuale(Libro libro, String idBiblioteca,
+                                   int numCopie, Set<String> generi);
 
 
 

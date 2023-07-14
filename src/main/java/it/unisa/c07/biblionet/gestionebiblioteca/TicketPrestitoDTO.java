@@ -1,6 +1,6 @@
 package it.unisa.c07.biblionet.gestionebiblioteca;
 
-import it.unisa.c07.biblionet.gestionebiblioteca.LibroBibliotecaDTO;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class TicketPrestitoDTO {
      * Rappresenta il libro che si prende il prestito.
      */
     @NonNull
-    private LibroBibliotecaDTO libro;
+    private LibroDTO libro;
     /**
      * Rappresenta la biblioteca da cui si prende il prestito il libro.
      */
@@ -60,7 +60,7 @@ public class TicketPrestitoDTO {
        this.stato = ticketPrestito.getStato();
        this.biblioteca = ticketPrestito.getBiblioteca().getEmail();
        this.lettore = ticketPrestito.getLettore().getEmail();
-       this.libro = new LibroBibliotecaDTO(ticketPrestito.getLibro());
+       this.libro = new LibroDTO(ticketPrestito.getLibro());
        this.dataRestituzione = ticketPrestito.getDataRestituzione();
        this.dataRichiesta = ticketPrestito.getDataRichiesta();
    }

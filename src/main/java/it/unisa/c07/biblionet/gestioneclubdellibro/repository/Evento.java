@@ -1,5 +1,6 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.repository;
 
+import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -80,7 +81,7 @@ public class Evento {
      */
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private LibroEvento libro;
+    private Libro libro;
 
     @Override
     public boolean equals(final Object obj) throws NullPointerException {

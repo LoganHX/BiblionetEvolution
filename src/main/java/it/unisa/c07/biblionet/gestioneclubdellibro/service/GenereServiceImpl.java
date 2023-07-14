@@ -6,6 +6,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Genere;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class GenereServiceImpl implements GenereService {
 
         for (String g: generi) {
             Genere gen = genereDAO.findByName(g);
+            if(gen == null) return null;
             Genere dto = new Genere();
             dto.setDescrizione(gen.getDescrizione());
             dto.setNome(gen.getNome());
@@ -40,6 +42,15 @@ public class GenereServiceImpl implements GenereService {
         }
 
         return toReturn;
+    }
+    @Override
+    public boolean doGeneriExist(Set<String> generi){
+        if(generi.isEmpty()) return true;
+        List<String> lista = new ArrayList<>(generi);
+        for(String genere: lista){
+            if(genereDAO.findByName(genere) == null) return false;
+        }
+        return true;
     }
 
     @Override
@@ -50,13 +61,7 @@ public class GenereServiceImpl implements GenereService {
 
     @Override
     public Set<Genere> getAllGeneri() {
-        List<Genere> list = genereDAO.findAll();
-        Set<Genere> setGeneri =new HashSet<>();
-        for(Genere g: list){
-            Genere genere = new Genere();
-            genere.setNome(g.getNome());
-            genere.setDescrizione(g.getDescrizione());
-        }
-        return setGeneri;
+        Set<Genere> genereSet = new HashSet<>(genereDAO.findAll());
+        return genereSet;
     }
 }

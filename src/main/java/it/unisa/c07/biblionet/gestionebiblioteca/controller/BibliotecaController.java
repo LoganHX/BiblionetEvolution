@@ -1,22 +1,18 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
+import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
-import it.unisa.c07.biblionet.gestionebiblioteca.LibroBibliotecaDTO;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implementa il controller per il sottosistema
@@ -77,9 +73,9 @@ public class BibliotecaController {
         }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
-        List<String> glist = Arrays.asList(generi.clone());
-        LibroBiblioteca l = prenotazioneService.inserimentoPerIsbn(
-                isbn, b.getEmail(), numCopie, glist);
+        Set<String> gSet =  new HashSet<>(Arrays.asList(generi.clone()));
+        Libro l = prenotazioneService.inserimentoPerIsbn(
+                isbn, b.getEmail(), numCopie, gSet);
         if (l == null) {
             return new BiblionetResponse("Libro non creato", false);
         }
@@ -126,7 +122,7 @@ public class BibliotecaController {
     @CrossOrigin
     public BiblionetResponse inserisciManualmente(
             @RequestHeader (name="Authorization") final String token,
-            @RequestParam final LibroBibliotecaDTO libro,
+            @RequestParam final LibroDTO libro,
             @RequestParam final int numCopie,
             @RequestParam final String annoPubblicazione) {
 
@@ -134,7 +130,7 @@ public class BibliotecaController {
             return new BiblionetResponse("Non sei autorizzato", false);
         }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
-        LibroBiblioteca l = new LibroBiblioteca();
+        Libro l = new Libro();
         l.setTitolo(libro.getTitolo());
         l.setIsbn(libro.getIsbn());
         l.setDescrizione(libro.getDescrizione());
@@ -149,7 +145,7 @@ public class BibliotecaController {
         LocalDateTime anno = LocalDateTime.of(
                 Integer.parseInt(annoPubblicazione), 1, 1, 1, 1);
         l.setAnnoDiPubblicazione(anno);
-        LibroBiblioteca newLibro = prenotazioneService.inserimentoManuale(l, b.getEmail(), numCopie, new ArrayList<>(libro.getGeneri()));
+        Libro newLibro = prenotazioneService.inserimentoManuale(l, b.getEmail(), numCopie, libro.getGeneri());
         if(newLibro == null) return new BiblionetResponse("Errore inserimento libro", false);
         return new BiblionetResponse("Libro inserito con successo", true);
 
@@ -170,14 +166,11 @@ public class BibliotecaController {
             @RequestParam("stringa") final String stringa,
             @RequestParam("filtro") final String filtro) {
 
-        switch (filtro) {
-            case "nome":
-                return bibliotecaService.findBibliotecaByNome(stringa);
-            case "citta":
-                return bibliotecaService.findBibliotecaByCitta(stringa);
-            default:
-                return bibliotecaService.findAllBiblioteche();
-        }
+        return switch (filtro) {
+            case "nome" -> bibliotecaService.findBibliotecaByNome(stringa);
+            case "citta" -> bibliotecaService.findBibliotecaByCitta(stringa);
+            default -> bibliotecaService.findAllBiblioteche();
+        };
     }
 
     /**

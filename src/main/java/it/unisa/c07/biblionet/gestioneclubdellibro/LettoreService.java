@@ -9,6 +9,9 @@ public interface LettoreService {
     Boolean partecipaClub(ClubDelLibro club,
                           Lettore lettore);
 
+    Boolean abbandonaClub(ClubDelLibro club,
+                          Lettore lettore);
+
     Lettore aggiornaLettore(Lettore utente);
 
     Lettore findLettoreByEmailAndPassword(String email, byte[] password);

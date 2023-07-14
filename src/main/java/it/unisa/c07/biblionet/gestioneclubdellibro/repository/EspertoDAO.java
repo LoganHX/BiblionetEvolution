@@ -45,6 +45,7 @@ public interface EspertoDAO extends JpaRepository<UtenteRegistrato, String> {
     @Query("SELECT e FROM Esperto e WHERE e.email=?1 and e.tipo=?2")
     Esperto findEspertoByEmail(String email, String tipo);
 
+
     List<Esperto> findEspertoByBibliotecaEmail(String emailBiblioteca);
     @Query("SELECT e.email FROM Esperto e WHERE e.biblioteca.email=?1")
     List<String> findEspertoEmailByBibliotecaEmail(String emailBiblioteca);

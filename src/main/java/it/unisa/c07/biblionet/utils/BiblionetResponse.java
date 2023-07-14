@@ -20,7 +20,6 @@ public class BiblionetResponse {
     public static final String OPERAZIONE_OK = "Operazione effettuata con successo";
     public static final String ERRORE = "Errore!";
 
-
     private Map<String, String> payload;
     private boolean isStatusOk;
 

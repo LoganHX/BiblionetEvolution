@@ -1,21 +1,23 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.service;
 
 import it.unisa.c07.biblionet.common.ILibroIdAndName;
+import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.common.LibroDAO;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
+import it.unisa.c07.biblionet.gestioneclubdellibro.GenereService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Implementa la classe che esplicita i metodi
@@ -30,11 +32,13 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     /**
      * Si occupa delle operazioni CRUD per libro.
      */
-    private final LibroBibliotecaDAO libroBibliotecaDAO;
+    private final LibroDAO libroDAO;
     private final BookApiAdapter bookApiAdapter;
     private final PossessoDAO possessoDAO;
     private final TicketPrestitoDAO ticketPrestitoDAO;
     private final BibliotecaService bibliotecaService;
+    private final LettoreService lettoreService;
+    private final GenereService genereService;
 
 
 
@@ -48,8 +52,8 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @return La lista di libri
      */
     @Override
-    public List<LibroBiblioteca> visualizzaListaLibriCompleta() {
-        return libroBibliotecaDAO.findAll(Sort.by("titolo"));
+    public List<Libro> visualizzaListaLibriCompleta() {
+        return libroDAO.findAll(Sort.by("titolo"));
     }
 
     /**
@@ -62,8 +66,8 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @return La lista di libri
      */
     @Override
-    public List<LibroBiblioteca> visualizzaListaLibriPerTitolo(final String titolo) {
-        return libroBibliotecaDAO.findByTitoloLike(titolo);
+    public List<Libro> visualizzaListaLibriPerTitolo(final String titolo) {
+        return libroDAO.findByTitoloLike(titolo);
     }
 
 
@@ -78,15 +82,15 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * todo completamente rifatta
      */
     @Override
-    public List<LibroBiblioteca> visualizzaListaLibriPerBiblioteca(
+    public List<Libro> visualizzaListaLibriPerBiblioteca(
             final String email) {
-        List<LibroBiblioteca> libri = new ArrayList<>();
+        List<Libro> libri = new ArrayList<>();
 
         Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(email);
         List<Possesso> possessi = biblioteca.getPossessi();
         for (Possesso p : possessi) {
-            Optional<LibroBiblioteca> l =
-                    libroBibliotecaDAO.findById(p.getPossessoID().getLibroID());
+            Optional<Libro> l =
+                    libroDAO.findById(p.getPossessoID().getLibroID());
             if (!libri.contains(l.orElse(null))) {
                 libri.add(l.orElse(null));
             }
@@ -103,7 +107,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @return La lista di libri
      */
     @Override
-    public List<LibroBiblioteca> visualizzaListaLibriPerGenere(
+    public List<Libro> visualizzaListaLibriPerGenere(
             final String genere) {
 /*
         List<LibroBiblioteca> libri = LibroBibliotecaDAO.findAll();
@@ -131,9 +135,10 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @return Il ticket aperto in attesa di approvazione
      */
     @Override
-    public TicketPrestito richiediPrestito(final UtenteRegistrato lettore,
+    public TicketPrestito richiediPrestito(final String lettoreMail,
                                            final String idBiblioteca,
                                            final int idLibro) {
+        UtenteRegistrato lettore = lettoreService.getLettoreByEmail(lettoreMail);
         TicketPrestito ticket = new TicketPrestito();
         if(!lettore.getTipo().equals("Lettore")) return null;
         ticket.setLettore(lettore);
@@ -142,9 +147,9 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
 
         Biblioteca biblioteca =
                 bibliotecaService.findBibliotecaByEmail(idBiblioteca);
-        LibroBiblioteca libro = libroBibliotecaDAO.getOne(idLibro);
+        Libro libro = libroDAO.getOne(idLibro);
 
-        //ticket.setBiblioteca(biblioteca);
+        ticket.setBiblioteca(biblioteca);
         ticket.setLibro(libro);
 
         ticketPrestitoDAO.save(ticket);
@@ -160,14 +165,15 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @return La lista delle biblioteche che possiedono il libro
      */
     @Override
-    public List<Biblioteca> getBibliotecheLibro(final LibroBiblioteca libro) {
+    public List<Biblioteca> getBibliotecheLibro(final Libro libro) {
         List<Biblioteca> lista = new ArrayList<>();
-
-        for (Possesso p : libro.getPossessi()) {
+        //todo da testare
+        for (Possesso p : possessoDAO.findByLibroID(libro.getIdLibro())) {
             lista.add(bibliotecaService.findBibliotecaByEmail(p.getPossessoID().getBibliotecaID()));
         }
         return lista;
     }
+
 
     /**
      * Implementa la funzionalità che permette
@@ -177,8 +183,8 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @return Il libro da ottenere
      */
     @Override
-    public LibroBiblioteca getLibroByID(final int id) {
-        return libroBibliotecaDAO.getOne(id);
+    public Libro getLibroByID(final int id) {
+        return libroDAO.getOne(id);
     }
 
     /**
@@ -220,7 +226,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                                            final int giorni) {
         ticket.setDataRestituzione(LocalDateTime.now().plusDays(giorni));
         ticket.setStato(TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE);
-        LibroBiblioteca l = ticket.getLibro();
+        Libro l = ticket.getLibro();
         Biblioteca b = ticket.getBiblioteca();
         Possesso pos = possessoDAO.
                 getOne(new PossessoId(b.getEmail(), l.getIdLibro()));
@@ -257,7 +263,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     @Override
     public TicketPrestito chiudiTicket(final TicketPrestito ticket) {
         ticket.setStato(TicketPrestito.Stati.CHIUSO);
-        LibroBiblioteca l = ticket.getLibro();
+        Libro l = ticket.getLibro();
         Biblioteca b = ticket.getBiblioteca();
         Possesso pos = possessoDAO.
                 getOne(new PossessoId(b.getEmail(), l.getIdLibro()));
@@ -290,7 +296,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      */
     public List<ILibroIdAndName> findByTitoloContains(final String titolo) {
         List<ILibroIdAndName> infoLibroList =
-                libroBibliotecaDAO.findByTitoloContains(titolo);
+                libroDAO.findByTitoloContains(titolo);
 
         if (infoLibroList == null) {
             infoLibroList = new ArrayList<>();
@@ -311,20 +317,22 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @param generi       la lista dei generi
      * @return il libro creato
      */
-    public LibroBiblioteca inserimentoPerIsbn(final String isbn,
+    public Libro inserimentoPerIsbn(final String isbn,
                                               final String idBiblioteca,
                                               final int numCopie,
-                                              final List<String> generi) {
+                                              final Set<String> generi) {
+
+        if(!genereService.doGeneriExist(generi)) return null;
 
         //Recupero l'oggetto Libro da Api per isbn
-        LibroBiblioteca libro = bookApiAdapter.getLibroDaBookApi(isbn, new LibroBiblioteca());
+        Libro libro = bookApiAdapter.getLibroDaBookApi(isbn, new Libro());
         if (libro == null) {
             return null;
         }
         libro.setGeneri(new HashSet<>(generi));
 
-        boolean exists = (libroBibliotecaDAO.findByIsbn(libro.getIsbn()) != null);
-        if (!exists) libroBibliotecaDAO.save(libro);
+        boolean exists = (libroDAO.findByIsbn(libro.getIsbn()) != null);
+        if (!exists) libroDAO.save(libro);
 
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
 
@@ -365,10 +373,10 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @param numCopie     il numero di copie possedute
      * @return il libro inserito
      */
-    public LibroBiblioteca inserimentoDalDatabase(final int idLibro,
+    public Libro inserimentoDalDatabase(final int idLibro,
                                                   final String idBiblioteca,
                                                   final int numCopie) {
-        LibroBiblioteca l = libroBibliotecaDAO.getOne(idLibro);
+        Libro l = libroDAO.getOne(idLibro);
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
         //Se per errore avesse inserito un libro che possiede già,
         //aggiorno semplicemente il numero di copie che ha.
@@ -405,27 +413,28 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @param generi       la lista dei generi del libro
      * @return il libro inserito
      */
-    public LibroBiblioteca inserimentoManuale(final LibroBiblioteca libro,
+    public Libro inserimentoManuale(final Libro libro,
                                               final String idBiblioteca,
                                               final int numCopie,
-                                              final List<String> generi) {
+                                              final Set<String> generi) {
 
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
+        if(!genereService.doGeneriExist(generi)) return null;
 
         //Controllo che il libro non sia già salvato
         boolean exists = false;
-        LibroBiblioteca l = new LibroBiblioteca();
+        Libro l = new Libro();
 
 
         libro.setGeneri(new HashSet<>(generi));
-        for (LibroBiblioteca tl : libroBibliotecaDAO.findAll()) {
+        for (Libro tl : libroDAO.findAll()) {
             if (tl.getTitolo().equals(libro.getTitolo())) {
                 exists = true;
                 l = tl;
             }
         }
         if (!exists) {
-            l = libroBibliotecaDAO.save(libro);
+            l = libroDAO.save(libro);
         }
         //Se per errore avesse inserito un libro che possiede già,
         //aggiorno semplicemente il numero di copie che ha.

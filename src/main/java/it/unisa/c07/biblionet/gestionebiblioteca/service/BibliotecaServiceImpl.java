@@ -14,10 +14,8 @@ public class BibliotecaServiceImpl implements BibliotecaService {
 
     private final BibliotecaDAO bibliotecaDAO;
 
-
-
     @Override
-    public Biblioteca creabibliotecaDaModel(BibliotecaDTO form) {
+    public Biblioteca creaBibliotecaDaModel(BibliotecaDTO form) {
         Biblioteca biblioteca = new Biblioteca(form);
         biblioteca.setTipo("Biblioteca");
         return aggiornaBiblioteca(biblioteca);

@@ -64,6 +64,7 @@ public class Lettore extends UtenteRegistrato {
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ClubDelLibro> clubs;
 
     /**

@@ -5,7 +5,6 @@ import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
@@ -14,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementa il controller per il sottosistema
@@ -34,9 +35,29 @@ public class PrenotazioneLibriController {
     private final PrenotazioneLibriService prenotazioneService;
     private final BibliotecaService bibliotecaService;
 
+    /**
+     * Implementa la funzionalità che permette di
+     * richiedere il prestito di un libro.
+     *
+     * @param idBiblioteca L'ID della biblioteca che possiede il libro
+     * @param idLibro      L'ID del libro di cui effettuare la prenotazione
+     * @return La view che visualizza la lista dei libri prenotabili
+     */
+    @PostMapping(value = "/conferma-prenotazione")
+    @ResponseBody
+    @CrossOrigin
+    public BiblionetResponse confermaPrenotazione(@RequestParam final String idBiblioteca,
+                                                  @RequestParam final String idLibro,
+                                                  @RequestHeader (name="Authorization") final String token) {
 
-
-
+        if (!Utils.isUtenteLettore(token)) {
+            return new BiblionetResponse("Impossibile prenotare un libro per l'utente selezionato", true);
+        }
+        prenotazioneService.richiediPrestito(Utils.getSubjectFromToken(token),
+                idBiblioteca,
+                Integer.parseInt(idLibro));
+        return new BiblionetResponse("OK", true);
+    }
 
     /**
      * Implementa la funzionalità che permette di
@@ -47,7 +68,7 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "")
     @ResponseBody
     @CrossOrigin
-    public List<LibroBiblioteca> visualizzaListaLibri() {
+    public List<Libro> visualizzaListaLibri() {
         return prenotazioneService.visualizzaListaLibriCompleta();
     }
 
@@ -62,20 +83,16 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/ricerca")
     @ResponseBody
     @CrossOrigin
-    public List<LibroBiblioteca> visualizzaListaFiltrata(
+    public List<Libro> visualizzaListaFiltrata(
             @RequestParam("stringa") final String stringa,
             @RequestParam("filtro") final String filtro) {
 
-        switch (filtro) {
-            case "titolo":
-                return prenotazioneService.visualizzaListaLibriPerTitolo(stringa);
-            case "genere":
-                return prenotazioneService.visualizzaListaLibriPerGenere(stringa);
-            case "biblioteca":
-                return prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa);
-            default:
-                return prenotazioneService.visualizzaListaLibriCompleta();
-        }
+        return switch (filtro) {
+            case "titolo" -> prenotazioneService.visualizzaListaLibriPerTitolo(stringa);
+            case "genere" -> prenotazioneService.visualizzaListaLibriPerGenere(stringa);
+            case "biblioteca" -> prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa);
+            default -> prenotazioneService.visualizzaListaLibriCompleta();
+        };
     }
 
     /**
@@ -83,7 +100,7 @@ public class PrenotazioneLibriController {
      * visualizzare le biblioteche presso cui è
      * possibile prenotare il libro.
      *
-     * @param id    L'ID del libro di cui effettuare la prenotazione
+     * @param id L'ID del libro di cui effettuare la prenotazione
      * @return La view che visualizza la lista delle biblioteche
      */
     @GetMapping(value = "/{id}/visualizza-libro")
@@ -96,7 +113,7 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/{id}/ottieni-libro")
     @ResponseBody
     @CrossOrigin
-    public LibroBiblioteca ottieniLibro(@PathVariable final int id) {
+    public Libro ottieniLibro(@PathVariable final int id) {
         return prenotazioneService.getLibroByID(id);
     }
 
@@ -113,33 +130,36 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/visualizza-richieste")
     @ResponseBody
     @CrossOrigin
-    public List<TicketPrestito> visualizzaRichieste(
+    public Map<String, List<TicketPrestito>> visualizzaRichieste(
             @RequestHeader (name="Authorization") final String token
     ) {
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new ArrayList<>();
+            return new HashMap<>();
         }
-        Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+         Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> lista = prenotazioneService.getTicketsByBiblioteca(biblioteca);
-            /*
-            List<TicketPrestito> list1 = new ArrayList<>();
-            List<TicketPrestito> list2 = new ArrayList<>();
-            List<TicketPrestito> list3 = new ArrayList<>();
-            for (TicketPrestito t : lista) {
-                if (t.getStato().equals(
-                        TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA)) {
-                    list1.add(t);
-                } else if (t.getStato().equals(
-                        TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE)) {
-                    list2.add(t);
-                } else if (t.getStato().equals(
-                        TicketPrestito.Stati.CHIUSO)) {
-                    list3.add(t);
-                }
-            }*/
-            //todo trovare una soluzione con Giuseppe
-        return lista;
+
+        List<TicketPrestito> list1 = new ArrayList<>();
+        List<TicketPrestito> list2 = new ArrayList<>();
+        List<TicketPrestito> list3 = new ArrayList<>();
+        for (TicketPrestito t : lista) {
+            if (t.getStato().equals(
+                    TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA)) {
+                list1.add(t);
+            } else if (t.getStato().equals(
+                    TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE)) {
+                list2.add(t);
+            } else if (t.getStato().equals(
+                    TicketPrestito.Stati.CHIUSO)) {
+                list3.add(t);
+            }
+        }
+        Map<String, List<TicketPrestito>> map = new HashMap<>();
+        map.put(TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA.name(), list1);
+        map.put(TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE.name(), list2);
+        map.put(TicketPrestito.Stati.CHIUSO.name(), list3);
+        return map;
 
     }
 
@@ -212,7 +232,6 @@ public class PrenotazioneLibriController {
         if (!Utils.isUtenteLettore(token)) {
            return ticketsDTO;
         }
-        //System.err.println(Utils.getSubjectFromToken(token));
 
         List<TicketPrestito> tickets = prenotazioneService.getTicketsByEmailLettore(Utils.getSubjectFromToken(token));
         for(TicketPrestito ticketPrestito: tickets){

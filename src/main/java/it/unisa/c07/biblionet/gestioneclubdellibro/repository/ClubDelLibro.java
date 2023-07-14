@@ -76,6 +76,7 @@ public class ClubDelLibro {
      */
     @ManyToMany(mappedBy = "clubs")
     @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Lettore> lettori;
 
     /**

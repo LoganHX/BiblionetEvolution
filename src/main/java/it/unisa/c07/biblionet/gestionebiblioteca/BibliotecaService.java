@@ -5,7 +5,7 @@ import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import java.util.List;
 
 public interface BibliotecaService {
-    Biblioteca creabibliotecaDaModel(BibliotecaDTO form);
+    Biblioteca creaBibliotecaDaModel(BibliotecaDTO form);
 
     Biblioteca findBibliotecaByEmailAndPassword(String email, byte[] password);
 

@@ -17,6 +17,6 @@ public class GenereController {
     @ResponseBody
     @CrossOrigin
     public Set<Genere> visualizzaGeneri() {
-       return genereService.getAllGeneri();
+        return genereService.getAllGeneri();
     }
 }

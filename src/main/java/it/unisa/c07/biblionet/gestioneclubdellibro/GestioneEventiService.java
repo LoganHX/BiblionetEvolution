@@ -2,8 +2,8 @@ package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import java.util.Optional;
 
+import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEvento;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 
 /**
@@ -46,7 +46,7 @@ public interface GestioneEventiService {
      * @param id Id del libro da recuperare
      * @return Il libro recuperato
      */
-    Optional<LibroEvento> getLibroById(int id);
+    Optional<Libro> getLibroById(int id);
 
     /**
      * Implementa la funzionalità che permette

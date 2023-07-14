@@ -1,5 +1,6 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.repository;
 
+import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -91,7 +92,7 @@ public class TicketPrestito {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
-    private LibroBiblioteca libro;
+    private Libro libro;
 
     /**
      * Rappresenta la biblioteca da cui si prende il prestito il libro.

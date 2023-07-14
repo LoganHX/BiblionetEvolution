@@ -1,7 +1,7 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter;
 
 
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
+import it.unisa.c07.biblionet.common.Libro;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -47,7 +47,7 @@ public class GoogleBookApiAdapterImpl implements BookApiAdapter {
      * @return L'oggetto Libro contenente le informazioni sul libro cercato
      */
     @Override
-    public LibroBiblioteca getLibroDaBookApi(final String isbn, LibroBiblioteca libro) {
+    public Libro getLibroDaBookApi(final String isbn, Libro libro) {
         try {
             // Compose url string
             String formattedIsbn = isbn.replace("-", "");
@@ -91,8 +91,8 @@ public class GoogleBookApiAdapterImpl implements BookApiAdapter {
      * @param isbn l'isbn con cui si effettua la richiesta
      * @return il libro creato
      */
-    private LibroBiblioteca creaLibroDaResponse(final StringBuilder stringBuilder,
-                                            final String isbn, LibroBiblioteca libro) {
+    private Libro creaLibroDaResponse(final StringBuilder stringBuilder,
+                                            final String isbn, Libro libro) {
         JSONParser parser = new JSONParser();
         try {
             //Parsing in Object dello StringBuilder che rappresenta il JSON

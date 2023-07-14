@@ -21,7 +21,7 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
 
-
+/*
 
 
     @Override
@@ -36,6 +36,11 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
         //todo controllare se inutile
     }
 
+    @Override
+    public UtenteRegistrato aggiornaBiblioteca(final BibliotecaDTO bibliotecaDTO) {
+        return bibliotecaService.creaBibliotecaDaModel(bibliotecaDTO);
+    }
+*/
 
     /**
      * Implementa la funzionalità di controllare se una mail è

@@ -1,14 +1,9 @@
-package it.unisa.c07.biblionet.gestioneclubdellibro;
+package it.unisa.c07.biblionet.common;
 
-import it.unisa.c07.biblionet.gestionebiblioteca.LibroBibliotecaDTO;
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.LibroBiblioteca;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LibroEvento;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -16,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @RequiredArgsConstructor
-public class LibroEventoDTO {
+public class LibroDTO {
 
     /**
      * Rappresenta il titolo di un libro.
@@ -75,15 +70,13 @@ public class LibroEventoDTO {
     @ToString.Exclude
     private Set<String> generi;
 
-    public LibroEventoDTO(LibroEvento libroEvento){
-        this.annoDiPubblicazione = libroEvento.getAnnoDiPubblicazione();
-        this.generi = libroEvento.getGeneri();
-        this.immagineLibro = libroEvento.getImmagineLibro();
-        this.titolo = libroEvento.getTitolo();
-        this.autore = libroEvento.getAutore();
-        this.casaEditrice = libroEvento.getCasaEditrice();
-        this.isbn = libroEvento.getIsbn();
+    public LibroDTO(Libro libroBiblioteca){
+        this.annoDiPubblicazione = libroBiblioteca.getAnnoDiPubblicazione();
+        this.generi = libroBiblioteca.getGeneri();
+        this.immagineLibro = libroBiblioteca.getImmagineLibro();
+        this.titolo = libroBiblioteca.getTitolo();
+        this.autore = libroBiblioteca.getAutore();
+        this.casaEditrice = libroBiblioteca.getCasaEditrice();
+        this.isbn = libroBiblioteca.getIsbn();
     }
-
-
 }

@@ -32,7 +32,7 @@ public class EspertoController {
      *
      * @return La view di visualizzazione dei clubs che gestisce
      */
-    @GetMapping(value = "area-utente/visualizza-clubs-personali-esperto")
+    @GetMapping(value = "area-utente/visualizza-clubs-esperto")
     @ResponseBody
     @CrossOrigin
     public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {

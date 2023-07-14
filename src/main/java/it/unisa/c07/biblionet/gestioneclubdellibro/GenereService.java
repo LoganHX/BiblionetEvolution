@@ -5,6 +5,9 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Genere;
 import java.util.Set;
 
 public interface GenereService {
+
+    boolean doGeneriExist(Set<String> generi);
+
     Genere getGenereByName(String nome);
 
     /**

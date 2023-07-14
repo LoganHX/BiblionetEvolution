@@ -151,45 +151,12 @@ public class ClubDelLibroController {
         cdl.setGeneri(new HashSet<>(clubDTO.getGeneri()));
 
         ClubDelLibro clubDelLibro =  clubService.creaClubDelLibro(cdl);
-        System.err.println(clubDelLibro.getNome());
+        esperto.getClubs().add(clubDelLibro);
+        espertoService.aggiornaEsperto(esperto);
         if(clubDelLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
         return new BiblionetResponse("Club del Libro creato", true);
 
     }
-
-    /**
-     * Implementa la funzionalità che permette
-     * di re-indirizzare alla pagina di modifica
-     * dei dati di un Club del Libro.
-     *
-     * @param id    l'ID del Club da modificare
-     * @param club  Il club che si vuole creare
-     * @return La view che visualizza il form di modifica dati
-
-    @PostMapping(value = "/modifica")
-    @ResponseBody
-    @CrossOrigin
-    public BiblionetResponse visualizzaModificaDatiClub(final @RequestParam int id,
-                                                        final @ModelAttribute ClubDTO club,
-                                                        @RequestHeader(name = "Authorization") final String token
-    ) {
-        Esperto esperto = espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token));
-        var cdl = this.clubService.getClubByID(id);
-        if (cdl == null || esperto == null) {
-            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
-        }
-        if (!cdl.getEsperto().getEmail().equals(esperto.getEmail())) {
-            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        }
-
-        club.setNome(cdl.getNome());
-        club.setDescrizione(cdl.getDescrizione());
-        club.setGeneri(cdl.getGeneri());
-
-        return new BiblionetResponse("Modifica effettuata", true);
-    }
-                                                        */
-
 
     /**
      * Implementa la funzionalità per la modifica dei dati di un Club.
@@ -220,6 +187,29 @@ public class ClubDelLibroController {
         clubPers.setDescrizione(clubDTO.getDescrizione());
         this.clubService.modificaDatiClub(clubPers);
         return new BiblionetResponse("Modifiche apportate", true);
+    }
+
+    /**
+     * Implementa la funzionalità che permette
+     * a un lettore di abbandonare
+     * Club del Libro.
+     *
+     * @param id l'ID del Club a cui iscriversi
+     * @return La view che visualizza la lista dei club
+     */
+    @PostMapping(value = "/abbandono")
+    @CrossOrigin
+    @ResponseBody
+    public BiblionetResponse abbandonaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
+
+        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
+        Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
+        boolean esito = lettoreService.abbandonaClub(clubDelLibro, lettore);
+        if (esito) {
+            return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
+        }
+        return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
     }
 
     /**
@@ -276,24 +266,21 @@ public class ClubDelLibroController {
     @GetMapping(value = "/visualizza-clubs-biblioteca")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDTO> visualizzaClubBiblioteca(
+    public Set<ClubDTO> visualizzaClubBiblioteca(
             @RequestParam final String emailBiblioteca
     ) {
-        Set<ClubDelLibro> clubs= new HashSet<>();
+        Set<ClubDelLibro> clubs = new HashSet<>();
         List<Esperto> esperti = espertoService.getEspertiByBiblioteca(emailBiblioteca);
         for(Esperto esperto: esperti){
+            System.err.println(esperto.getClubs());
             clubs.addAll(esperto.getClubs());
         }
         Set<ClubDTO> clubDTOS = new HashSet<>();
         for(ClubDelLibro clubDelLibro: clubs){
             clubDTOS.add(new ClubDTO(clubDelLibro));
         }
-        return new ArrayList<>(clubDTOS);
+        return clubDTOS;
     }
-
-
-
-
 
     /**
      * Implementa la funzionalità che permette di gestire
@@ -317,8 +304,6 @@ public class ClubDelLibroController {
         }
         return lettoriDTO;
     }
-
-
 
     /**
      * Implementa la funzionalità che permette di visualizzare

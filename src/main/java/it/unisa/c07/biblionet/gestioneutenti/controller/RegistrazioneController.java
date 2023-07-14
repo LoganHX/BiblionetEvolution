@@ -3,7 +3,6 @@ package it.unisa.c07.biblionet.gestioneutenti.controller;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
-import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
@@ -65,7 +64,7 @@ public final class RegistrazioneController {
      * @param password   la password di conferma
      * @return la view di login
      */
-    @PostMapping(value = "/registrazione")
+    @PostMapping(value = "/biblioteca")
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute BibliotecaDTO biblioteca,
@@ -76,7 +75,7 @@ public final class RegistrazioneController {
             return new BiblionetResponse("Errore di validazione", false);
         }
         if(! BiblionetConstraints.passwordRispettaVincoli(biblioteca.getPassword(), password)) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
-        bibliotecaService.creabibliotecaDaModel(biblioteca);
+        bibliotecaService.creaBibliotecaDaModel(biblioteca);
         return new BiblionetResponse("Registrazione effettuata correttamente", true);
     }
 
