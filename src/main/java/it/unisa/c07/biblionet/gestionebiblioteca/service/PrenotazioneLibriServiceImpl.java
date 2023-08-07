@@ -129,7 +129,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * di richiedere un prestito per un libro
      * da una biblioteca.
      *
-     * @param lettore      Il lettore che lo richiede
+     * @param lettoreMail      l'id del lettore che lo richiede
      * @param idBiblioteca id della biblioteca
      * @param idLibro      id del libro
      * @return Il ticket aperto in attesa di approvazione
@@ -138,7 +138,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     public TicketPrestito richiediPrestito(final String lettoreMail,
                                            final String idBiblioteca,
                                            final int idLibro) {
-        UtenteRegistrato lettore = lettoreService.getLettoreByEmail(lettoreMail);
+        UtenteRegistrato lettore = lettoreService.findLettoreByEmail(lettoreMail);
         TicketPrestito ticket = new TicketPrestito();
         if(!lettore.getTipo().equals("Lettore")) return null;
         ticket.setLettore(lettore);

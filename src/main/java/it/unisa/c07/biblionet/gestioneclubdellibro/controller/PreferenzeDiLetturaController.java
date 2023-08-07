@@ -51,14 +51,14 @@ public class PreferenzeDiLetturaController {
         if (Utils.isUtenteEsperto(token)) {
             preferenzeDiLetturaService
                     .addGeneriEsperto(toAdd, espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
-            return new BiblionetResponse("Generi modificati", true);
+            return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
         }
         if (Utils.isUtenteLettore(token)) {
             preferenzeDiLetturaService
-                    .addGeneriLettore(toAdd, lettoreService.getLettoreByEmail(Utils.getSubjectFromToken(token)));
-            return new BiblionetResponse("Generi modificati", true);
+                    .addGeneriLettore(toAdd, lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token)));
+            return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
         }
 
-        return new BiblionetResponse("Errore modifica generi utente", false);
+        return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
     }
 }

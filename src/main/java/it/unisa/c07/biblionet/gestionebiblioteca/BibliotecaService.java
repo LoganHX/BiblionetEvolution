@@ -7,6 +7,8 @@ import java.util.List;
 public interface BibliotecaService {
     Biblioteca creaBibliotecaDaModel(BibliotecaDTO form);
 
+    Biblioteca aggiornaBibliotecaDaModel(BibliotecaDTO form);
+
     Biblioteca findBibliotecaByEmailAndPassword(String email, byte[] password);
 
     Biblioteca findBibliotecaByEmail(String email);

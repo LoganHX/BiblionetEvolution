@@ -7,24 +7,17 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 
-
-
-
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/club-del-libro")
+@RequestMapping("/gestione-eventi")
 public class EventoController {
 
     private final GestioneEventiService eventiService;
@@ -45,11 +38,27 @@ public class EventoController {
     @GetMapping(value = "/{idClub}/eventi/{idEvento}/abbandono")
     @CrossOrigin
     @ResponseBody
-    public Lettore abbandonaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
-        if (!Utils.isUtenteLettore(token)) return null;
+    public BiblionetResponse abbandonaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
+        //Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+//        boolean eventoOK = false;
+//
+//        for(Evento e: lettore.getEventi()){
+//            if(e.getIdEvento() == idEvento){
+//                eventoOK = true;
+//                break;
+//            }
+//        }
+//
+//        if(!eventoOK) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+
+        if(eventiService.isLettoreIscrittoEvento(idEvento, Utils.getSubjectFromToken(token)) != null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+
         Lettore l = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        if (l == null) return null;
-        return eventiService.abbandonaEvento(l.getEmail(), idEvento);
+
+        if (l == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+        if(eventiService.abbandonaEvento(l.getEmail(), idEvento) != null) return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);;
+        return new BiblionetResponse(BiblionetResponse.ERRORE, false);
     }
 
 
@@ -64,8 +73,11 @@ public class EventoController {
      */
     @GetMapping(value = "/{idClub}/eventi/{idEvento}/iscrizione")
     public Lettore partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
+
+
         if (!Utils.isUtenteLettore(token)) return null;
         Lettore l = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+
         if (l == null) return null;
         return eventiService.partecipaEvento(l.getEmail(), idEvento);
     }
@@ -80,11 +92,11 @@ public class EventoController {
      * @param id   L'identificativo dell'evento da eliminare
      * @return La view della lista degli eventi
      */
-    @GetMapping(value = "/{club}/eventi/{id}")
-    public BiblionetResponse eliminaEvento(final @PathVariable int club, final @PathVariable int id) {
-        Optional <Evento> eventoEliminato = this.eventiService.eliminaEvento(id);
+    @PostMapping(value = "/elimina-evento")
+    public BiblionetResponse eliminaEvento(final @RequestParam int club, final @RequestParam int id) {
+        //todo possibile non ci sia un check sul token?
+        Optional<Evento> eventoEliminato = this.eventiService.eliminaEvento(id);
 
-        //System.out.println(eventoEliminato);
         if (eventoEliminato.isEmpty()) {
             return new BiblionetResponse("Evento inesistente", false);
         }
@@ -104,24 +116,27 @@ public class EventoController {
     @ResponseBody
     public BiblionetResponse modificaEvento(final @RequestParam int idClub,
                                             final @RequestParam int idEvento,
-                                            final @Valid @ModelAttribute EventoDTO eventoDTO, BindingResult bindingResult) {
+                                            final @Valid @ModelAttribute EventoDTO eventoDTO, BindingResult bindingResult,
+                                            @RequestHeader(name = "Authorization") final String token) {
 
+
+        Optional<Evento> e = eventiService.getEventoById(idEvento);
+        if(e.isEmpty()) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+        //System.out.println(e.get().getClub().getIdClub() + " <> " + idClub);
+        if(e.get().getClub().getIdClub() != idClub) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+
+        //System.out.println(e.get().getClub().getEsperto().getEmail());
+
+        if(!Utils.isUtenteEsperto(token) || !Utils.getSubjectFromToken(token).equals(e.get().getClub().getEsperto().getEmail()))
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
         return this.modificaCreaEvento(
                 eventoDTO,
                 bindingResult,
                 idClub,
-                Optional.of(idEvento),
-                evento -> {
-                    var statusModifica =
-                            this.eventiService.modificaEvento(evento);
-                    if (statusModifica.isEmpty()) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "L'evento con id " + idEvento + "non è associato al club con id " + idClub + "."
-                        );
-                    }
-                }
+                Optional.of(idEvento)
+
+
         );
     }
 
@@ -144,8 +159,7 @@ public class EventoController {
                 eventoDTO,
                 bindingResult,
                 id,
-                Optional.empty(),
-                this.eventiService::creaEvento
+                Optional.empty()
         );
     }
 
@@ -154,23 +168,21 @@ public class EventoController {
      * i dati.
      *
      * @param eventoDTO Il form con i dati da modificare
-     * @param idClub     L'id del club del libro in cui inserire l'evento.
-     * @param idEvento   L'id dell'evento, che può essere vuoto per ottenere
-     *                   l'autoassegnazione.
-     * @param operazione L'operazione, tra creazione e modifica, che si vuole
-     *                   effettuare.
+     * @param idClub    L'id del club del libro in cui inserire l'evento.
+     * @param idEvento  L'id dell'evento, che può essere vuoto per ottenere
+     *                  l'autoassegnazione.
      * @return La view inserita.
      */
     private BiblionetResponse modificaCreaEvento(final EventoDTO eventoDTO, BindingResult bindingResult,
                                                  //@RequestParam final String view,
-                                                 final int idClub, final Optional<Integer> idEvento, final Consumer<Evento> operazione) {
+                                                 final int idClub, final Optional<Integer> idEvento) {
 
         if (bindingResult.hasErrors())
             return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
         var club = this.clubService.getClubByID(idClub);
 
         if (club == null) {
-            return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         }
 
         var evento = new Evento();
@@ -198,7 +210,6 @@ public class EventoController {
             evento.setLibro(libro.get());
         }
 
-        operazione.accept(evento);
         return new BiblionetResponse("Evento creato/modificato", true);
 
     }

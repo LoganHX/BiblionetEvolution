@@ -1,9 +1,12 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClubDelLibroServiceImpl implements ClubDelLibroService {
 
+
+
     /**
      * Si occupa delle operazioni CRUD per un club.
      */
@@ -31,12 +36,13 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * Implementa la funzionalità che permette
      * a un Esperto di creare un Club del Libro.
      *
-     * @param club Il Club del Libro da memorizzare
+     * @param clubDTO Il Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
     @Override
-    public ClubDelLibro creaClubDelLibro(final ClubDelLibro club) {
-        return clubDAO.save(club);
+    public ClubDelLibro creaClubDelLibro(final ClubDTO clubDTO, Esperto esperto) throws IOException {
+
+        return clubDAO.save(new ClubDelLibro(clubDTO, esperto));
     }
 
     /**
@@ -78,7 +84,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @return Il club modificato
      */
     @Override
-    public ClubDelLibro modificaDatiClub(final ClubDelLibro club) {
+    public ClubDelLibro salvaClub(final ClubDelLibro club) {
         return clubDAO.save(club);
     }
 

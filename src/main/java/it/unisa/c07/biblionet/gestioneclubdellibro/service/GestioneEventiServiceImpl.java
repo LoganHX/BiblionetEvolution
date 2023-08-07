@@ -148,14 +148,23 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         for (int i = 0; i < listaEventi.size(); i++) {
             if (listaEventi.get(i).getIdEvento() == evento.getIdEvento()) {
                 pos = i;
+                //break;
             }
         }
-        if (pos > -1) {
+        if (pos != -1) {
             listaEventi.remove(pos);
+            lettore.setEventi(listaEventi);
+            return lettoreService.aggiornaLettore(lettore);
         }
 
-        lettore.setEventi(listaEventi);
-        return lettoreService.aggiornaLettore(lettore);
+        return null;
+
     }
+
+    @Override
+    public Evento isLettoreIscrittoEvento(int idEventi, String emailLettore){
+        return eventoDAO.isLettoreIscrittoEvento(idEventi, emailLettore);
+    }
+
 
 }

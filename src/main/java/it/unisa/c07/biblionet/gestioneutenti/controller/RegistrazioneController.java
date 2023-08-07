@@ -3,11 +3,13 @@ package it.unisa.c07.biblionet.gestioneutenti.controller;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
+import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
@@ -45,14 +47,14 @@ public final class RegistrazioneController {
      final @RequestParam("conferma_password") String password,
      final @RequestParam("email_biblioteca") String bibliotecaEmail) {
 
-     if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+         BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) esperto);
+         if(response != null) return response;
 
-     if(!BiblionetConstraints.passwordRispettaVincoli(esperto.getPassword(), password))
-     return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+         Esperto e = espertoService.creaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(bibliotecaEmail));
+         if(e == null)
+             return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
 
-     UtenteRegistrato e = espertoService.creaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(bibliotecaEmail));
-     if(e == null) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
-     return new BiblionetResponse("Registrazione ok", true);
+         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
      }
 
 
@@ -71,12 +73,13 @@ public final class RegistrazioneController {
                                                      BindingResult bindingResult,
                                                      @RequestParam("conferma_password") String password
     ) {
-        if (bindingResult.hasErrors()) {
-            return new BiblionetResponse("Errore di validazione", false);
-        }
-        if(! BiblionetConstraints.passwordRispettaVincoli(biblioteca.getPassword(), password)) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
-        bibliotecaService.creaBibliotecaDaModel(biblioteca);
-        return new BiblionetResponse("Registrazione effettuata correttamente", true);
+        BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) biblioteca);
+        if(response != null) return response;
+
+        Biblioteca b = bibliotecaService.creaBibliotecaDaModel(biblioteca);
+        if(b == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
 
@@ -100,26 +103,27 @@ public final class RegistrazioneController {
                                                   final @RequestParam("conferma_password")
                                                   String password
     ) {
-        if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
-
-        if(!BiblionetConstraints.passwordRispettaVincoli(lettore.getPassword(), password))
-            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+        BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) lettore);
+        if(response != null) return response;
 
         lettoreService.creaLettoreDaModel(lettore);
-        return new BiblionetResponse("Registrazione effettuata correttamente", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
-    private String controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistratoDTO utenteRegistrato) {
-        if (bindingResult.hasErrors()) {
-            return "Errore di validazione";
+    private BiblionetResponse controlliPreliminari(BindingResult bindingResult, String password, UtenteRegistratoDTO utenteRegistrato) {
+        if(bindingResult.hasErrors()) {
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
         if (registrazioneService.isEmailRegistrata(utenteRegistrato.getEmail())) {
-            return "Il sistema presenta un account già registrato per questo indirizzo e-mail.";
+            return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
-        if (!BiblionetConstraints.passwordRispettaVincoli(utenteRegistrato.getPassword(), password)) {
-            return "Password non adeguata";
+
+        if(!BiblionetConstraints.passwordRispettaVincoli(utenteRegistrato.getPassword(), password)) {
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
-        return "";
+
+        return null;
+
     }
 
 }

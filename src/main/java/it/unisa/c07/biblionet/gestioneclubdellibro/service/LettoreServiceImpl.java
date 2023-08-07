@@ -49,6 +49,7 @@ public class LettoreServiceImpl implements LettoreService {
         listaClubs.add(club);
         lettore.setClubs(listaClubs);
         aggiornaLettore(lettore);
+        //todo non ha senso
         return true;
     }
 
@@ -91,11 +92,6 @@ public class LettoreServiceImpl implements LettoreService {
     }
 
 
-    @Override
-    public Lettore getLettoreByEmail(final String email) {
-        Optional<UtenteRegistrato> lettore = lettoreDAO.findById(email);
-        return (Lettore) lettore.orElse(null);
-    }
 
 
 

@@ -16,7 +16,6 @@ public interface LettoreService {
 
     Lettore findLettoreByEmailAndPassword(String email, byte[] password);
 
-    Lettore getLettoreByEmail(String email);
 
     Lettore creaLettoreDaModel(LettoreDTO form);
 

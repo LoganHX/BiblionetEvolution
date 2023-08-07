@@ -19,22 +19,6 @@ import java.util.List;
 @RequestMapping("/lettore")
 public class LettoreController {
     private final LettoreService lettoreService;
-    /**
-     * Implementa la funzionalità di visualizzazione dei clubs
-     * a cui il lettore é iscritto.
-     *
-     * @return La view di visualizzazione dei clubs a cui é iscritto
-     */
-    @GetMapping(value = "visualizza-clubs-lettore")
-    @ResponseBody
-    @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubsLettore(
-            final @RequestHeader(name = "Authorization") String token
-    ) {
-        if (!Utils.isUtenteLettore(token)) return new ArrayList<>();
-        Lettore lettore =  lettoreService.getLettoreByEmail(Utils.getSubjectFromToken(token));
-        return lettore.getClubs();
-    }
 
 
 

@@ -3,6 +3,10 @@ package it.unisa.c07.biblionet.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.impl.DefaultJwtParser;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
 
 public class Utils {
     private Utils(){}
@@ -34,5 +38,16 @@ public class Utils {
         return getClaimsFromTokenWithoutKey(token).getSubject();
     }
 
+
+    public static String getBase64Image(MultipartFile copertina) {
+        if (copertina != null && !copertina.isEmpty()) {
+            try {
+                return Base64.getEncoder().encodeToString(copertina.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
 }

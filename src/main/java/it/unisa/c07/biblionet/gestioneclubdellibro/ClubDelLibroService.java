@@ -1,7 +1,9 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -20,7 +22,9 @@ public interface ClubDelLibroService {
      * @param club Il Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
-    ClubDelLibro creaClubDelLibro(ClubDelLibro club);
+
+
+    ClubDelLibro creaClubDelLibro(ClubDTO clubDTO, Esperto esperto) throws IOException;
 
     /**
      * Implementa la funzionalità che permette
@@ -46,7 +50,7 @@ public interface ClubDelLibroService {
      * @param club Il club da modificare
      * @return Il club modificato
      */
-    ClubDelLibro modificaDatiClub(ClubDelLibro club);
+    ClubDelLibro salvaClub(ClubDelLibro club);
 
     /**
      * Implementa la funzionalità che permette

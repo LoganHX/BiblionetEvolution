@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+
 /**
  * Implementa il controller per il sottosistema
  * Autenticazione.
@@ -39,7 +40,7 @@ public class AutenticazioneController {
         UtenteRegistrato utente = autenticazioneService.login(email, password);
 
         if (utente == null) {
-            return new BiblionetResponse("Login fallito.", false);
+            return new BiblionetResponse(BiblionetResponse.LOGIN_FALLITO, false);
         } else {
             return new BiblionetResponse(jwtGenerator.generateToken(utente), true);
         }

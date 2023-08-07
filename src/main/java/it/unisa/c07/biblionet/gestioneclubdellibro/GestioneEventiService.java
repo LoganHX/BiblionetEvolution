@@ -75,4 +75,7 @@ public interface GestioneEventiService {
      * @return Il lettore aggiornato ed disiscritto dall'evento
      */
     Lettore abbandonaEvento(String idLettore, int idEvento);
+
+
+    Evento isLettoreIscrittoEvento(int idEventi, String emailLettore);
 }

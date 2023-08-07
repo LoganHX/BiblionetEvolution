@@ -4,10 +4,14 @@ import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
+import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
@@ -19,6 +23,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,6 +32,7 @@ import javax.validation.Valid;
  */
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/area-utente")
 public class AreaUtenteController {
 
     private final AutenticazioneService autenticazioneService;
@@ -43,7 +50,7 @@ public class AreaUtenteController {
      * @return login Se la modifica va a buon fine.
      * modifica_dati_biblioteca Se la modifica non va a buon fine
      */
-    @PostMapping(value = "/conferma-modifica-biblioteca")
+    @PostMapping(value = "/modifica-biblioteca")
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse modificaDatiBiblioteca(
@@ -56,17 +63,16 @@ public class AreaUtenteController {
 
         if(!Utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if (!Utils.getSubjectFromToken(token).equals(biblioteca.getEmail()))
-            return new BiblionetResponse("Non puoi cambiare email", false); //todo non si può modificare la mail, va fatto anche per lettore e biblioteca sto controllo
+        if(bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token))==null){
+            return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
+        }
+
+        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, nuova, conferma, biblioteca, token);
+        if (s != null) return s;
+        biblioteca.setPassword(conferma);
 
 
-        String password = (BiblionetConstraints.confrontoPassword(nuova, conferma));
-        if(password.isEmpty()) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
-        String s = controlliPreliminari(bindingResult, vecchia, biblioteca);
-        if (!s.isEmpty()) return new BiblionetResponse(s, false);
-        biblioteca.setPassword(password);
-
-        UtenteRegistrato b = bibliotecaService.creaBibliotecaDaModel(biblioteca);
+        Biblioteca b = bibliotecaService.aggiornaBibliotecaDaModel(biblioteca);
         if(b==null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
@@ -86,7 +92,7 @@ public class AreaUtenteController {
     @CrossOrigin
     public BiblionetResponse modificaDatiEsperto(
             final @RequestHeader(name = "Authorization") String token,
-            final @Valid @RequestParam("Esperto") EspertoDTO esperto,
+            final @Valid @ModelAttribute("Esperto") EspertoDTO esperto,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
             final @RequestParam("nuova_password") String nuova,
@@ -94,78 +100,106 @@ public class AreaUtenteController {
             final @RequestParam("email_biblioteca") String emailBiblioteca) {
 
 
-        if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
-
-        if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token)))
+        if (!Utils.isUtenteEsperto(token))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if (!Utils.getSubjectFromToken(token).equals(esperto.getEmail()))
-            return new BiblionetResponse("Non puoi cambiare email", false); //todo non si può modificare la mail, va fatto anche per lettore e biblioteca sto controllo
+        if(espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token))==null){
+            return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
+        }
 
-        //todo tecnicamente non controllo se è un esperto
-        if(espertoService.findEspertoByEmailAndPassword(esperto.getEmail(), BiblionetConstraints.trasformaPassword(vecchia)) == null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        String password = (BiblionetConstraints.confrontoPassword(nuova, conferma));
-        if(password.isEmpty()) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
-        esperto.setPassword(password);
+        if(bibliotecaService.findBibliotecaByEmail(emailBiblioteca) == null){
+            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+        }
 
-        espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(emailBiblioteca)); //todo qualche check in più sull'esistenza dell'esperto, anche se se ha il token è autoamticamente registrato
+        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, nuova, conferma, esperto, token);
+        if (s != null) return s;
+        esperto.setPassword(conferma);
 
-        return new BiblionetResponse("Dati aggiornati", true);
+        Esperto e = espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(emailBiblioteca));
+        if(e == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
-    @PostMapping(value = "/conferma-modifica")
+    @PostMapping(value = "/modifica-lettore")
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse modificaDatiLettore(
             final @RequestHeader(name = "Authorization") String token,
-            final @Valid @RequestParam("Lettore") LettoreDTO lettore,
+            final @Valid @ModelAttribute("Lettore") LettoreDTO lettore,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
             final @RequestParam("nuova_password") String nuova,
             final @RequestParam("conferma_password") String conferma) {
 
-        if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
-        if (!Utils.isUtenteLettore(Utils.getSubjectFromToken(token)))
+        if (!Utils.isUtenteLettore(token))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if (!Utils.getSubjectFromToken(token).equals(lettore.getEmail()))
-            return new BiblionetResponse("Non puoi cambiare email", false); //todo non si può modificare la mail, va fatto anche per lettore e biblioteca sto controllo
+        if(lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token))==null){
+            return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
+        }
 
-        //todo tecnicamente non controllo se è un lettore
-        if(lettoreService.findLettoreByEmailAndPassword(lettore.getEmail(), BiblionetConstraints.trasformaPassword(vecchia)) == null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        String password = (BiblionetConstraints.confrontoPassword(nuova, conferma));
+        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, nuova, conferma, lettore, token);
+        if (s != null) return s;
+        lettore.setPassword(conferma);
+
+        Lettore l = lettoreService.aggiornaLettoreDaModel(lettore);
+        if(l == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
+    }
+
+    private BiblionetResponse controlliPreliminari(BindingResult bindingResult, String vecchia, String nuova, String conferma, UtenteRegistratoDTO utenteRegistrato, String token) {
+
+        String password = BiblionetConstraints.confrontoPassword(nuova, conferma);
         if(password.isEmpty()) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
-        lettore.setPassword(password);
 
-        lettoreService.aggiornaLettoreDaModel(lettore);
-        return new BiblionetResponse("Dati aggiornati", true);
-    }
+        if (!Utils.getSubjectFromToken(token).equals(utenteRegistrato.getEmail()))
+            return new BiblionetResponse(BiblionetResponse.ERRORE, false);
 
-    private String controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistratoDTO utenteRegistrato) {
         if (bindingResult.hasErrors()) {
-            return "Errore di validazione";
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
 
-        if (autenticazioneService.login(utenteRegistrato.getEmail(), vecchia) == null) { //usata solo per vedere se la password vecchia corrisponde, non effettua davvero il login
-            return "Password errata. Non sei autorizzato a modificare la password.";
+        if (autenticazioneService.login(utenteRegistrato.getEmail(), vecchia) == null) {
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        return "";
+        return null;
 
     }
 
-    private String qualePassword(String vecchia, String nuova, String conferma) {
-        if (nuova.isEmpty() && conferma.isEmpty()) return vecchia;
-        return BiblionetConstraints.confrontoPassword(nuova, conferma);
+    /**
+     * Implementa la funzionalità di visualizzazione dei clubs
+     * che l'esperto gestisce.
+     *
+     * @return La view di visualizzazione dei clubs che gestisce
+     */
+    @PostMapping(value = "/visualizza-clubs-esperto")
+    @ResponseBody
+    @CrossOrigin
+    public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
+        if (!Utils.isUtenteEsperto(token)) return null;
+        return espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token)).getClubs();
     }
 
 
-
-
-
-
-
-
+    /**
+     * Implementa la funzionalità di visualizzazione dei clubs
+     * a cui il lettore é iscritto.
+     *
+     * @return La view di visualizzazione dei clubs a cui é iscritto
+     */
+    @PostMapping(value = "/visualizza-clubs-lettore")
+    @ResponseBody
+    @CrossOrigin
+    public List<ClubDelLibro> visualizzaClubsLettore(
+            final @RequestHeader(name = "Authorization") String token
+    ) {
+        if (!Utils.isUtenteLettore(token)) return null;
+        return lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token)).getClubs();
+        //return lettore.getClubs();
+    }
 
 }

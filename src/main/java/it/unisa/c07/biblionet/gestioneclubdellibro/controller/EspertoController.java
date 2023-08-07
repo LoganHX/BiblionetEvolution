@@ -26,19 +26,7 @@ public class EspertoController {
     private final EspertoService espertoService;
 
 
-    /**
-     * Implementa la funzionalità di visualizzazione dei clubs
-     * che l'esperto gestisce.
-     *
-     * @return La view di visualizzazione dei clubs che gestisce
-     */
-    @GetMapping(value = "area-utente/visualizza-clubs-esperto")
-    @ResponseBody
-    @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
-        if (!Utils.isUtenteEsperto(Utils.getSubjectFromToken(token))) return new ArrayList<>();
-        return espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token)).getClubs();
-    }
+
     @GetMapping(value = "/visualizza-esperti-biblioteca")
     @ResponseBody
     @CrossOrigin

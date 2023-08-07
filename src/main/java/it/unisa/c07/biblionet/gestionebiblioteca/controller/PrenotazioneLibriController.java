@@ -51,9 +51,10 @@ public class PrenotazioneLibriController {
                                                   @RequestHeader (name="Authorization") final String token) {
 
         if (!Utils.isUtenteLettore(token)) {
-            return new BiblionetResponse("Impossibile prenotare un libro per l'utente selezionato", true);
+            return new BiblionetResponse("Impossibile prenotare un libro per l'utente selezionato", false);
         }
-        prenotazioneService.richiediPrestito(Utils.getSubjectFromToken(token),
+        String subject = Utils.getSubjectFromToken(token);
+        prenotazioneService.richiediPrestito(subject,
                 idBiblioteca,
                 Integer.parseInt(idLibro));
         return new BiblionetResponse("OK", true);
@@ -134,7 +135,7 @@ public class PrenotazioneLibriController {
             @RequestHeader (name="Authorization") final String token
     ) {
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new HashMap<>();
+            return null;
         }
          Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
 
@@ -230,7 +231,7 @@ public class PrenotazioneLibriController {
 
         List<TicketPrestitoDTO> ticketsDTO = new ArrayList<>();
         if (!Utils.isUtenteLettore(token)) {
-           return ticketsDTO;
+           return null;
         }
 
         List<TicketPrestito> tickets = prenotazioneService.getTicketsByEmailLettore(Utils.getSubjectFromToken(token));

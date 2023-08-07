@@ -1,9 +1,10 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EspertoDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,8 @@ public class EspertoServiceImpl implements EspertoService {
 
     @Override
     public Esperto creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
-        if(!biblioteca.getTipo().equals("Biblioteca")) return null;
+        if (biblioteca == null) return null;
+        if (!biblioteca.getTipo().equals("Biblioteca")) return null;
         return espertoDAO.save(new Esperto(form, biblioteca));
     }
 
@@ -45,7 +47,7 @@ public class EspertoServiceImpl implements EspertoService {
         List<Esperto> toReturn = new ArrayList<>();
 
         for (Esperto esperto : espertoDAO.findAllEsperti()) {
-            for (String genere : esperto.getGeneri()) {
+            for (String genere : esperto.getGeneri()) { //todo o getNomeGeneri?
                 if (generi.contains(genere) && !toReturn.contains(esperto)) {
                     toReturn.add(esperto);
                 }
@@ -56,14 +58,15 @@ public class EspertoServiceImpl implements EspertoService {
 
 
     @Override
-    public List<Esperto> getEspertiByBiblioteca(String email){
+    public List<Esperto> getEspertiByBiblioteca(String email) {
         return espertoDAO.findEspertoByBibliotecaEmail(email);
     }
 
     @Override
-    public List<String> getEspertiEmailByBiblioteca(String email){
+    public List<String> getEspertiEmailByBiblioteca(String email) {
         return espertoDAO.findEspertoEmailByBibliotecaEmail(email);
     }
+
     @Override
     public Esperto findEspertoByEmail(final String email) {
         return espertoDAO.findEspertoByEmail(email, "Esperto");

@@ -1,7 +1,9 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.repository;
 
 
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,8 @@ import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
@@ -92,5 +96,12 @@ public class ClubDelLibro {
     @ToString.Exclude
     private List<Evento> eventi;
 
+    public ClubDelLibro(ClubDTO dto, Esperto esperto) {
+        this.nome = dto.getNome();
+        this.generi = dto.getGeneri();
+        this.descrizione = dto.getDescrizione();
+        this.immagineCopertina = Utils.getBase64Image(dto.getCopertina());
+        this.esperto = esperto;
+    }
 
 }

@@ -12,6 +12,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class BiblionetResponse {
     public static final String NON_AUTORIZZATO = "Non sei autorizzato";
+    public static final String LOGIN_FALLITO = "Login fallito";
+
     public static final String FORMATO_NON_VALIDO = "Formato dati non valido";
     public static final String OGGETTO_NON_TROVATO = "Oggetto non trovato";
     public static final String RICHIESTA_NON_VALIDA = "Richiesta non valida";

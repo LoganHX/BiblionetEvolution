@@ -9,8 +9,10 @@ import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -25,8 +27,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/biblioteca")
 public class BibliotecaController {
-
-
 
     /**
      * Il service per effettuare le operazioni di
@@ -100,11 +100,11 @@ public class BibliotecaController {
                                                  @RequestParam final int numCopie) {
 
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new BiblionetResponse("Non sei autorizzato", false);
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
         Biblioteca b =  bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
         prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
-        return new BiblionetResponse("Libro inserito con successo", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
 
@@ -122,12 +122,15 @@ public class BibliotecaController {
     @CrossOrigin
     public BiblionetResponse inserisciManualmente(
             @RequestHeader (name="Authorization") final String token,
-            @RequestParam final LibroDTO libro,
+            @Valid @ModelAttribute final LibroDTO libro,
             @RequestParam final int numCopie,
-            @RequestParam final String annoPubblicazione) {
+            @RequestParam final String annoPubblicazione,
+            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
         if (!Utils.isUtenteBiblioteca(token)) {
-            return new BiblionetResponse("Non sei autorizzato", false);
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
         Libro l = new Libro();
@@ -136,18 +139,20 @@ public class BibliotecaController {
         l.setDescrizione(libro.getDescrizione());
         l.setCasaEditrice(libro.getCasaEditrice());
         l.setAutore(libro.getAutore());
+        LocalDateTime anno = LocalDateTime.of(
+                Integer.parseInt(annoPubblicazione), 1, 1, 1, 1);
+        l.setAnnoDiPubblicazione(anno);
+
         if (libro.getImmagineLibro() != null) {
             byte[] imageBytes = libro.getImmagineLibro().getBytes();
             String base64Image =
                     Base64.getEncoder().encodeToString(imageBytes);
             l.setImmagineLibro(base64Image);
         }
-        LocalDateTime anno = LocalDateTime.of(
-                Integer.parseInt(annoPubblicazione), 1, 1, 1, 1);
-        l.setAnnoDiPubblicazione(anno);
+
         Libro newLibro = prenotazioneService.inserimentoManuale(l, b.getEmail(), numCopie, libro.getGeneri());
-        if(newLibro == null) return new BiblionetResponse("Errore inserimento libro", false);
-        return new BiblionetResponse("Libro inserito con successo", true);
+        if(newLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
 

@@ -29,7 +29,7 @@ import javax.validation.Valid;
  * @author Nicola Pagliara
  * @author Luca Topo
  */
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/club-del-libro")
 public class ClubDelLibroController {
@@ -92,33 +92,8 @@ public class ClubDelLibroController {
             public final String email = club.getEsperto().getEmail();
         }).collect(Collectors.toList());
 
-        //model.addAttribute("generi", this.clubService.getTuttiGeneri()); todo
-        // model.addAttribute("citta", this.clubService.getCitta()); todo
 
     }
-
-    /**
-     * Implementa la funzionalità di visualizzare la pagina di creazione di
-     * un club del libro.
-     * @param model L'oggetto model usato per inserire gli attributi
-     * @param club Il form in cui inserire i dati del club
-     * @return La pagina del Club
-
-     @GetMapping(value = "crea")
-     public String visualizzaCreaClubDelLibro(final Model model,
-     final @ModelAttribute
-     ClubForm club) {
-     var utente = (UtenteRegistrato) model.getAttribute("loggedUser");
-     if (utente == null || !utente.getTipo().equals("Esperto")) {
-     throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-     }
-     model.addAttribute("generi", this.clubService.getTuttiGeneri());
-     model.addAttribute("club", club);
-
-     return "club-del-libro/creazione-club";
-     }
-     todo non è chiaro se serva
-     */
 
     /**
      * Implementa la funzionalità di creazione di un club del libro.
@@ -131,7 +106,7 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
                                               @RequestHeader(name = "Authorization") final String token,
-                                              BindingResult bindingResult) {
+                                              BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
@@ -139,19 +114,12 @@ public class ClubDelLibroController {
         if (!Utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
+
         Esperto esperto = espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token));
 
-        ClubDelLibro cdl = new ClubDelLibro();
-        cdl.setNome(clubDTO.getNome());
-        cdl.setDescrizione(clubDTO.getDescrizione());
-        cdl.setEsperto(esperto);
-        String copertina = getBase64Image(clubDTO.getCopertina());
-        if (copertina != null) cdl.setImmagineCopertina(copertina);
-
-        cdl.setGeneri(new HashSet<>(clubDTO.getGeneri()));
-
-        ClubDelLibro clubDelLibro =  clubService.creaClubDelLibro(cdl);
-        esperto.getClubs().add(clubDelLibro);
+        ClubDelLibro clubDelLibro =  clubService.creaClubDelLibro(clubDTO, esperto);
+        List<ClubDelLibro> listaClub = esperto.getClubs();
+        listaClub.add(clubDelLibro);
         espertoService.aggiornaEsperto(esperto);
         if(clubDelLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
         return new BiblionetResponse("Club del Libro creato", true);
@@ -169,23 +137,24 @@ public class ClubDelLibroController {
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse modificaDatiClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token, final @Valid @ModelAttribute ClubDTO clubDTO, BindingResult bindingResult) {
+
+        ClubDelLibro clubPers = this.clubService.getClubByID(id);
+        if(clubPers == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
-        if (!Utils.isUtenteEsperto(token)) {
+        if (!Utils.isUtenteEsperto(token) || !Utils.getSubjectFromToken(token).equals(clubPers.getEsperto().getEmail())) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        ClubDelLibro clubPers = this.clubService.getClubByID(id);
 
-        String copertina = getBase64Image(clubDTO.getCopertina());
+        String copertina = Utils.getBase64Image(clubDTO.getCopertina());
         if (copertina != null) clubPers.setImmagineCopertina(copertina);
-        if (clubDTO.getGeneri() != null) {
-            clubPers.setGeneri(new HashSet<>(clubDTO.getGeneri()));
-        }
+        clubPers.setGeneri(new HashSet<>(clubDTO.getGeneri()));
         clubPers.setNome(clubDTO.getNome());
         clubPers.setDescrizione(clubDTO.getDescrizione());
-        this.clubService.modificaDatiClub(clubPers);
+        this.clubService.salvaClub(clubPers);
         return new BiblionetResponse("Modifiche apportate", true);
     }
 
@@ -225,9 +194,10 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse partecipaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
+        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
+        ClubDelLibro clubDelLibro = clubService.getClubByID(id);
+
         if (clubDelLibro.getLettori().contains(lettore)) {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
@@ -243,7 +213,7 @@ public class ClubDelLibroController {
     ) {
         //todo sostituire con una query diretta
         if (!Utils.isUtenteLettore(token)) return false;
-        List<ClubDelLibro> clubs =  lettoreService.getLettoreByEmail(Utils.getSubjectFromToken(token)).getClubs();
+        List<ClubDelLibro> clubs =  lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token)).getClubs();
         for(ClubDelLibro club: clubs){
             if(idClub == club.getIdClub()) return true;
         }
@@ -294,7 +264,7 @@ public class ClubDelLibroController {
      public ClubDTO visualizzaDatiClub(final @PathVariable int id) {
         return new ClubDTO(clubService.getClubByID(id));
      }
-    @GetMapping(value = "/lettori-club")
+    @GetMapping(value = "/lettori-club/{id}")
     @CrossOrigin
     @ResponseBody
     public List<LettoreDTO> visualizzaLettoriClub(final @PathVariable int id) {
@@ -327,11 +297,11 @@ public class ClubDelLibroController {
     @GetMapping(value = "/{id}/eventi")
     public BiblionetResponse visualizzaListaEventiClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
         if (clubService.getClubByID(id) == null) {
-            return new BiblionetResponse("Club inesistente", false);
+            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         }
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato", false);
+        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         Lettore l = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        if (l == null) return new BiblionetResponse("Non sei autorizzato", false);
+        if (l == null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
         List <Evento> tutti = clubService.getClubByID(id).getEventi();
         List < Evento > mieiEventi = l.getEventi();
@@ -347,25 +317,12 @@ public class ClubDelLibroController {
             }
         }
         //todo trovare una soluzione con Giuseppe
-    /*
-    model.addAttribute("club", clubService.getClubByID(id));
-    model.addAttribute("eventi", tutti);
-    model.addAttribute("mieiEventi", mieiEventiClub);*/
 
-        return new BiblionetResponse("", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
 
 
 
-    private String getBase64Image(MultipartFile copertina) {
-        if (copertina != null && !copertina.isEmpty()) {
-            try {
-                return Base64.getEncoder().encodeToString(copertina.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
+
 }

@@ -29,7 +29,7 @@ public class TicketPrestitoDTO {
      */
     @NonNull
     @Column(nullable = false)
-    private it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito.Stati stato;
+    private TicketPrestito.Stati stato;
     /**
      * Rappresenta la data in cui è stata fatta la richiesta di prestito.
      */

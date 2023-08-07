@@ -23,6 +23,11 @@ public class BibliotecaServiceImpl implements BibliotecaService {
     }
 
     @Override
+    public Biblioteca aggiornaBibliotecaDaModel(BibliotecaDTO form) {
+       return creaBibliotecaDaModel(form);
+    }
+
+    @Override
     public Biblioteca findBibliotecaByEmailAndPassword(String email, byte[] password) {
         return bibliotecaDAO.findByEmailAndPassword(email, password);
     }
