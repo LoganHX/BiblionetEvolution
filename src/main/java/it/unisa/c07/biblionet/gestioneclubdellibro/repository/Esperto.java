@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.repository;
 
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.Data;
@@ -59,7 +60,7 @@ public class Esperto extends UtenteRegistrato {
     @ManyToOne
     @JoinColumn(nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private UtenteRegistrato biblioteca;
+    private Biblioteca biblioteca;
 
     /**
      * Rappresenta la lista di generi di cui un esperto è esperto.
@@ -94,7 +95,7 @@ public class Esperto extends UtenteRegistrato {
                    final String via,
                    final String recapitoTelefonico, final String username,
                    final String nome, final String cognome,
-                   final UtenteRegistrato biblioteca) {
+                   final Biblioteca biblioteca) {
         super(email, password, provincia, citta, via, recapitoTelefonico, "Esperto");
         this.username = username;
         this.nome = nome;
@@ -102,7 +103,7 @@ public class Esperto extends UtenteRegistrato {
         this.biblioteca = biblioteca;
     }
 
-    public Esperto(EspertoDTO dto, UtenteRegistrato biblioteca){
+    public Esperto(EspertoDTO dto, Biblioteca biblioteca){
         super(dto.getEmail(), dto.getPassword(), dto.getProvincia(), dto.getCitta(), dto.getVia(), dto.getRecapitoTelefonico(), "Esperto");
         this.username = dto.getUsername();
         this.nome = dto.getNome();

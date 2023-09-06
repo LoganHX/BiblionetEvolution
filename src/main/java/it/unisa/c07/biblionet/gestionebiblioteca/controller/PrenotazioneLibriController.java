@@ -130,10 +130,10 @@ public class PrenotazioneLibriController {
      *
      * @return La view che visualizza la lista delle richieste
      */
-    @GetMapping(value = "/visualizza-richieste")
+    @PostMapping(value = "/visualizza-richieste")
     @ResponseBody
     @CrossOrigin
-    public Map<String, List<TicketPrestito>> visualizzaRichieste(
+    public Map<String, List<TicketPrestitoDTO>> visualizzaRichieste(
             @RequestHeader (name="Authorization") final String token
     ) {
         if (!utils.isUtenteBiblioteca(token)) {
@@ -141,29 +141,12 @@ public class PrenotazioneLibriController {
         }
         Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
-        List<TicketPrestito> lista = prenotazioneService.getTicketsByBiblioteca(biblioteca);
+        Map<String, List<TicketPrestitoDTO>> map = new HashMap<>();
+        map.put(TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA.name(), prenotazioneService.getInformazioniTickets(prenotazioneService.getTicketsByBibliotecaAndStato(biblioteca, TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA)));
+        map.put(TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE.name(), prenotazioneService.getInformazioniTickets(prenotazioneService.getTicketsByBibliotecaAndStato(biblioteca, TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE)));
+        map.put(TicketPrestito.Stati.CHIUSO.name(), prenotazioneService.getInformazioniTickets(prenotazioneService.getTicketsByBibliotecaAndStato(biblioteca, TicketPrestito.Stati.CHIUSO)));
 
-        List<TicketPrestito> list1 = new ArrayList<>();
-        List<TicketPrestito> list2 = new ArrayList<>();
-        List<TicketPrestito> list3 = new ArrayList<>();
-        for (TicketPrestito t : lista) {
-            if (t.getStato().equals(
-                    TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA)) {
-                list1.add(t);
-            } else if (t.getStato().equals(
-                    TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE)) {
-                list2.add(t);
-            } else if (t.getStato().equals(
-                    TicketPrestito.Stati.CHIUSO)) {
-                list3.add(t);
-            }
-        }
-        Map<String, List<TicketPrestito>> map = new HashMap<>();
-        map.put(TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA.name(), list1);
-        map.put(TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE.name(), list2);
-        map.put(TicketPrestito.Stati.CHIUSO.name(), list3);
         return map;
-
     }
 
     /**
@@ -231,16 +214,10 @@ public class PrenotazioneLibriController {
     @CrossOrigin
     public List<TicketPrestitoDTO> visualizzaPrenotazioniLettore(@RequestHeader (name="Authorization") final String token) {
 
-        List<TicketPrestitoDTO> ticketsDTO = new ArrayList<>();
-        if (!utils.isUtenteLettore(token)) {
-           return null;
-        }
+        if (!utils.isUtenteLettore(token)) return null;
 
-        List<TicketPrestito> tickets = prenotazioneService.getTicketsByEmailLettore(utils.getSubjectFromToken(token));
-        for(TicketPrestito ticketPrestito: tickets){
-            ticketsDTO.add(new TicketPrestitoDTO(ticketPrestito));
-        }
-        return ticketsDTO;
+        return prenotazioneService.getInformazioniTickets(prenotazioneService.getTicketsByEmailLettore(utils.getSubjectFromToken(token)));
+
     }
 
 

@@ -3,6 +3,7 @@ package it.unisa.c07.biblionet.gestionebiblioteca.service;
 import it.unisa.c07.biblionet.common.*;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GenereService;
@@ -196,6 +197,13 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                 findAllByBibliotecaEmail(biblioteca.getEmail());
     }
 
+    @Override
+    public List<TicketPrestito> getTicketsByBibliotecaAndStato(
+            final Biblioteca biblioteca, final TicketPrestito.Stati stato) {
+        return ticketPrestitoDAO.
+                findAllByBibliotecaEmailAndStato(biblioteca.getEmail(), stato);
+    }
+
     /**
      * Implementa la funzionalità che permette
      * di ottenere un ticket dato il suo ID.
@@ -276,9 +284,21 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @param emailLettore l'id del lettore di cui recuperare i ticket
      * @return la lista dei ticket
      */
+    @Override
     public List<TicketPrestito> getTicketsByEmailLettore(String emailLettore) {
         return ticketPrestitoDAO.findAllByLettoreEmail(emailLettore);
     }
+
+    @Override
+    public List<TicketPrestitoDTO> getInformazioniTickets(List<TicketPrestito> tickets) {
+        List<TicketPrestitoDTO> ticketsDTO = new ArrayList<>();
+
+        for(TicketPrestito t: tickets){
+            ticketsDTO.add(new TicketPrestitoDTO(t));
+        }
+        return ticketsDTO;
+    }
+
 
     /**
      * Implementa la funzionalità che permette di

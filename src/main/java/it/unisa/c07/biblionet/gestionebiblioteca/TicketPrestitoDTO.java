@@ -18,11 +18,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class TicketPrestitoDTO {
 
-    /**
-     * Rappresenta l'ID autogenerato di un ticket.
-     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int idTicket;
     /**
      * Rappresenta lo stato del ticket.
@@ -57,6 +53,7 @@ public class TicketPrestitoDTO {
     private String lettore;
 
    public TicketPrestitoDTO(TicketPrestito ticketPrestito){
+       this.idTicket = ticketPrestito.getIdTicket();
        this.stato = ticketPrestito.getStato();
        this.biblioteca = ticketPrestito.getBiblioteca().getEmail();
        this.lettore = ticketPrestito.getLettore().getEmail();

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 @SpringBootApplication
 public class BiblionetApplication {
 
-    private static BookApiAdapter bookApiAdapter = new GoogleBookApiAdapterImpl();
+    private static final BookApiAdapter bookApiAdapter = new GoogleBookApiAdapterImpl();
 
     private static LibroDAO libroDAO = null;
 
@@ -43,8 +43,8 @@ public class BiblionetApplication {
 
         return libroDAO.save(libro);
     }
-/*
 
+/*
     public static void init(ApplicationContext configurableApplicationContext) {
 
 //----------------------------Definizione oggetti DAO per ogni entity---------------------------------------------------
@@ -2419,7 +2419,7 @@ public class BiblionetApplication {
         out.info("*************************** INIZIALIZZAZIONE DI BIBLIONET TERMINATA ***************************");
 
     }
-*/
+
 
     public static String getCopertinaClubFromUrl(String filePath) {
         try{
@@ -2432,7 +2432,7 @@ public class BiblionetApplication {
         }
 
     }
-
+*/
     public static void main(String[] args) throws NoSuchAlgorithmException {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);

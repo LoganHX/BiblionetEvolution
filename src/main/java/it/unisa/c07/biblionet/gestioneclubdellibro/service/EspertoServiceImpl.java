@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
+import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
@@ -19,14 +20,14 @@ public class EspertoServiceImpl implements EspertoService {
     private final EspertoDAO espertoDAO;
 
     @Override
-    public Esperto creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
+    public Esperto creaEspertoDaModel(EspertoDTO form, Biblioteca biblioteca) {
         if (biblioteca == null) return null;
         if (!biblioteca.getTipo().equals("Biblioteca")) return null;
         return espertoDAO.save(new Esperto(form, biblioteca));
     }
 
     @Override
-    public Esperto aggiornaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
+    public Esperto aggiornaEspertoDaModel(EspertoDTO form, Biblioteca biblioteca) {
         return creaEspertoDaModel(form, biblioteca);
     }
 

@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +27,9 @@ public interface TicketPrestitoDAO
      * @return I ticket del lettore
      */
     List<TicketPrestito> findAllByLettoreEmail(String lettoreEmail);
+
+
+    @Query("SELECT t FROM TicketPrestito t WHERE t.biblioteca.email=?1 and t.stato=?2")
+    List<TicketPrestito>
+    findAllByBibliotecaEmailAndStato(String bibliotecaEmail, TicketPrestito.Stati stato);
 }
