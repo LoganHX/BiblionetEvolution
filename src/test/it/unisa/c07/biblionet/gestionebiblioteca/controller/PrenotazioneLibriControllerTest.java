@@ -7,6 +7,8 @@ import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
+import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Viviana Pentangelo, Gianmario Voria
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class PrenotazioneLibriControllerTest {
 
     /**
@@ -49,6 +51,8 @@ public class PrenotazioneLibriControllerTest {
     private PrenotazioneLibriService prenotazioneService;
     @MockBean
     private BibliotecaService bibliotecaService;
+    @MockBean
+    private Utils utils;
 
     /**
      * Inject di MockMvc per simulare
@@ -304,17 +308,19 @@ public class PrenotazioneLibriControllerTest {
     @Test
     public void confermaPrenotazione() throws Exception {
 
-        //todo static
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token = "";
 
         TicketPrestito t = new TicketPrestito();
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("lettore@gmail.com");
         when(prenotazioneService.richiediPrestito("lettore@gmail.com",
                 "id",
                 1)).thenReturn(t);
 
         this.mockMvc.perform(
                         post("/prenotazione-libri/conferma-prenotazione")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .param("idBiblioteca", "id")
                                 .param("idLibro", "1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(true));
@@ -323,21 +329,18 @@ public class PrenotazioneLibriControllerTest {
     @Test
     public void confermaPrenotazioneUserNotValid() throws Exception {
 
-        //todo static
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token = "";
 
 
         TicketPrestito t = new TicketPrestito();
-        when(prenotazioneService.richiediPrestito("lettore@gmail.com",
-                "id",
-                1)).thenReturn(t);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
         this.mockMvc.perform(
                         post("/prenotazione-libri/conferma-prenotazione")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                                 .param("idBiblioteca", "id")
                                 .param("idLibro", "1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(false));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
     /**
@@ -353,16 +356,14 @@ public class PrenotazioneLibriControllerTest {
     public void visualizzaRichiesteUserNotValid(final TicketPrestito t)
             throws Exception {
 
-        //todo static
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
 
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
-        when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
-                .thenReturn(list);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
 
         this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
     }
 
@@ -379,16 +380,18 @@ public class PrenotazioneLibriControllerTest {
     @MethodSource("provideTicketInAttesa")
     public void visualizzaRichiesteTicketInAttesa(final TicketPrestito t) throws Exception {
 
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token="";
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
 
-        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(t.getBiblioteca());
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(t.getBiblioteca());
         when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
                 .thenReturn(list);
 
         this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_CONFERMA[0].stato").value(t.getStato().toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_CONFERMA[0].idTicket").value(t.getIdTicket()))
@@ -407,16 +410,18 @@ public class PrenotazioneLibriControllerTest {
     @ParameterizedTest
     @MethodSource("provideTicketAccettato")
     public void visualizzaRichiesteTicketAccettato(final TicketPrestito t) throws Exception {
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token="";
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
 
-        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(t.getBiblioteca());
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(t.getBiblioteca());
         when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
                 .thenReturn(list);
 
         this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_RESTITUZIONE[0].stato").value(t.getStato().toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_RESTITUZIONE[0].idTicket").value(t.getIdTicket()))
@@ -435,16 +440,18 @@ public class PrenotazioneLibriControllerTest {
     @ParameterizedTest
     @MethodSource("provideTicketChiuso")
     public void visualizzaRichiesteTicketChiuso(final TicketPrestito t) throws Exception {
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token="";
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
 
-        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(t.getBiblioteca());
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(t.getBiblioteca());
         when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
                 .thenReturn(list);
 
         this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_CONFERMA").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO[0].stato").value(t.getStato().toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO[0].idTicket").value(t.getIdTicket()))
@@ -512,14 +519,12 @@ public class PrenotazioneLibriControllerTest {
     public void visualizzaPrenotazioniLettoreUserNotValid(final TicketPrestito t)
             throws Exception {
 
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
-        List<TicketPrestito> list = new ArrayList<>();
-        list.add(t);
-        when(prenotazioneService.getTicketsByEmailLettore(t.getLettore().getEmail()))
-                .thenReturn(list);
+        String token="";
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
         this.mockMvc.perform(get("/prenotazione-libri/visualizza-prenotazioni")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
     }
 
@@ -538,7 +543,7 @@ public class PrenotazioneLibriControllerTest {
     }
 
     private void visualizzaPrenotazioniLettoreTicket(final TicketPrestito t) throws Exception {
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
         TicketPrestitoDTO ticketPrestitoDTO = new TicketPrestitoDTO(t);
 
         List<TicketPrestito> list = new ArrayList<>();
@@ -547,11 +552,13 @@ public class PrenotazioneLibriControllerTest {
         List<TicketPrestitoDTO> listDTO = new ArrayList<>();
         listDTO.add(ticketPrestitoDTO);
 
-        when(prenotazioneService.getTicketsByEmailLettore(Mockito.anyString()))
+    when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+    when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(prenotazioneService.getTicketsByEmailLettore("a"))
                 .thenReturn(list);
 
         this.mockMvc.perform(get("/prenotazione-libri/visualizza-prenotazioni")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].idTicket").value(t.getIdTicket()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].stato").value(t.getStato().toString()));
     }

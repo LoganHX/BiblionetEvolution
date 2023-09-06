@@ -37,6 +37,9 @@ public class ClubDelLibroController {
     private final ClubDelLibroService clubService;
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
+    private final GestioneEventiService eventiService;
+
+    private final Utils utils;
 
 
 
@@ -111,11 +114,11 @@ public class ClubDelLibroController {
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
-        if (!Utils.isUtenteEsperto(token)) {
+        if (!utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        Esperto esperto = espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token));
+        Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
 
         ClubDelLibro clubDelLibro =  clubService.creaClubDelLibro(clubDTO, esperto);
         List<ClubDelLibro> listaClub = esperto.getClubs();
@@ -144,12 +147,12 @@ public class ClubDelLibroController {
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
-        if (!Utils.isUtenteEsperto(token) || !Utils.getSubjectFromToken(token).equals(clubPers.getEsperto().getEmail())) {
+        if (!utils.isUtenteEsperto(token) || !utils.getSubjectFromToken(token).equals(clubPers.getEsperto().getEmail())) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
 
-        String copertina = Utils.getBase64Image(clubDTO.getCopertina());
+        String copertina = utils.getBase64Image(clubDTO.getCopertina());
         if (copertina != null) clubPers.setImmagineCopertina(copertina);
         clubPers.setGeneri(new HashSet<>(clubDTO.getGeneri()));
         clubPers.setNome(clubDTO.getNome());
@@ -171,8 +174,8 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse abbandonaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
-        Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if (!utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
+        Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
         boolean esito = lettoreService.abbandonaClub(clubDelLibro, lettore);
         if (esito) {
@@ -194,8 +197,8 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse partecipaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if (!utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         ClubDelLibro clubDelLibro = clubService.getClubByID(id);
 
         if (clubDelLibro.getLettori().contains(lettore)) {
@@ -212,8 +215,8 @@ public class ClubDelLibroController {
             final @RequestHeader(name = "Authorization") String token, final @RequestParam int idClub
     ) {
         //todo sostituire con una query diretta
-        if (!Utils.isUtenteLettore(token)) return false;
-        List<ClubDelLibro> clubs =  lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token)).getClubs();
+        if (!utils.isUtenteLettore(token)) return false;
+        List<ClubDelLibro> clubs =  lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs();
         for(ClubDelLibro club: clubs){
             if(idClub == club.getIdClub()) return true;
         }
@@ -264,10 +267,10 @@ public class ClubDelLibroController {
      public ClubDTO visualizzaDatiClub(final @PathVariable int id) {
         return new ClubDTO(clubService.getClubByID(id));
      }
-    @GetMapping(value = "/lettori-club/{id}")
+    @PostMapping(value = "/lettori-club")
     @CrossOrigin
     @ResponseBody
-    public List<LettoreDTO> visualizzaLettoriClub(final @PathVariable int id) {
+    public List<LettoreDTO> visualizzaLettoriClub(final @RequestParam int id) {
          List<LettoreDTO> lettoriDTO = new ArrayList<>();
         for(Lettore l: clubService.getClubByID(id).getLettori()){
                 lettoriDTO.add(new LettoreDTO(l));
@@ -294,18 +297,21 @@ public class ClubDelLibroController {
      * @param id l'ID del club
      * @return la view che visualizza gli eventi
      */
-    @GetMapping(value = "/{id}/eventi")
-    public BiblionetResponse visualizzaListaEventiClub(final @PathVariable int id, @RequestHeader(name = "Authorization") final String token) {
-        if (clubService.getClubByID(id) == null) {
-            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
-        }
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        Lettore l = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        if (l == null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+    @PostMapping(value = "/eventi-club")
+    @CrossOrigin
+    @ResponseBody
+    public List<EventoDTO> visualizzaListaEventiClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
-        List <Evento> tutti = clubService.getClubByID(id).getEventi();
-        List < Evento > mieiEventi = l.getEventi();
-        List < Evento > mieiEventiClub = new ArrayList < > ();
+        if (clubService.getClubByID(id) == null) {
+            return null;
+        }
+        if (!utils.isUtenteLettore(token)) return null;
+
+        //Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
+        //if (l == null) return null;
+
+        /* List <Evento> mieiEventi = l.getEventi();
+        List <Evento> mieiEventiClub = new ArrayList < > ();
         for (Evento e: mieiEventi) {
             if (e.getClub().getIdClub() == id) {
                 mieiEventiClub.add(e);
@@ -315,10 +321,9 @@ public class ClubDelLibroController {
             if (tutti.contains(e)) {
                 tutti.remove(e);
             }
-        }
-        //todo trovare una soluzione con Giuseppe
-
-        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
+        }*/
+        System.out.println(eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi()));
+        return eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi());
     }
 
 

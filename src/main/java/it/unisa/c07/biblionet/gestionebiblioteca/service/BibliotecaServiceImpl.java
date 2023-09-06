@@ -7,6 +7,7 @@ import it.unisa.c07.biblionet.gestionebiblioteca.repository.BibliotecaDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -56,6 +57,16 @@ public class BibliotecaServiceImpl implements BibliotecaService {
     @Override
     public List<Biblioteca> findAllBiblioteche() {
         return bibliotecaDAO.findAllBiblioteche();
+    }
+
+    @Override
+    public List<BibliotecaDTO> getInformazioniBiblioteche(List<Biblioteca> biblioteche) {
+        List<BibliotecaDTO> bibliotecheDTO = new ArrayList<>();
+        for (Biblioteca b : biblioteche){
+            bibliotecheDTO.add(new BibliotecaDTO(b));
+        }
+
+        return bibliotecheDTO;
     }
 
 

@@ -5,10 +5,12 @@ import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
+import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Luca Topo
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class ClubDelLibroControllerTest {
 
     /**
@@ -61,6 +63,8 @@ public class ClubDelLibroControllerTest {
     private LettoreService lettoreService;
     @MockBean
     private EspertoService espertoService;
+    @MockBean
+    private Utils utils;
 
     /**
      * Inject di MockMvc per simulare
@@ -160,8 +164,7 @@ public class ClubDelLibroControllerTest {
     @MethodSource("provideClubDTO")
     public void creaClubDelLibro(final ClubDTO clubDTO) throws Exception {
         String[] list = {"A", "B"};
-        // TODO: static
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         Esperto esperto = Mockito.mock(Esperto.class);
         List<ClubDelLibro> listaClub = new ArrayList<>();
@@ -169,7 +172,9 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
-        when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(esperto);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
         when(clubService.creaClubDelLibro(Mockito.any(), Mockito.any())).thenReturn(cdl);
         when(espertoService.aggiornaEsperto(esperto)).thenReturn(esperto);
         // Assert del test
@@ -179,7 +184,7 @@ public class ClubDelLibroControllerTest {
                         .param("nome", clubDTO.getNome())
                         .param("descrizione", clubDTO.getDescrizione())
                         .param("generi", list)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Club del Libro creato"));
     }
 
@@ -190,7 +195,7 @@ public class ClubDelLibroControllerTest {
     @MethodSource("provideClubDelLibro")
     public void visualizzaListaEventiClubTest(final ClubDelLibro club) throws Exception {
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
 
 
         List<Evento> eventi_club = new ArrayList<>();
@@ -208,10 +213,13 @@ public class ClubDelLibroControllerTest {
         club.setEventi(eventi_club);
         Lettore lettore = new Lettore();
         lettore.setEventi(eventi_lettore);
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
         when(clubService.getClubByID(1)).thenReturn(club);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/club-del-libro/1/eventi")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("idClub", "1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
 
@@ -233,10 +241,13 @@ public class ClubDelLibroControllerTest {
     @MethodSource("provideClubDelLibro")
     public void modificaDatiClub(final ClubDelLibro club)
             throws Exception {
-        // TODO: static
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+
+        String token="";
 
         when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
         when(clubService.salvaClub(club)).thenReturn(club);
 
         //when(clubService.getTuttiGeneri()).thenReturn(set); todo totalmente cambiato
@@ -247,7 +258,7 @@ public class ClubDelLibroControllerTest {
                         .param("nome",club.getNome())
                         .param("descrizione",club.getDescrizione())
                         .param("generi", String.valueOf(club.getGeneri()))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Modifiche apportate"));
     }
 
@@ -265,13 +276,15 @@ public class ClubDelLibroControllerTest {
     @MethodSource("provideClubDelLibro")
     public void partecipaClub(final ClubDelLibro club) throws Exception {
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
 
         Lettore lettore = Mockito.mock(Lettore.class);
         List<Lettore> lettori = new ArrayList<>();
         club.setLettori(lettori);
 
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(club);
         when(lettoreService.partecipaClub(club, lettore)).thenReturn(true);
 
@@ -279,7 +292,7 @@ public class ClubDelLibroControllerTest {
         this.mockMvc
                 .perform(post("/club-del-libro/iscrizione")
                         .param("id", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                 )
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ISCRIZIONE_OK));
@@ -417,11 +430,13 @@ public class ClubDelLibroControllerTest {
 
     @Test
     public void partecipaClubNonAutorizzato() throws Exception {
-        //todo token
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+
+        String token="";
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
         this.mockMvc.perform(MockMvcRequestBuilders.post("/club-del-libro/iscrizione")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("id", "1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
@@ -430,32 +445,35 @@ public class ClubDelLibroControllerTest {
     @MethodSource("provideParameters")
     public void partecipaClubLettoreIscritto(final ClubDelLibro club, final Lettore lettore) throws Exception {
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
 
         List<Lettore> list_lett = new ArrayList<>();
         list_lett.add(lettore);
         club.setLettori(list_lett);
 
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(club);
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+        when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
 
 
         this.mockMvc.perform(MockMvcRequestBuilders.post("/club-del-libro/iscrizione")
                         .param("id", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ISCRIZIONE_FALLITA));
 
     }
 
     @Test
     public void visualizzaModificaDatiClubNonEsistente() throws Exception {
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         String id = "1";
 
+
         when(clubService.getClubByID(Integer.parseInt(id))).thenReturn(null);
         this.mockMvc.perform(post("/club-del-libro/modifica")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("id", id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
     }
@@ -463,7 +481,7 @@ public class ClubDelLibroControllerTest {
     @Test
     public void visualizzaModificaDatiClubNonAutorizzato() throws Exception {
 
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         String id = "1";
         ClubDelLibro club = new ClubDelLibro();
@@ -473,10 +491,11 @@ public class ClubDelLibroControllerTest {
         esperto1.setEmail("liberale@gmail.com");
         club.setEsperto(esperto);
 
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
         when(clubService.getClubByID(Integer.parseInt(id))).thenReturn(club);
         this.mockMvc.perform(MockMvcRequestBuilders.post("/club-del-libro/modifica")
                         .param("id", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 )
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
@@ -484,28 +503,30 @@ public class ClubDelLibroControllerTest {
     @Test
     public void visualizzaListaEventiClubNonTrovato() throws Exception {
 
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         String id = "1";
 
         when(clubService.getClubByID(Integer.parseInt(id))).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/club-del-libro/1/eventi")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("id", id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
     }
 
     @Test
     public void visualizzaListaEventiClubNonAutorizzato() throws Exception {
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
         String id = "1";
 
         ClubDelLibro club = new ClubDelLibro();
         club.setIdClub(Integer.parseInt(id));
         Esperto esperto = new Esperto();
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
         when(clubService.getClubByID(Integer.parseInt(id))).thenReturn(club);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/club-del-libro/1/eventi")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("id", id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));

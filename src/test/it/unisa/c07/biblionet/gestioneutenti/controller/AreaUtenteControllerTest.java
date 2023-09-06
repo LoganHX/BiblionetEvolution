@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Antonio Della Porta
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class AreaUtenteControllerTest {
 
 
@@ -66,6 +66,9 @@ public class AreaUtenteControllerTest {
      */
     @MockBean
     private EspertoService espertoService;
+
+    @MockBean
+    private Utils utils;
 
     /**
      * Mock del service per simulare
@@ -104,15 +107,17 @@ public class AreaUtenteControllerTest {
             final String confermaPassword) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
-
+        String token="";
         Lettore lettore = new Lettore();
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(new Lettore());
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
+        when(lettoreService.findLettoreByEmail(utenteDTO.getEmail())).thenReturn(lettore);
         when(lettoreService.aggiornaLettoreDaModel(Mockito.any())).thenReturn(lettore);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(lettore);
 
-        this.mockMvc.perform(post("/modifica-lettore")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+        this.mockMvc.perform(post("/area-utente/modifica-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                 .param("nome", utenteDTO.getNome())
@@ -149,15 +154,17 @@ public class AreaUtenteControllerTest {
             final String confermaPassword) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
-
+        String token="";
         Lettore lettore = new Lettore();
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
         when(lettoreService.aggiornaLettoreDaModel(Mockito.any())).thenReturn(lettore);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(lettore);
 
-        this.mockMvc.perform(post("/modifica-lettore")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+        this.mockMvc.perform(post("/area-utente/modifica-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNome())
@@ -194,15 +201,18 @@ public class AreaUtenteControllerTest {
             final String vecchiaPassword,
             final String nuovaPassword,
             final String confermaPassword) throws Exception {
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+
+        String token="";
 
         Lettore lettore = new Lettore();
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(lettoreDTO.getEmail());
         when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
         when(lettoreService.aggiornaLettoreDaModel(Mockito.any())).thenReturn(lettore);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(lettore);
 
-        this.mockMvc.perform(post("/modifica-lettore")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+        this.mockMvc.perform(post("/area-utente/modifica-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", lettoreDTO.getEmail())
                         .param("nome", lettoreDTO.getNome())
@@ -270,16 +280,18 @@ public class AreaUtenteControllerTest {
             final String emailBiblioteca) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         Esperto esperto = new Esperto();
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(esperto);
         when(espertoService.aggiornaEspertoDaModel(Mockito.any(), Mockito.any())).thenReturn(esperto);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(esperto);
         when(bibliotecaService.findBibliotecaByEmail(emailBiblioteca)).thenReturn(new Biblioteca());
 
-        this.mockMvc.perform(post("/modifica-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+        this.mockMvc.perform(post("/area-utente/modifica-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNome())
@@ -315,16 +327,18 @@ public class AreaUtenteControllerTest {
             final EspertoDTO utenteDTO,
             final String emailBiblioteca ) throws Exception {
 //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
-
+        String token="";
         Esperto esperto = new Esperto();
+
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(esperto);
         when(espertoService.aggiornaEspertoDaModel(Mockito.any(), Mockito.any())).thenReturn(esperto);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(esperto);
         when(bibliotecaService.findBibliotecaByEmail(emailBiblioteca)).thenReturn(new Biblioteca());
 
-        this.mockMvc.perform(post("/modifica-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+        this.mockMvc.perform(post("/area-utente/modifica-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNome())
@@ -366,16 +380,19 @@ public class AreaUtenteControllerTest {
             final String emailBiblioteca) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
 
+        String token="";
         Esperto esperto = new Esperto();
+
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(esperto);
         when(espertoService.aggiornaEspertoDaModel(Mockito.any(), Mockito.any())).thenReturn(esperto);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
         when(bibliotecaService.findBibliotecaByEmail(emailBiblioteca)).thenReturn(new Biblioteca());
 
-        this.mockMvc.perform(post("/modifica-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+        this.mockMvc.perform(post("/area-utente/modifica-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNome())
@@ -414,16 +431,19 @@ public class AreaUtenteControllerTest {
             final String emailBiblioteca) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
 
+        String token="";
         Esperto esperto = new Esperto();
+
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(esperto);
         when(espertoService.aggiornaEspertoDaModel(Mockito.any(), Mockito.any())).thenReturn(esperto);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(esperto);
         when(bibliotecaService.findBibliotecaByEmail(emailBiblioteca)).thenReturn(new Biblioteca());
 
-        this.mockMvc.perform(post("/modifica-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+        this.mockMvc.perform(post("/area-utente/modifica-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNome())
@@ -462,16 +482,19 @@ public class AreaUtenteControllerTest {
             final String emailBiblioteca) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         Esperto esperto = new Esperto();
+
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(esperto);
         when(espertoService.aggiornaEspertoDaModel(Mockito.any(), Mockito.any())).thenReturn(esperto);
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(esperto);
         when(bibliotecaService.findBibliotecaByEmail(emailBiblioteca)).thenReturn(null);
 
-        this.mockMvc.perform(post("/modifica-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
+        this.mockMvc.perform(post("/area-utente/modifica-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNome())
@@ -537,14 +560,16 @@ public class AreaUtenteControllerTest {
             final String confermaPassword) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token="";
 
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(new Biblioteca());
         when(bibliotecaService.aggiornaBibliotecaDaModel(Mockito.any())).thenReturn(new Biblioteca());
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(new Biblioteca());
 
-        this.mockMvc.perform(post("/modifica-biblioteca")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio)
+        this.mockMvc.perform(post("/area-utente/modifica-biblioteca")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNomeBiblioteca())
@@ -568,14 +593,16 @@ public class AreaUtenteControllerTest {
             final String confermaPassword) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token="";
 
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(new Biblioteca());
         when(bibliotecaService.aggiornaBibliotecaDaModel(Mockito.any())).thenReturn(new Biblioteca());
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 
-        this.mockMvc.perform(post("/modifica-biblioteca")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio)
+        this.mockMvc.perform(post("/area-utente/modifica-biblioteca")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNomeBiblioteca())
@@ -599,14 +626,16 @@ public class AreaUtenteControllerTest {
             final String confermaPassword) throws Exception {
 
         //todo dovrei testare controlli preliminari sia qua che in registrazione?
-        String tokenBiblio = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaWJsaW90ZWNhY2FycmlzaUBnbWFpbC5jb20iLCJyb2xlIjoiQmlibGlvdGVjYSIsImlhdCI6MTY4ODIwMjg2Mn0.u4Ej7gh1AswIUFSHnLvQZY3vS0VpHuhNhDIkbEd2H_o";
+        String token="";
 
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
         when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(new Biblioteca());
         when(bibliotecaService.aggiornaBibliotecaDaModel(Mockito.any())).thenReturn(new Biblioteca());
         when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 
-        this.mockMvc.perform(post("/modifica-biblioteca")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenBiblio)
+        this.mockMvc.perform(post("/area-utente/modifica-biblioteca")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
 
                         .param("email", utenteDTO.getEmail())
                         .param("nome", utenteDTO.getNomeBiblioteca())
@@ -660,18 +689,22 @@ public class AreaUtenteControllerTest {
     public void visualizzaClubsLettoreOk(final Lettore utente)
             throws Exception {
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
+
+
         ClubDelLibro clubDelLibro = new ClubDelLibro();
         clubDelLibro.setNome("ClubName");
         List<ClubDelLibro> listaClub = new ArrayList<>();
         listaClub.add(clubDelLibro);
         utente.setClubs(listaClub);
 
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utente.getEmail());
         when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(utente);
-        System.out.println(utente.getClubs());
 
-        this.mockMvc.perform(post("/visualizza-clubs-lettore")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+
+        this.mockMvc.perform(post("/area-utente/visualizza-clubs-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value(clubDelLibro.getNome()));
     }
 
@@ -687,7 +720,7 @@ public class AreaUtenteControllerTest {
     public void visualizzaClubsLettoreNonAutorizzato(final Lettore utente)
             throws Exception {
 
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
         ClubDelLibro clubDelLibro = new ClubDelLibro();
         clubDelLibro.setNome("ClubName");
         List<ClubDelLibro> listaClub = new ArrayList<>();
@@ -695,10 +728,11 @@ public class AreaUtenteControllerTest {
         utente.setClubs(listaClub);
 
         when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(utente);
-        System.out.println(utente.getClubs());
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
-        this.mockMvc.perform(post("/visualizza-clubs-lettore")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+
+        this.mockMvc.perform(post("/area-utente/visualizza-clubs-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
     }
 
@@ -713,7 +747,7 @@ public class AreaUtenteControllerTest {
     @DisplayName("Visualizza Clubs Esperto")
     public void visualizzaClubsEspertoOk(final Esperto utente)
             throws Exception {
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         ClubDelLibro clubDelLibro = new ClubDelLibro();
         clubDelLibro.setNome("ClubName");
@@ -722,9 +756,11 @@ public class AreaUtenteControllerTest {
         utente.setClubs(listaClub);
 
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(utente);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utente.getEmail());
 
-        this.mockMvc.perform(post("/visualizza-clubs-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+        this.mockMvc.perform(post("/area-utente/visualizza-clubs-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
 
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value(clubDelLibro.getNome()));
 
@@ -741,7 +777,7 @@ public class AreaUtenteControllerTest {
     @DisplayName("Visualizza Clubs Esperto")
     public void visualizzaClubsEspertoNonAutorizzato(final Esperto utente)
             throws Exception {
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
 
         ClubDelLibro clubDelLibro = new ClubDelLibro();
         clubDelLibro.setNome("ClubName");
@@ -750,9 +786,10 @@ public class AreaUtenteControllerTest {
         utente.setClubs(listaClub);
 
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(utente);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
-        this.mockMvc.perform(post("/visualizza-clubs-esperto")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+        this.mockMvc.perform(post("/area-utente/visualizza-clubs-esperto")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
 
                 .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
 

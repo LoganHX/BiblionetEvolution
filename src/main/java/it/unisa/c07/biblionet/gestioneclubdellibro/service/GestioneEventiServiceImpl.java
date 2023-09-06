@@ -1,20 +1,20 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.LibroDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EventoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EventoDAO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EventoDAO;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementa la classe che esplicita i metodi definiti nell'interfaccia service
@@ -40,6 +40,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * di trovare un evento dato il suo identificativo.
+     *
      * @param idEvento L'identificativo dell'evento
      * @return L'Evento trovato
      */
@@ -50,6 +51,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Implementa la funzionalità che permette ad un Esperto di organizzare un
      * Evento.
+     *
      * @param evento L'Evento da memorizzare
      * @return L'Evento appena creato
      */
@@ -61,10 +63,11 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * di modificare un evento.
+     *
      * @param evento La nuova versione dell'evento
      * @return Optional.empty() se l'evento da modificare
-     *         non esiste, altrimenti un optional contenente
-     *         l'evento modificato.
+     * non esiste, altrimenti un optional contenente
+     * l'evento modificato.
      */
     @Override
     public Optional<Evento> modificaEvento(final Evento evento) {
@@ -75,9 +78,10 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         return Optional.of(eventoSalvato);
     }
 
-   /**
+    /**
      * Metodo di utilità per recuperare
      * un libro a partire dall'ID.
+     *
      * @param id Id del libro da recuperare
      * @return Il libro recuperato
      */
@@ -89,10 +93,11 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * ad un Esperto di eliminare un evento.
+     *
      * @param id L'id dell'evento da eliminare
      * @return L'evento che è stato eliminato, o
-     *         un Optional vuoto se l'evento non
-     *         esiste.
+     * un Optional vuoto se l'evento non
+     * esiste.
      */
     @Override
     public Optional<Evento> eliminaEvento(final int id) {
@@ -108,8 +113,9 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * ad un Lettore di partecipare ad un evento.
+     *
      * @param idLettore Il lettore da iscrivere all'evento
-     * @param idEvento L'id dell'evento a cui partecipare
+     * @param idEvento  L'id dell'evento a cui partecipare
      * @return Il lettore aggiornato e iscritto all'evento
      */
     @Override
@@ -133,8 +139,9 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * ad un Lettore di abbandonare un evento.
+     *
      * @param idLettore Il lettore da disiscrivere dall'evento
-     * @param idEvento L'id dell'evento da abbandonare
+     * @param idEvento  L'id dell'evento da abbandonare
      * @return Il lettore aggiornato ed disiscritto dall'evento
      */
     @Override
@@ -162,8 +169,17 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     }
 
     @Override
-    public Evento isLettoreIscrittoEvento(int idEventi, String emailLettore){
+    public Evento isLettoreIscrittoEvento(int idEventi, String emailLettore) {
         return eventoDAO.isLettoreIscrittoEvento(idEventi, emailLettore);
+    }
+
+    @Override
+    public List<EventoDTO> getInformazioniEventi(List<Evento> eventiList) {
+        List<EventoDTO> eventi = new ArrayList < > ();
+        for (   Evento e: eventiList){
+            eventi.add(new EventoDTO(e));
+        }
+        return eventi;
     }
 
 

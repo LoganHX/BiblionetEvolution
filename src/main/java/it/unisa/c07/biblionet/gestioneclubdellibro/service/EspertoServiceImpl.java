@@ -87,4 +87,16 @@ public class EspertoServiceImpl implements EspertoService {
         return espertoDAO.findByEmailAndPassword(email, password);
     }
 
+    @Override
+    public List<EspertoDTO> getInformazioniEsperti(List<Esperto> espertoList) {
+        List<EspertoDTO> espertoDTOList = new ArrayList<>();
+        for(Esperto e: espertoList){
+            espertoDTOList.add(new EspertoDTO(e));
+        }
+
+        return espertoDTOList;
+    }
+
+
+
 }

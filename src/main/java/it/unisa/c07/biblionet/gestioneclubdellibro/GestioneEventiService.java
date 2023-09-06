@@ -1,5 +1,6 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro;
 
+import java.util.List;
 import java.util.Optional;
 
 import it.unisa.c07.biblionet.common.Libro;
@@ -78,4 +79,6 @@ public interface GestioneEventiService {
 
 
     Evento isLettoreIscrittoEvento(int idEventi, String emailLettore);
+
+    List<EventoDTO> getInformazioniEventi(List<Evento> eventiList);
 }

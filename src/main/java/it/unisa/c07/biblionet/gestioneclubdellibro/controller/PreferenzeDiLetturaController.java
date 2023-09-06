@@ -31,6 +31,7 @@ public class PreferenzeDiLetturaController {
     private final GenereService genereService;
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
+    private final Utils utils;
 
 
     /**
@@ -48,14 +49,14 @@ public class PreferenzeDiLetturaController {
 
         Set<Genere> toAdd = genereService.getGeneriByName(generi);
 
-        if (Utils.isUtenteEsperto(token)) {
+        if (utils.isUtenteEsperto(token)) {
             preferenzeDiLetturaService
-                    .addGeneriEsperto(toAdd, espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token)));
+                    .addGeneriEsperto(toAdd, espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)));
             return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
         }
-        if (Utils.isUtenteLettore(token)) {
+        if (utils.isUtenteLettore(token)) {
             preferenzeDiLetturaService
-                    .addGeneriLettore(toAdd, lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token)));
+                    .addGeneriLettore(toAdd, lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)));
             return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
         }
 

@@ -1,17 +1,12 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.service;
 
-import it.unisa.c07.biblionet.common.ILibroIdAndName;
-import it.unisa.c07.biblionet.common.Libro;
-import it.unisa.c07.biblionet.common.LibroDAO;
-import it.unisa.c07.biblionet.common.UtenteRegistrato;
-import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
+import it.unisa.c07.biblionet.common.*;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GenereService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -461,6 +456,14 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         return l;
     }
 
+    @Override
+    public List<LibroDTO> getInformazioniLibri(List<Libro> libroList) {
+        List<LibroDTO> libroDTOS = new ArrayList<>();
+        for(Libro l: libroList){
+            libroDTOS.add(new LibroDTO(l));
+        }
+        return libroDTOS;
+    }
 
 
 }

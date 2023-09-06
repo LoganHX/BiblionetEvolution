@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
@@ -34,6 +35,7 @@ public class BibliotecaController {
      */
     private final BibliotecaService bibliotecaService;
     private final PrenotazioneLibriService prenotazioneService;
+    private final Utils utils;
 
 
 
@@ -45,8 +47,8 @@ public class BibliotecaController {
     @GetMapping(value = "/visualizza-biblioteche")
     @ResponseBody
     @CrossOrigin
-    public List<Biblioteca> visualizzaListaBiblioteche() {
-        return bibliotecaService.findAllBiblioteche();
+    public List<BibliotecaDTO> visualizzaListaBiblioteche() {
+        return bibliotecaService.getInformazioniBiblioteche(bibliotecaService.findAllBiblioteche());
     }
 
     /**
@@ -65,13 +67,13 @@ public class BibliotecaController {
                                               @RequestParam final String[] generi,
                                               @RequestParam final int numCopie) {
 
-        if (!Utils.isUtenteBiblioteca(token)) {
+        if (!utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
         if (isbn == null) {
             return new BiblionetResponse("L'ISBN inserito non è valido", false);
         }
-        Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
         Set<String> gSet =  new HashSet<>(Arrays.asList(generi.clone()));
         Libro l = prenotazioneService.inserimentoPerIsbn(
@@ -99,10 +101,10 @@ public class BibliotecaController {
                                                  @RequestHeader (name="Authorization") final String token,
                                                  @RequestParam final int numCopie) {
 
-        if (!Utils.isUtenteBiblioteca(token)) {
+        if (!utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        Biblioteca b =  bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca b =  bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
         prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
@@ -129,10 +131,10 @@ public class BibliotecaController {
 
         if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
-        if (!Utils.isUtenteBiblioteca(token)) {
+        if (!utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        Biblioteca b = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
         Libro l = new Libro();
         l.setTitolo(libro.getTitolo());
         l.setIsbn(libro.getIsbn());
@@ -167,14 +169,14 @@ public class BibliotecaController {
     @GetMapping(value = "/ricerca")
     @ResponseBody
     @CrossOrigin
-    public List<Biblioteca> visualizzaListaFiltrata(
+    public List<BibliotecaDTO> visualizzaListaFiltrata(
             @RequestParam("stringa") final String stringa,
             @RequestParam("filtro") final String filtro) {
 
         return switch (filtro) {
-            case "nome" -> bibliotecaService.findBibliotecaByNome(stringa);
-            case "citta" -> bibliotecaService.findBibliotecaByCitta(stringa);
-            default -> bibliotecaService.findAllBiblioteche();
+            case "nome" -> bibliotecaService.getInformazioniBiblioteche(bibliotecaService.findBibliotecaByNome(stringa));
+            case "citta" -> bibliotecaService.getInformazioniBiblioteche(bibliotecaService.findBibliotecaByCitta(stringa));
+            default -> bibliotecaService.getInformazioniBiblioteche(bibliotecaService.findAllBiblioteche());
         };
     }
 
@@ -187,7 +189,7 @@ public class BibliotecaController {
     @GetMapping(value = "/{email}")
     @ResponseBody
     @CrossOrigin
-    public Biblioteca visualizzaDatiBiblioteca(final @PathVariable String email) {
-        return bibliotecaService.findBibliotecaByEmail(email);
+    public BibliotecaDTO visualizzaDatiBiblioteca(final @PathVariable String email) {
+        return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
     }
 }

@@ -1,5 +1,6 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
@@ -29,6 +30,7 @@ public class ComunicazioneEspertoController {
      */
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
+    private final Utils utils;
 
     /**
      * Implementa la funzionalità di mostrare gli esperti in base
@@ -38,23 +40,13 @@ public class ComunicazioneEspertoController {
     @GetMapping(value = "/visualizza-esperti-genere")
     @ResponseBody
     @CrossOrigin
-    public final List<Esperto> visualizzaEspertiGeneri(@RequestHeader(name = "Authorization") final String token) {
-        if(!Utils.isUtenteLettore(token)) return new ArrayList<>();
-        Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        return espertoService.findEspertiByGeneri(lettore.getGeneri());
+    //todo da bypassare
+    public final List<EspertoDTO> visualizzaEspertiGeneri(@RequestHeader(name = "Authorization") final String token) {
+        if(!utils.isUtenteLettore(token)) return new ArrayList<>();
+        Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
+        return espertoService.getInformazioniEsperti(espertoService.findEspertiByGeneri(lettore.getGeneri()));
     }
 
-    /**
-     * Implementa la funzionalità di visualizzare tutti gli Esperti
-     * presenti sulla piattaforma.
-     * @return la view che visualizza tutti gli Esperti
-     */
-    @GetMapping(value = "/lista-esperti")
-    @CrossOrigin
-    @ResponseBody
-    public final List<Esperto> visualizzaListaEsperti() {
-        return espertoService.findAllEsperti();
-    }
 
     /**
      * Implementa la funzionalità di visualizzare tutti gli Esperti
@@ -66,16 +58,16 @@ public class ComunicazioneEspertoController {
     @GetMapping(value = "/ricerca")
     @ResponseBody
     @CrossOrigin
-    public final List<Esperto> visualizzaListaEspertiFiltrati(
+    public final List<EspertoDTO> visualizzaListaEspertiFiltrati(
             @RequestParam("stringa") final String stringa,
             @RequestParam("filtro") final String filtro) {
         switch (filtro) {
             case "nome":
-                return espertoService.findEspertiByNome(stringa);
+                return espertoService.getInformazioniEsperti(espertoService.findEspertiByNome(stringa));
             case "genere":
-                return espertoService.findEspertiByGeneri(new HashSet<>(Collections.singleton(stringa)));
+                return espertoService.getInformazioniEsperti(espertoService.findEspertiByGeneri(new HashSet<>(Collections.singleton(stringa))));
             default:
-                return espertoService.findAllEsperti();
+                return espertoService.getInformazioniEsperti(espertoService.findAllEsperti());
         }
     }
 }

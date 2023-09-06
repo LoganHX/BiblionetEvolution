@@ -24,6 +24,7 @@ public class EventoController {
     private final ClubDelLibroService clubService;
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
+    private final Utils utils;
 
 
     /**
@@ -39,8 +40,8 @@ public class EventoController {
     @CrossOrigin
     @ResponseBody
     public BiblionetResponse abbandonaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
-        //Lettore lettore = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
-        if (!Utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        //Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
+        if (!utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 //        boolean eventoOK = false;
 //
 //        for(Evento e: lettore.getEventi()){
@@ -52,9 +53,9 @@ public class EventoController {
 //
 //        if(!eventoOK) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if(eventiService.isLettoreIscrittoEvento(idEvento, Utils.getSubjectFromToken(token)) != null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        if(eventiService.isLettoreIscrittoEvento(idEvento, utils.getSubjectFromToken(token)) != null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        Lettore l = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
 
         if (l == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         if(eventiService.abbandonaEvento(l.getEmail(), idEvento) != null) return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);;
@@ -75,8 +76,8 @@ public class EventoController {
     public Lettore partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
 
 
-        if (!Utils.isUtenteLettore(token)) return null;
-        Lettore l = lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token));
+        if (!utils.isUtenteLettore(token)) return null;
+        Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
 
         if (l == null) return null;
         return eventiService.partecipaEvento(l.getEmail(), idEvento);
@@ -127,7 +128,7 @@ public class EventoController {
 
         //System.out.println(e.get().getClub().getEsperto().getEmail());
 
-        if(!Utils.isUtenteEsperto(token) || !Utils.getSubjectFromToken(token).equals(e.get().getClub().getEsperto().getEmail()))
+        if(!utils.isUtenteEsperto(token) || !utils.getSubjectFromToken(token).equals(e.get().getClub().getEsperto().getEmail()))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
         return this.modificaCreaEvento(

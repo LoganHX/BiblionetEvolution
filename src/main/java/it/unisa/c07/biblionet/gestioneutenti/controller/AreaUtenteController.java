@@ -39,6 +39,7 @@ public class AreaUtenteController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final BibliotecaService bibliotecaService;
+    private final Utils utils;
 
     /**
      * Implementa la funzionalità di modifica dati di una biblioteca.
@@ -61,9 +62,9 @@ public class AreaUtenteController {
             final @RequestParam("nuova_password") String nuova,
             final @RequestParam("conferma_password") String conferma) {
 
-        if(!Utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        if(!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if(bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token))==null){
+        if(bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token))==null){
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
 
@@ -100,10 +101,10 @@ public class AreaUtenteController {
             final @RequestParam("email_biblioteca") String emailBiblioteca) {
 
 
-        if (!Utils.isUtenteEsperto(token))
+        if (!utils.isUtenteEsperto(token))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if(espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token))==null){
+        if(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token))==null){
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
 
@@ -133,10 +134,10 @@ public class AreaUtenteController {
             final @RequestParam("conferma_password") String conferma) {
 
 
-        if (!Utils.isUtenteLettore(token))
+        if (!utils.isUtenteLettore(token))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        if(lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token))==null){
+        if(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token))==null){
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
 
@@ -155,7 +156,7 @@ public class AreaUtenteController {
         String password = BiblionetConstraints.confrontoPassword(nuova, conferma);
         if(password.isEmpty()) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
 
-        if (!Utils.getSubjectFromToken(token).equals(utenteRegistrato.getEmail()))
+        if (!utils.getSubjectFromToken(token).equals(utenteRegistrato.getEmail()))
             return new BiblionetResponse(BiblionetResponse.ERRORE, false);
 
         if (bindingResult.hasErrors()) {
@@ -180,8 +181,8 @@ public class AreaUtenteController {
     @ResponseBody
     @CrossOrigin
     public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
-        if (!Utils.isUtenteEsperto(token)) return null;
-        return espertoService.findEspertoByEmail(Utils.getSubjectFromToken(token)).getClubs();
+        if (!utils.isUtenteEsperto(token)) return null;
+        return espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs();
     }
 
 
@@ -197,8 +198,8 @@ public class AreaUtenteController {
     public List<ClubDelLibro> visualizzaClubsLettore(
             final @RequestHeader(name = "Authorization") String token
     ) {
-        if (!Utils.isUtenteLettore(token)) return null;
-        return lettoreService.findLettoreByEmail(Utils.getSubjectFromToken(token)).getClubs();
+        if (!utils.isUtenteLettore(token)) return null;
+        return lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs();
         //return lettore.getClubs();
     }
 

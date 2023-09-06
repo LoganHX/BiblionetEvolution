@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
@@ -34,6 +35,7 @@ public class PrenotazioneLibriController {
      */
     private final PrenotazioneLibriService prenotazioneService;
     private final BibliotecaService bibliotecaService;
+    private final Utils utils;
 
     /**
      * Implementa la funzionalità che permette di
@@ -50,10 +52,10 @@ public class PrenotazioneLibriController {
                                                   @RequestParam final String idLibro,
                                                   @RequestHeader (name="Authorization") final String token) {
 
-        if (!Utils.isUtenteLettore(token)) {
-            return new BiblionetResponse("Impossibile prenotare un libro per l'utente selezionato", false);
+        if (!utils.isUtenteLettore(token)) {
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        String subject = Utils.getSubjectFromToken(token);
+        String subject = utils.getSubjectFromToken(token);
         prenotazioneService.richiediPrestito(subject,
                 idBiblioteca,
                 Integer.parseInt(idLibro));
@@ -84,15 +86,15 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/ricerca")
     @ResponseBody
     @CrossOrigin
-    public List<Libro> visualizzaListaFiltrata(
+    public List<LibroDTO> visualizzaListaFiltrata(
             @RequestParam("stringa") final String stringa,
             @RequestParam("filtro") final String filtro) {
 
         return switch (filtro) {
-            case "titolo" -> prenotazioneService.visualizzaListaLibriPerTitolo(stringa);
-            case "genere" -> prenotazioneService.visualizzaListaLibriPerGenere(stringa);
-            case "biblioteca" -> prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa);
-            default -> prenotazioneService.visualizzaListaLibriCompleta();
+            case "titolo" -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerTitolo(stringa));
+            case "genere" -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerGenere(stringa));
+            case "biblioteca" -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa));
+            default -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriCompleta());
         };
     }
 
@@ -107,8 +109,8 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/{id}/visualizza-libro")
     @ResponseBody
     @CrossOrigin
-    public List<Biblioteca> prenotaLibro(@PathVariable final int id) {
-        return prenotazioneService.getBibliotecheLibro(prenotazioneService.getLibroByID(id));
+    public List<BibliotecaDTO> prenotaLibro(@PathVariable final int id) {
+        return bibliotecaService.getInformazioniBiblioteche(prenotazioneService.getBibliotecheLibro(prenotazioneService.getLibroByID(id)));
     }
 
     @GetMapping(value = "/{id}/ottieni-libro")
@@ -134,10 +136,10 @@ public class PrenotazioneLibriController {
     public Map<String, List<TicketPrestito>> visualizzaRichieste(
             @RequestHeader (name="Authorization") final String token
     ) {
-        if (!Utils.isUtenteBiblioteca(token)) {
+        if (!utils.isUtenteBiblioteca(token)) {
             return null;
         }
-         Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(Utils.getSubjectFromToken(token));
+        Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
         List<TicketPrestito> lista = prenotazioneService.getTicketsByBiblioteca(biblioteca);
 
@@ -230,11 +232,11 @@ public class PrenotazioneLibriController {
     public List<TicketPrestitoDTO> visualizzaPrenotazioniLettore(@RequestHeader (name="Authorization") final String token) {
 
         List<TicketPrestitoDTO> ticketsDTO = new ArrayList<>();
-        if (!Utils.isUtenteLettore(token)) {
+        if (!utils.isUtenteLettore(token)) {
            return null;
         }
 
-        List<TicketPrestito> tickets = prenotazioneService.getTicketsByEmailLettore(Utils.getSubjectFromToken(token));
+        List<TicketPrestito> tickets = prenotazioneService.getTicketsByEmailLettore(utils.getSubjectFromToken(token));
         for(TicketPrestito ticketPrestito: tickets){
             ticketsDTO.add(new TicketPrestitoDTO(ticketPrestito));
         }

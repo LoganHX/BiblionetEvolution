@@ -184,7 +184,5 @@ public interface PrenotazioneLibriService {
                                    int numCopie, Set<String> generi);
 
 
-
-
-
+    List<LibroDTO> getInformazioniLibri(List<Libro> libroList);
 }

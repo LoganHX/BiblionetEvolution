@@ -28,4 +28,6 @@ public interface EspertoService {
     List<Esperto> findEspertiByNome(String nome);
 
     UtenteRegistrato findEspertoByEmailAndPassword(String email, byte[] password);
+
+    List<EspertoDTO> getInformazioniEsperti(List<Esperto> espertoList);
 }

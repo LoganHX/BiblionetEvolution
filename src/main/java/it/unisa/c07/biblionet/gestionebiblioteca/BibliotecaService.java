@@ -19,5 +19,7 @@ public interface BibliotecaService {
 
     List<Biblioteca> findAllBiblioteche();
 
+    List<BibliotecaDTO> getInformazioniBiblioteche(List<Biblioteca> biblioteche);
+
     Biblioteca aggiornaBiblioteca(Biblioteca utente);
 }

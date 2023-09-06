@@ -5,6 +5,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
+import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Viviana Pentangelo
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc()
 public class ComunicazioneEspertoControllerTest {
 
     /**
@@ -38,6 +39,7 @@ public class ComunicazioneEspertoControllerTest {
      */
     @MockBean
     private EspertoService espertoService;
+
 
     /**
      * Inject di MockMvc per simulare

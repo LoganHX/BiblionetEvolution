@@ -25,7 +25,17 @@ public class EspertoController {
 
     private final EspertoService espertoService;
 
-
+    /**
+     * Implementa la funzionalità di visualizzare tutti gli Esperti
+     * presenti sulla piattaforma.
+     * @return la view che visualizza tutti gli Esperti
+     */
+    @GetMapping(value = "/lista-esperti")
+    @CrossOrigin
+    @ResponseBody
+    public final List<EspertoDTO> visualizzaListaEsperti() {
+        return espertoService.getInformazioniEsperti(espertoService.findAllEsperti());
+    }
 
     @GetMapping(value = "/visualizza-esperti-biblioteca")
     @ResponseBody

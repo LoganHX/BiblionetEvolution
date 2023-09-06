@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Luca Topo
  */
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public class EventoControllerTest {
 
     /**
@@ -69,6 +69,9 @@ public class EventoControllerTest {
     private LettoreService lettoreService;
     @MockBean
     private GestioneEventiService eventiService;
+
+    @MockBean
+    private Utils utils;
 
     /**
      * Inject di MockMvc per simulare
@@ -151,18 +154,15 @@ public class EventoControllerTest {
      */
     @Test
     public void partecipaEventoUserNotOk() throws Exception {
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
-        Lettore lettore = null;
-
+        String token="";
         String idClub = "1";
         String idEvento = "1";
 
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
-        when(eventiService.partecipaEvento(Mockito.anyString(), Mockito.anyInt())).thenReturn(new Lettore());
         this.mockMvc.perform(MockMvcRequestBuilders
                 .get("/gestione-eventi/{idClub}/eventi/{idEvento}/iscrizione", idClub, idEvento)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
         ).andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
     }
 
@@ -178,17 +178,19 @@ public class EventoControllerTest {
     @ParameterizedTest
     @MethodSource("provideLettore")
     public void partecipaEventoUserOk() throws Exception {
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
         Lettore lettore = new Lettore();
 
         String idClub = "1";
         String idEvento = "1";
 
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
         when(eventiService.partecipaEvento(Mockito.any(), Mockito.anyInt())).thenReturn(lettore);
         this.mockMvc.perform(MockMvcRequestBuilders
                         .get("/gestione-eventi/{idClub}/eventi/{idEvento}/iscrizione", idClub, idEvento)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 ).andExpect(MockMvcResultMatchers.jsonPath("$.email").value(lettore.getEmail()));
     }
     /**
@@ -205,16 +207,18 @@ public class EventoControllerTest {
         int idEvento = 1;
         int idClub = 1;
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
         Lettore lettore = new Lettore();
         lettore.setEmail("paulo@dybala.it");
 
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
         when(eventiService.abbandonaEvento(Mockito.anyString(), Mockito.anyInt())).thenReturn(lettore);
 
         this.mockMvc.perform(MockMvcRequestBuilders
                         .get("/gestione-eventi/{idClub}/eventi/{idEvento}/abbandono", idClub, idEvento)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
 
@@ -229,14 +233,16 @@ public class EventoControllerTest {
     @Test
     public void abbandonaEventoUtenteNonIscritto() throws Exception {
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
+        Evento e =new Evento();
 
-        //when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
-        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(null);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(e);
         this.mockMvc.perform(MockMvcRequestBuilders
                         .get("/gestione-eventi/1/eventi/15/abbandono")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
 
@@ -251,12 +257,16 @@ public class EventoControllerTest {
     @Test
     public void abbandonaEventoUtenteInesistente() throws Exception {
 
-        String tokenLettore = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbnRvbmlvcmVuYXRvbW9udGVmdXNjb0BnbWFpbC5jb20iLCJyb2xlIjoiTGV0dG9yZSIsImlhdCI6MTY4NzI3NDk4OH0.5oCy7B9dBs97F7XGr1uVa-x1ofyjodrrthsd_xEu3_s";
+        String token="";
 
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(null);
         when( lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders
                         .get("/gestione-eventi/1/eventi/15/abbandono")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
     }
 
@@ -271,11 +281,13 @@ public class EventoControllerTest {
     @Test
     public void abbandonaEventoUtenteNonAutorizzato() throws Exception {
 
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
         this.mockMvc.perform(MockMvcRequestBuilders
                         .get("/gestione-eventi/1/eventi/15/abbandono")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
@@ -291,8 +303,8 @@ public class EventoControllerTest {
      */
     @Test
     public void creaEventoClubNonEsistente() throws Exception {
-        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(null);          // Mock che consente di entrare nella prima condizione e lanciare l'eccezione
-//todo il token
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(null);
+        //todo il token
         this.mockMvc
                 .perform(MockMvcRequestBuilders
                         .post("/gestione-eventi/eventi/crea")
@@ -318,7 +330,7 @@ public class EventoControllerTest {
     @MethodSource("provideClubDelLibro")
     public void creaEventoErroreFormatoNome(final ClubDelLibro club) throws Exception {
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(club);
-//todo il token
+        //todo il token
         this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/crea")
                         .param("nome", "Discussione sopra i due massimi sistemi")
                         .param("descrizione", "TestDescrizione")
@@ -430,15 +442,17 @@ public class EventoControllerTest {
     @Test
     public void visualizzaModificaEventoNonEsisteClub() throws Exception {
         // Creo esperto
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         // Mocking
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.empty());
         // Assert Test
         this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/modifica")
                         .param("idClub", "1")
                         .param("idEvento", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
 
     }
@@ -460,7 +474,7 @@ public class EventoControllerTest {
 
         //todo di fatto controllo solo che l'esperto non sia lo stesso associato al clun dell'evento
 
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
 
         Evento evento = new Evento();
@@ -471,11 +485,13 @@ public class EventoControllerTest {
 
         esperto.setEmail("mamix56@gmail.it");
         club.setIdClub(1);
+
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
         when(eventiService.getEventoById(1)).thenReturn(Optional.of(evento));
         this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/modifica")
                         .param("idClub", "1")
                         .param("idEvento", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
 
     }
@@ -493,7 +509,7 @@ public class EventoControllerTest {
     public void visualizzaModificaEventoNotMatchingClub(final ClubDelLibro club) throws Exception {
         // Creo Evento da associare al club
 
-        String tokenEsperto = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
+        String token="";
 
         Evento evento = new Evento();
         evento.setClub(club);
@@ -506,7 +522,7 @@ public class EventoControllerTest {
         this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/modifica")
                         .param("idClub", idClub)
                         .param("idEvento", idEvento)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
 
 
