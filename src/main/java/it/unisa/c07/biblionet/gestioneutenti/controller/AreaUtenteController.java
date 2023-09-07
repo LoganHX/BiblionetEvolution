@@ -5,10 +5,7 @@ import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
@@ -39,6 +36,7 @@ public class AreaUtenteController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final BibliotecaService bibliotecaService;
+    private final ClubDelLibroService clubDelLibroService;
     private final Utils utils;
 
     /**
@@ -180,9 +178,9 @@ public class AreaUtenteController {
     @PostMapping(value = "/visualizza-clubs-esperto")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
+    public List<ClubDTO> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
         if (!utils.isUtenteEsperto(token)) return null;
-        return espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs();
+        return clubDelLibroService.getInformazioniClubs(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs());
     }
 
 
@@ -195,11 +193,11 @@ public class AreaUtenteController {
     @PostMapping(value = "/visualizza-clubs-lettore")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubsLettore(
+    public List<ClubDTO> visualizzaClubsLettore(
             final @RequestHeader(name = "Authorization") String token
     ) {
         if (!utils.isUtenteLettore(token)) return null;
-        return lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs();
+        return clubDelLibroService.getInformazioniClubs(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs());
         //return lettore.getClubs();
     }
 

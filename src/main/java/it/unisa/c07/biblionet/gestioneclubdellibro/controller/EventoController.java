@@ -73,14 +73,14 @@ public class EventoController {
      * @return la view che visualizza la lista degli eventi
      */
     @GetMapping(value = "/{idClub}/eventi/{idEvento}/iscrizione")
-    public Lettore partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
+    public LettoreDTO partecipaEvento(final @PathVariable int idEvento, final @PathVariable int idClub, @RequestHeader(name = "Authorization") final String token) {
 
 
         if (!utils.isUtenteLettore(token)) return null;
         Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
 
         if (l == null) return null;
-        return eventiService.partecipaEvento(l.getEmail(), idEvento);
+        return new LettoreDTO(eventiService.partecipaEvento(l.getEmail(), idEvento));
     }
 
 

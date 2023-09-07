@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -111,6 +112,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      * @param club il club da cui prendere la città
      * @return la città del club
      */
+    @Override
     public String getCittaFromClubDelLibro(final ClubDelLibro club) {
         return club.getEsperto().getBiblioteca().getCitta();
     }
@@ -121,10 +123,20 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
      *
      * @return Tutte le citta nel sistema
      */
+    @Override
     public Set<String> getCitta() {
         return this.clubDAO.findAll().stream()
                 .map(this::getCittaFromClubDelLibro)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<ClubDTO> getInformazioniClubs(List<ClubDelLibro> clubDelLibroList){
+        List<ClubDTO> clubDTOS = new ArrayList<>();
+        for(ClubDelLibro c: clubDelLibroList){
+            clubDTOS.add(new ClubDTO(c));
+        }
+        return clubDTOS;
     }
 
 

@@ -1,5 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
@@ -24,6 +26,7 @@ import java.util.Set;
 public class EspertoController {
 
     private final EspertoService espertoService;
+    private final ClubDelLibroService clubDelLibroService;
 
     /**
      * Implementa la funzionalità di visualizzare tutti gli Esperti
@@ -40,16 +43,16 @@ public class EspertoController {
     @GetMapping(value = "/visualizza-esperti-biblioteca")
     @ResponseBody
     @CrossOrigin
-    public List<Esperto> visualizzaEspertiBiblioteca(
+    public List<EspertoDTO> visualizzaEspertiBiblioteca(
             @RequestParam final String emailBiblioteca
     ) {
-        return espertoService.getEspertiByBiblioteca(emailBiblioteca);
+        return espertoService.getInformazioniEsperti(espertoService.getEspertiByBiblioteca(emailBiblioteca));
     }
 
     @GetMapping(value = "/visualizza-clubs-biblioteca")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDelLibro> visualizzaClubBiblioteca(
+    public List<ClubDTO> visualizzaClubBiblioteca(
             @RequestParam final String emailBiblioteca
     ) {
         Set<ClubDelLibro> clubs= new HashSet<>();
@@ -57,7 +60,7 @@ public class EspertoController {
         for(Esperto esperto: esperti){
             clubs.addAll(esperto.getClubs());
         }
-        return new ArrayList<>(clubs);
+        return clubDelLibroService.getInformazioniClubs(new ArrayList<>(clubs));
     }
 
 

@@ -79,6 +79,5 @@ public interface ClubDelLibroService {
     Set<String> getCitta();
 
 
-
-
+    List<ClubDTO> getInformazioniClubs(List<ClubDelLibro> clubDelLibroList);
 }

@@ -322,7 +322,6 @@ public class ClubDelLibroController {
                 tutti.remove(e);
             }
         }*/
-        System.out.println(eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi()));
         return eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi());
     }
 
