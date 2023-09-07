@@ -1,10 +1,12 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
-import it.unisa.c07.biblionet.common.*;
+import it.unisa.c07.biblionet.common.ILibroIdAndName;
+import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
-import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
+import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.TicketPrestito;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
@@ -13,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class PrenotazioneLibriController {
     @CrossOrigin
     public BiblionetResponse confermaPrenotazione(@RequestParam final String idBiblioteca,
                                                   @RequestParam final String idLibro,
-                                                  @RequestHeader (name="Authorization") final String token) {
+                                                  @RequestHeader(name = "Authorization") final String token) {
 
         if (!utils.isUtenteLettore(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
@@ -71,8 +72,8 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "")
     @ResponseBody
     @CrossOrigin
-    public List<Libro> visualizzaListaLibri() {
-        return prenotazioneService.visualizzaListaLibriCompleta();
+    public List<LibroDTO> visualizzaListaLibri() {
+        return prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriCompleta());
     }
 
     /**
@@ -91,9 +92,12 @@ public class PrenotazioneLibriController {
             @RequestParam("filtro") final String filtro) {
 
         return switch (filtro) {
-            case "titolo" -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerTitolo(stringa));
-            case "genere" -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerGenere(stringa));
-            case "biblioteca" -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa));
+            case "titolo" ->
+                    prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerTitolo(stringa));
+            case "genere" ->
+                    prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerGenere(stringa));
+            case "biblioteca" ->
+                    prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa));
             default -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriCompleta());
         };
     }
@@ -113,14 +117,13 @@ public class PrenotazioneLibriController {
         return bibliotecaService.getInformazioniBiblioteche(prenotazioneService.getBibliotecheLibro(prenotazioneService.getLibroByID(id)));
     }
 
+    //todo viene usato?
     @GetMapping(value = "/{id}/ottieni-libro")
     @ResponseBody
     @CrossOrigin
     public Libro ottieniLibro(@PathVariable final int id) {
         return prenotazioneService.getLibroByID(id);
     }
-
-
 
 
     /**
@@ -134,7 +137,7 @@ public class PrenotazioneLibriController {
     @ResponseBody
     @CrossOrigin
     public Map<String, List<TicketPrestitoDTO>> visualizzaRichieste(
-            @RequestHeader (name="Authorization") final String token
+            @RequestHeader(name = "Authorization") final String token
     ) {
         if (!utils.isUtenteBiblioteca(token)) {
             return null;
@@ -157,14 +160,20 @@ public class PrenotazioneLibriController {
      * @param giorni il tempo di concessione del prestito
      * @return La view che visualizza la lista delle prenotazioni
      */
-    @PostMapping(value = "/ticket/{id}/accetta")
+    @PostMapping(value = "/ticket/accetta")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse accettaPrenotazione(final @PathVariable int id,
-                        final @RequestParam(value = "giorni") int giorni) {
+    public BiblionetResponse accettaPrenotazione(final @RequestParam int id,
+                                                 @RequestHeader(name = "Authorization") final String token,
+                                                 final @RequestParam(value = "giorni") int giorni) {
+
         TicketPrestito ticket = prenotazioneService.getTicketByID(id);
+
+        if (!utils.isUtenteBiblioteca(token) || !utils.getSubjectFromToken(token).equals(ticket.getBiblioteca().getEmail()))
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+
         ticket = prenotazioneService.accettaRichiesta(ticket, giorni);
-        if(ticket!=null) return new BiblionetResponse("Richiesta accettata", true);
+        if (ticket != null) return new BiblionetResponse("Richiesta accettata", true);
         return new BiblionetResponse(BiblionetResponse.ERRORE, false);
     }
 
@@ -175,13 +184,18 @@ public class PrenotazioneLibriController {
      * @param id l'ID del ticket da rifiutare
      * @return La view che visualizza la lista delle prenotazioni
      */
-    @PostMapping(value = "/ticket/{id}/rifiuta")
+    @PostMapping(value = "/ticket/rifiuta")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse rifiutaPrenotazione(final @PathVariable int id) {
+    public BiblionetResponse rifiutaPrenotazione(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
         TicketPrestito ticket = prenotazioneService.getTicketByID(id);
+
+        if (!utils.isUtenteBiblioteca(token) || !utils.getSubjectFromToken(token).equals(ticket.getBiblioteca().getEmail()))
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+
+
         ticket = prenotazioneService.rifiutaRichiesta(ticket);
-        if(ticket!=null) return new BiblionetResponse("Richiesta rifiutata", true);
+        if (ticket != null) return new BiblionetResponse("Richiesta rifiutata", true);
         return new BiblionetResponse("Errore", false);
     }
 
@@ -193,13 +207,16 @@ public class PrenotazioneLibriController {
      * @param id l'ID del ticket da chiudere
      * @return La view che visualizza la lista delle prenotazioni
      */
-    @PostMapping(value = "/ticket/{id}/chiudi")
+    @PostMapping(value = "/ticket/chiudi")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse chiudiPrenotazione(final @PathVariable int id) {
+    public BiblionetResponse chiudiPrenotazione(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
         TicketPrestito ticket = prenotazioneService.getTicketByID(id);
+        if (!utils.isUtenteBiblioteca(token) || !utils.getSubjectFromToken(token).equals(ticket.getBiblioteca().getEmail()))
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+
         ticket = prenotazioneService.chiudiTicket(ticket);
-        if(ticket!=null) return new BiblionetResponse("Prenotazione chiusa", true);
+        if (ticket != null) return new BiblionetResponse("Prenotazione chiusa", true);
         return new BiblionetResponse("Errore", false);
     }
 
@@ -212,14 +229,13 @@ public class PrenotazioneLibriController {
     @GetMapping(value = "/visualizza-prenotazioni")
     @ResponseBody
     @CrossOrigin
-    public List<TicketPrestitoDTO> visualizzaPrenotazioniLettore(@RequestHeader (name="Authorization") final String token) {
+    public List<TicketPrestitoDTO> visualizzaPrenotazioniLettore(@RequestHeader(name = "Authorization") final String token) {
 
         if (!utils.isUtenteLettore(token)) return null;
 
         return prenotazioneService.getInformazioniTickets(prenotazioneService.getTicketsByEmailLettore(utils.getSubjectFromToken(token)));
 
     }
-
 
 
     /**
