@@ -42,13 +42,13 @@ public class ClubDTO {
      * Copertina del club.
      */
 
-    private MultipartFile copertina;
+    private String copertina;
 
     public ClubDTO(ClubDelLibro clubDelLibro){
         this.id = clubDelLibro.getIdClub();
         this.nome = clubDelLibro.getNome();
         this.descrizione = clubDelLibro.getDescrizione();
         this.generi = clubDelLibro.getGeneri();
-        this.copertina = null;
+        this.copertina = clubDelLibro.getImmagineCopertina();
     }
 }

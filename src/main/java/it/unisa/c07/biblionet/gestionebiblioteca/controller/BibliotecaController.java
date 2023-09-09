@@ -8,10 +8,13 @@ import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
+import jdk.jfr.Name;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -116,7 +119,6 @@ public class BibliotecaController {
      *
      * @param libro             Il libro da salvare
      * @param numCopie          il numero di copie possedute
-     * @param annoPubblicazione l'anno di pubblicazione
      * @return La view per visualizzare il libro
      */
     @PostMapping(value = "/inserimento-manuale")
@@ -126,8 +128,9 @@ public class BibliotecaController {
             @RequestHeader (name="Authorization") final String token,
             @Valid @ModelAttribute final LibroDTO libro,
             @RequestParam final int numCopie,
-            @RequestParam final String annoPubblicazione,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            @RequestParam @NonNull MultipartFile copertina) {
+
 
         if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
@@ -135,24 +138,11 @@ public class BibliotecaController {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
-        Libro l = new Libro();
-        l.setTitolo(libro.getTitolo());
-        l.setIsbn(libro.getIsbn());
-        l.setDescrizione(libro.getDescrizione());
-        l.setCasaEditrice(libro.getCasaEditrice());
-        l.setAutore(libro.getAutore());
-        LocalDateTime anno = LocalDateTime.of(
-                Integer.parseInt(annoPubblicazione), 1, 1, 1, 1);
-        l.setAnnoDiPubblicazione(anno);
 
-        if (libro.getImmagineLibro() != null) {
-            byte[] imageBytes = libro.getImmagineLibro().getBytes();
-            String base64Image =
-                    Base64.getEncoder().encodeToString(imageBytes);
-            l.setImmagineLibro(base64Image);
-        }
+        libro.setImmagineLibro(Utils.getBase64Image(copertina));
+        System.err.println(libro);
 
-        Libro newLibro = prenotazioneService.inserimentoManuale(l, b.getEmail(), numCopie, libro.getGeneri());
+        Libro newLibro = prenotazioneService.creaLibroDaModel(libro, b.getEmail(), numCopie, libro.getGeneri());
         if(newLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
@@ -180,16 +170,16 @@ public class BibliotecaController {
         };
     }
 
-    /**
-     * Implementa la funzionalità di visualizzazione
-     * del profilo di una singola biblioteca.
-     * @param email della biblioteca
-     * @return La view di visualizzazione singola biblioteca
-     */
-    @GetMapping(value = "/{email}")
-    @ResponseBody
-    @CrossOrigin
-    public BibliotecaDTO visualizzaDatiBiblioteca(final @PathVariable String email) {
-        return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
-    }
+//    /**
+//     * Implementa la funzionalità di visualizzazione
+//     * del profilo di una singola biblioteca.
+//     * @param email della biblioteca
+//     * @return La view di visualizzazione singola biblioteca
+//     */
+//    @GetMapping(value = "/{email}")
+//    @ResponseBody
+//    @CrossOrigin
+//    public BibliotecaDTO visualizzaDatiBiblioteca(final @PathVariable String email) {
+//        return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
+//    }
 }

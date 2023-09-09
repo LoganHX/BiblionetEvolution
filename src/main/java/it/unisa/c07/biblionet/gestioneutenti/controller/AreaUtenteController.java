@@ -36,7 +36,6 @@ public class AreaUtenteController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final BibliotecaService bibliotecaService;
-    private final ClubDelLibroService clubDelLibroService;
     private final Utils utils;
 
     /**
@@ -167,38 +166,6 @@ public class AreaUtenteController {
 
         return null;
 
-    }
-
-    /**
-     * Implementa la funzionalità di visualizzazione dei clubs
-     * che l'esperto gestisce.
-     *
-     * @return La view di visualizzazione dei clubs che gestisce
-     */
-    @PostMapping(value = "/visualizza-clubs-esperto")
-    @ResponseBody
-    @CrossOrigin
-    public List<ClubDTO> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
-        if (!utils.isUtenteEsperto(token)) return null;
-        return clubDelLibroService.getInformazioniClubs(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs());
-    }
-
-
-    /**
-     * Implementa la funzionalità di visualizzazione dei clubs
-     * a cui il lettore é iscritto.
-     *
-     * @return La view di visualizzazione dei clubs a cui é iscritto
-     */
-    @PostMapping(value = "/visualizza-clubs-lettore")
-    @ResponseBody
-    @CrossOrigin
-    public List<ClubDTO> visualizzaClubsLettore(
-            final @RequestHeader(name = "Authorization") String token
-    ) {
-        if (!utils.isUtenteLettore(token)) return null;
-        return clubDelLibroService.getInformazioniClubs(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs());
-        //return lettore.getClubs();
     }
 
 }

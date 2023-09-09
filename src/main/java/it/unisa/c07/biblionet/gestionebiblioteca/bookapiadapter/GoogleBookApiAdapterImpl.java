@@ -108,11 +108,14 @@ public class GoogleBookApiAdapterImpl implements BookApiAdapter {
             JSONObject volumeInfo = (JSONObject) bookInfo.get("volumeInfo");
 
             //Creazione descrizione da categorie
-            String descrizione = "";
+            String descrizione = "N/A";
+            if(volumeInfo.get("categories") != null) {
+
             JSONArray categories = (JSONArray) volumeInfo.get("categories");
             if (categories.isEmpty()) {
                 descrizione = "N/A";
             }
+            else descrizione = "";
             int i = 0;
             for (Object c : categories) {
                 if (i == 0) {
@@ -122,7 +125,7 @@ public class GoogleBookApiAdapterImpl implements BookApiAdapter {
                     descrizione += ", " + c.toString();
                 }
             }
-
+            }
             //Parsing dei campi del JSON in stringhe
             String titolo = (String) volumeInfo.get("title");
             String casaEditrice = (String) volumeInfo.get("publisher");
@@ -131,17 +134,12 @@ public class GoogleBookApiAdapterImpl implements BookApiAdapter {
             JSONObject images = (JSONObject) volumeInfo.get("imageLinks");
             String copertina = (String) images.get("smallThumbnail");
             String autore = autori.get(0).toString();
-            LocalDateTime annoPubblicazioneDateTime;
+            int annoPubblicazioneDateTime;
             if (annoPubblicazione == null) {
-                annoPubblicazioneDateTime =
-                        LocalDateTime.of(1, 1, 1, 1, 1);
+                annoPubblicazioneDateTime = -1;
             } else {
-                annoPubblicazioneDateTime = LocalDateTime.of(
-                        Integer.parseInt(annoPubblicazione.substring(0, 4)),
-                        1,
-                        1,
-                        0,
-                        0);
+                annoPubblicazioneDateTime =
+                        Integer.parseInt(annoPubblicazione.substring(0, 4));
 
             }
 

@@ -10,10 +10,10 @@ import java.util.Set;
 public interface EspertoService {
 
 
-    Esperto creaEspertoDaModel(EspertoDTO form, Biblioteca biblioteca);
+    Esperto creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca);
 
 
-    Esperto aggiornaEspertoDaModel(EspertoDTO form, Biblioteca biblioteca);
+    Esperto aggiornaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca);
 
     Esperto aggiornaEsperto(Esperto utente);
 

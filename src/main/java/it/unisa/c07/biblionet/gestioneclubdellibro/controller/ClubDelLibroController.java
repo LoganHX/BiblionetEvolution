@@ -10,6 +10,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
+import lombok.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,6 @@ public class ClubDelLibroController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final GestioneEventiService eventiService;
-
     private final Utils utils;
 
 
@@ -109,7 +109,8 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
                                               @RequestHeader(name = "Authorization") final String token,
-                                              BindingResult bindingResult) throws IOException {
+                                              BindingResult bindingResult,
+                                              @RequestParam @NonNull MultipartFile copertina) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
@@ -117,6 +118,8 @@ public class ClubDelLibroController {
         if (!utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
+
+        clubDTO.setCopertina(Utils.getBase64Image(copertina));
 
         Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
 
@@ -151,9 +154,10 @@ public class ClubDelLibroController {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
+        //todo
 
-        String copertina = utils.getBase64Image(clubDTO.getCopertina());
-        if (copertina != null) clubPers.setImmagineCopertina(copertina);
+        //String copertina = utils.getBase64Image(clubDTO.getCopertina());
+        //if (copertina != null) clubPers.setImmagineCopertina(copertina);
         clubPers.setGeneri(new HashSet<>(clubDTO.getGeneri()));
         clubPers.setNome(clubDTO.getNome());
         clubPers.setDescrizione(clubDTO.getDescrizione());

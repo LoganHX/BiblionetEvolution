@@ -60,7 +60,7 @@ public class Esperto extends UtenteRegistrato {
     @ManyToOne
     @JoinColumn(nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Biblioteca biblioteca;
+    private UtenteRegistrato biblioteca;
 
     /**
      * Rappresenta la lista di generi di cui un esperto è esperto.
@@ -95,7 +95,7 @@ public class Esperto extends UtenteRegistrato {
                    final String via,
                    final String recapitoTelefonico, final String username,
                    final String nome, final String cognome,
-                   final Biblioteca biblioteca) {
+                   final UtenteRegistrato biblioteca) {
         super(email, password, provincia, citta, via, recapitoTelefonico, "Esperto");
         this.username = username;
         this.nome = nome;
@@ -103,7 +103,7 @@ public class Esperto extends UtenteRegistrato {
         this.biblioteca = biblioteca;
     }
 
-    public Esperto(EspertoDTO dto, Biblioteca biblioteca){
+    public Esperto(EspertoDTO dto, UtenteRegistrato biblioteca){
         super(dto.getEmail(), dto.getPassword(), dto.getProvincia(), dto.getCitta(), dto.getVia(), dto.getRecapitoTelefonico(), "Esperto");
         this.username = dto.getUsername();
         this.nome = dto.getNome();

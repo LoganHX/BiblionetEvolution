@@ -346,35 +346,38 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         }
         libro.setGeneri(new HashSet<>(generi));
 
-        boolean exists = (libroDAO.findByIsbn(libro.getIsbn()) != null);
-        if (!exists) libroDAO.save(libro);
+        Libro libroEsistente = libroDAO.findByIsbn(libro.getIsbn());
+
+        if(libroEsistente == null){
+            libroEsistente = libroDAO.save(libro);
+        }
 
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
 
-        //Se per errore avesse inserito un libro che possiede già,
-        //aggiorno semplicemente il numero di copie che ha. todo ok ma andrebbe richiamata un'apposita funzione non ricopiare il tutto qui
-        for (Possesso p : b.getPossessi()) {
-            if (p.getPossessoID().getLibroID() == libro.getIdLibro()) {
-                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
-                possessoDAO.save(p);
-                bibliotecaService.aggiornaBiblioteca(b);
-                return libro;
-            }
-        }
-
-        //Creo il possesso relativo al libro e alla biblioteca
-        //che lo inserisce e lo memorizzo
-        PossessoId pid = new PossessoId(idBiblioteca, libro.getIdLibro());
-        Possesso possesso = new Possesso(pid, numCopie);
-        possessoDAO.save(possesso);
-        List<Possesso> plist = b.getPossessi();
-        plist.add(possesso);
-        b.setPossessi(plist);
+//        //Se per errore avesse inserito un libro che possiede già,
+//        //aggiorno semplicemente il numero di copie che ha. todo ok ma andrebbe richiamata un'apposita funzione non ricopiare il tutto qui
+//        for (Possesso p : b.getPossessi()) {
+//            if (p.getPossessoID().getLibroID() == libro.getIdLibro()) {
+//                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
+//                possessoDAO.save(p);
+//                bibliotecaService.aggiornaBiblioteca(b);
+//                return libro;
+//            }
+//        }
+//
+//        //Creo il possesso relativo al libro e alla biblioteca
+//        //che lo inserisce e lo memorizzo
+//        PossessoId pid = new PossessoId(idBiblioteca, libro.getIdLibro());
+//        Possesso possesso = new Possesso(pid, numCopie);
+//        possessoDAO.save(possesso);
+//        List<Possesso> plist = b.getPossessi();
+//        plist.add(possesso);
+//        b.setPossessi(plist);
 
         //Update della biblioteca con il nuovo possesso
-        bibliotecaService.aggiornaBiblioteca(b);
+       // bibliotecaService.aggiornaBiblioteca(b);
 
-        return libro;
+        return gestisciPossessi(libroEsistente, b, numCopie);
     }
 
     /**
@@ -393,87 +396,60 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                                                   final int numCopie) {
         Libro l = libroDAO.getOne(idLibro);
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
-        //Se per errore avesse inserito un libro che possiede già,
-        //aggiorno semplicemente il numero di copie che ha.
-        for (Possesso p : b.getPossessi()) {
-            if (p.getPossessoID().getLibroID() == idLibro) {
-                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
-                possessoDAO.save(p);
-                bibliotecaService.aggiornaBiblioteca(b);
-                return l;
-            }
-        }
+//        //Se per errore avesse inserito un libro che possiede già,
+//        //aggiorno semplicemente il numero di copie che ha.
+//        for (Possesso p : b.getPossessi()) {
+//            if (p.getPossessoID().getLibroID() == idLibro) {
+//                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
+//                possessoDAO.save(p);
+//                bibliotecaService.aggiornaBiblioteca(b);
+//                return l;
+//            }
+//        }
+//
+//        //Creo e salvo il nuovo possesso
+//        PossessoId pid = new PossessoId(idBiblioteca, idLibro);
+//        Possesso p = new Possesso(pid, numCopie);
+//        possessoDAO.save(p);
+//        List<Possesso> plist = b.getPossessi();
+//        plist.add(p);
+//        b.setPossessi(plist);
+//
+//        //Update della biblioteca con il nuovo possesso
+//        bibliotecaService.aggiornaBiblioteca(b);
 
-        //Creo e salvo il nuovo possesso
-        PossessoId pid = new PossessoId(idBiblioteca, idLibro);
-        Possesso p = new Possesso(pid, numCopie);
-        possessoDAO.save(p);
-        List<Possesso> plist = b.getPossessi();
-        plist.add(p);
-        b.setPossessi(plist);
-
-        //Update della biblioteca con il nuovo possesso
-        bibliotecaService.aggiornaBiblioteca(b);
-
-        return l;
+        return gestisciPossessi(l, b, numCopie);
     }
 
     /**
      * Implementa la funzionalità che permette
      * d'inserire un libro attraverso un form.
      *
-     * @param libro        il Libro da memorizzare
+     * @param libroDTO        il dto del Libro da memorizzare
      * @param idBiblioteca l'id della biblioteca che lo possiede
      * @param numCopie     il numero di copie possedute
      * @param generi       la lista dei generi del libro
      * @return il libro inserito
      */
-    public Libro inserimentoManuale(final Libro libro,
+    public Libro creaLibroDaModel(final LibroDTO libroDTO,
                                               final String idBiblioteca,
                                               final int numCopie,
                                               final Set<String> generi) {
 
+
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
         if(!genereService.doGeneriExist(generi)) return null;
 
-        //Controllo che il libro non sia già salvato
-        boolean exists = false;
-        Libro l = new Libro();
+        Libro libro = new Libro(libroDTO);
 
+        Libro libroEsistente = libroDAO.findByIsbn(libroDTO.getIsbn());
 
-        libro.setGeneri(new HashSet<>(generi));
-        for (Libro tl : libroDAO.findAll()) {
-            if (tl.getTitolo().equals(libro.getTitolo())) {
-                exists = true;
-                l = tl;
-            }
-        }
-        if (!exists) {
-            l = libroDAO.save(libro);
-        }
-        //Se per errore avesse inserito un libro che possiede già,
-        //aggiorno semplicemente il numero di copie che ha.
-        for (Possesso p : b.getPossessi()) {
-            if (p.getPossessoID().getLibroID() == l.getIdLibro()) {
-                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
-                possessoDAO.save(p);
-                bibliotecaService.aggiornaBiblioteca(b);
-                return l;
-            }
+        if(libroEsistente == null){
+            libroEsistente = libroDAO.save(libro);
         }
 
-        //Creo e salvo il nuovo possesso
-        PossessoId pid = new PossessoId(idBiblioteca, l.getIdLibro());
-        Possesso p = new Possesso(pid, numCopie);
-        possessoDAO.save(p);
-        List<Possesso> plist = b.getPossessi();
-        plist.add(p);
-        b.setPossessi(plist);
 
-        //Update della biblioteca con il nuovo possesso
-        bibliotecaService.aggiornaBiblioteca(b);
-
-        return l;
+        return gestisciPossessi(libroEsistente, b, numCopie);
     }
 
     @Override
@@ -484,6 +460,32 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         }
         return libroDTOS;
     }
+
+    private Libro gestisciPossessi(Libro libroEsistente, Biblioteca b, int numCopie){
+        //controllo se la biblioteca possiede già questo libro
+        Possesso p = possessoDAO.findByBibliotecaIDAndLibroID(b.getNomeBiblioteca(), libroEsistente.getIdLibro());
+
+        if(p != null){
+            p.setNumeroCopie(p.getNumeroCopie() + numCopie);
+            possessoDAO.save(p);
+            bibliotecaService.aggiornaBiblioteca(b);
+            return libroEsistente;
+        }
+
+
+        //Creo e salvo il nuovo possesso, nel caso in cui la biblioteca non possieda già il libro
+        PossessoId pid = new PossessoId(b.getEmail(), libroEsistente.getIdLibro());
+        p = new Possesso(pid, numCopie);
+        possessoDAO.save(p);
+        List<Possesso> plist = b.getPossessi();
+        plist.add(p);
+        b.setPossessi(plist);
+
+        //Update della biblioteca con il nuovo possesso
+        bibliotecaService.aggiornaBiblioteca(b);
+        return libroEsistente;
+    }
+
 
 
 }

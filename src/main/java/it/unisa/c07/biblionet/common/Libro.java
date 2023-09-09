@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.common;
 
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -50,15 +51,13 @@ public class Libro {
     /**
      * Rappresenta l'anno di pubblicazione di un libro.
      */
-    @Column(nullable = false)
-    @NonNull
-    private LocalDateTime annoDiPubblicazione;
+    @Column
+    private int annoDiPubblicazione;
 
     /**
      * Rappresenta la descrizione di un libro.
      */
     @Column(nullable = false, length = BiblionetConstraints.LENGTH_144)
-    @NonNull
     private String descrizione;
 
     /**
@@ -83,15 +82,14 @@ public class Libro {
     @ToString.Exclude
     private Set<String> generi;
 
-
-    protected Libro(String titolo, String autore, String isbn, LocalDateTime annoDiPubblicazione, String descrizione, String casaEditrice, String immagineLibro, Set<String> generi) {
-        this.titolo = titolo;
-        this.annoDiPubblicazione = annoDiPubblicazione;
-        this.autore = autore;
-        this.isbn = isbn;
-        this.descrizione = descrizione;
-        this.casaEditrice = casaEditrice;
-        this.immagineLibro = immagineLibro;
-        this.generi = generi;
+    public Libro(LibroDTO dto){
+        this.titolo = dto.getTitolo();
+        this.autore = dto.getAutore();
+        this.isbn = dto.getIsbn();
+        this.annoDiPubblicazione = dto.getAnnoDiPubblicazione();
+        this.descrizione = dto.getDescrizione();
+        this.casaEditrice = dto.getCasaEditrice();
+        this.generi = dto.getGeneri();
+        this.immagineLibro = dto.getImmagineLibro();
     }
 }

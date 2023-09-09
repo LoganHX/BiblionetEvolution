@@ -27,6 +27,7 @@ public class EspertoController {
 
     private final EspertoService espertoService;
     private final ClubDelLibroService clubDelLibroService;
+    private final Utils utils;
 
     /**
      * Implementa la funzionalità di visualizzare tutti gli Esperti
@@ -62,6 +63,22 @@ public class EspertoController {
         }
         return clubDelLibroService.getInformazioniClubs(new ArrayList<>(clubs));
     }
+
+    /**
+     * Implementa la funzionalità di visualizzazione dei clubs
+     * che l'esperto gestisce.
+     *
+     * @return La view di visualizzazione dei clubs che gestisce
+     */
+    @PostMapping(value = "/visualizza-clubs-esperto")
+    @ResponseBody
+    @CrossOrigin
+    public List<ClubDTO> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
+        if (!utils.isUtenteEsperto(token)) return null;
+        return clubDelLibroService.getInformazioniClubs(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs());
+    }
+
+
 
 
 

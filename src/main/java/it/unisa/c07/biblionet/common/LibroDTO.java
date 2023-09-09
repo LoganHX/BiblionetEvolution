@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.common;
 
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -37,15 +38,13 @@ public class LibroDTO {
     /**
      * Rappresenta l'anno di pubblicazione di un libro.
      */
-    @Column(nullable = false)
-    @NonNull
-    private LocalDateTime annoDiPubblicazione;
+    @Column
+    private int annoDiPubblicazione;
 
     /**
      * Rappresenta la descrizione di un libro.
      */
     @Column(nullable = false, length = BiblionetConstraints.LENGTH_144)
-    @NonNull
     private String descrizione;
 
     /**

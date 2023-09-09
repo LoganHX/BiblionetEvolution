@@ -54,6 +54,7 @@ public class ClubDelLibro {
     @Column(nullable = false, length = BiblionetConstraints.LENGTH_255)
     private String descrizione;
 
+
     /**
      *  Rappresenta l'immagine di copertina di un club.
      *  L'annotazione serve ad Hibernate, poichè Blob è una interfaccia,
@@ -100,7 +101,7 @@ public class ClubDelLibro {
         this.nome = dto.getNome();
         this.generi = dto.getGeneri();
         this.descrizione = dto.getDescrizione();
-        this.immagineCopertina = Utils.getBase64Image(dto.getCopertina());
+        this.immagineCopertina = (dto.getCopertina());
         this.esperto = esperto;
     }
 

@@ -1,5 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
@@ -19,6 +21,24 @@ import java.util.List;
 @RequestMapping("/lettore")
 public class LettoreController {
     private final LettoreService lettoreService;
+    private final ClubDelLibroService clubDelLibroService;
+    private final Utils utils;
+    /**
+     * Implementa la funzionalità di visualizzazione dei clubs
+     * a cui il lettore é iscritto.
+     *
+     * @return La view di visualizzazione dei clubs a cui é iscritto
+     */
+    @PostMapping(value = "/visualizza-clubs-lettore")
+    @ResponseBody
+    @CrossOrigin
+    public List<ClubDTO> visualizzaClubsLettore(
+            final @RequestHeader(name = "Authorization") String token
+    ) {
+        if (!utils.isUtenteLettore(token)) return null;
+        return clubDelLibroService.getInformazioniClubs(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs());
+        //return lettore.getClubs();
+    }
 
 
 

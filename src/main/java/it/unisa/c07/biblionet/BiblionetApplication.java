@@ -36,15 +36,14 @@ public class BiblionetApplication {
         Libro libro = new Libro();
         libro = bookApiAdapter.getLibroDaBookApi(isbn, libro);
         if (libro == null) {
-            libro = new Libro("Not Found", "Autore", isbn,
-                    LocalDateTime.now(), "Descrizione", "Casa Editrice");
+            libro = new Libro();
         }
         libro.setGeneri(gen);
 
         return libroDAO.save(libro);
     }
-
 /*
+
     public static void init(ApplicationContext configurableApplicationContext) {
 
 //----------------------------Definizione oggetti DAO per ogni entity---------------------------------------------------

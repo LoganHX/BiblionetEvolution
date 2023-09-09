@@ -205,7 +205,7 @@ public interface PrenotazioneLibriService {
      * @param generi       la lista dei generi del libro
      * @return il libro inserito
      */
-    Libro inserimentoManuale(Libro libro, String idBiblioteca,
+    Libro creaLibroDaModel(LibroDTO libro, String idBiblioteca,
                              int numCopie, Set<String> generi);
 
 

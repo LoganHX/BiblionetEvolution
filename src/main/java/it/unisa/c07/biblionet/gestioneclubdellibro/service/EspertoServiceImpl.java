@@ -20,14 +20,14 @@ public class EspertoServiceImpl implements EspertoService {
     private final EspertoDAO espertoDAO;
 
     @Override
-    public Esperto creaEspertoDaModel(EspertoDTO form, Biblioteca biblioteca) {
+    public Esperto creaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
         if (biblioteca == null) return null;
         if (!biblioteca.getTipo().equals("Biblioteca")) return null;
         return espertoDAO.save(new Esperto(form, biblioteca));
     }
 
     @Override
-    public Esperto aggiornaEspertoDaModel(EspertoDTO form, Biblioteca biblioteca) {
+    public Esperto aggiornaEspertoDaModel(EspertoDTO form, UtenteRegistrato biblioteca) {
         return creaEspertoDaModel(form, biblioteca);
     }
 
