@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -45,6 +48,7 @@ public class PostController {
         biblionetResponse = checkAutorizzazioneEsperto(token, clubDelLibro, esperto, postDTO.getEspertoMail(), bindingResult);
         if(null != biblionetResponse) return biblionetResponse;
 
+        postDTO.setUsername(esperto.getUsername());
 
         Post p = postService.creaPostDaModel(postDTO, clubDelLibro, esperto);
         if(p == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
@@ -63,6 +67,7 @@ public class PostController {
         Post post = postService.getPostByID(idPost);
         if(post == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
 
+        //todo funzioni separate per esperto e lettore?
 
         UtenteRegistrato utenteRegistrato = null;
         BiblionetResponse biblionetResponse = new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
@@ -70,10 +75,18 @@ public class PostController {
         if(utils.isUtenteEsperto(token)) {
             utenteRegistrato = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
             biblionetResponse = checkAutorizzazioneEsperto(token, post.getClubDelLibro(), utenteRegistrato, commentoDTO.getEmailUtente(), bindingResult);
+            Esperto e = (Esperto) utenteRegistrato;
+            commentoDTO.setUsername(e.getUsername());
+            commentoDTO.setBoolEsperto(true);
+
         }
         else if (utils.isUtenteLettore(token)) {
             utenteRegistrato = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
             biblionetResponse = checkAutorizzazioneLettore(token, post.getClubDelLibro(), utenteRegistrato, commentoDTO.getEmailUtente(), bindingResult);
+            Lettore l = (Lettore) utenteRegistrato;
+            commentoDTO.setUsername(l.getUsername());
+            commentoDTO.setBoolEsperto(false);
+
         }
         if(null != biblionetResponse) return biblionetResponse;
 
@@ -122,6 +135,23 @@ public class PostController {
         return null;
     }
 
+    @PostMapping(value = "/visualizza-commenti")
+    @ResponseBody
+    @CrossOrigin
+    public List<CommentoDTO> visualizzaCommentiPost(final @RequestParam("idPost") int idPost) {
+
+        return postService.getInformazioniCommenti(postService.getCommentiByPostId(idPost));
+    }
+
+
+    @PostMapping(value = "/visualizza-post")
+    @ResponseBody
+    @CrossOrigin
+    public List<PostDTO> visualizzaPost(final @RequestParam("idClub") int idClub) {
+
+      return postService.getInformazioniPost(postService.visualizzaListaPostByClubId(idClub));
+
+    }
 
 
 

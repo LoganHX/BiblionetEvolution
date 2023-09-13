@@ -19,6 +19,7 @@ public abstract class UtenteRegistratoDTO {
      * Rappresenta l'ID di un utente registrato.
      */
     @NonNull
+    @Pattern(regexp = BiblionetConstraints.EMAIL_REGEX)
     private String email;
 
 

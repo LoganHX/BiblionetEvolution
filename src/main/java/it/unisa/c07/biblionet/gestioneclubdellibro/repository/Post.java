@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -31,7 +32,9 @@ public class Post {
     @NonNull
     private String titolo;
     @NonNull
+    @Column(length = 3000)
     private String content;
+    private String username;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Commento> commenti = new ArrayList<>();
@@ -53,6 +56,7 @@ public class Post {
         this.setCommenti(new ArrayList<>());
         this.setDate(dto.getDate());
         this.setContent(dto.getContent());
+        this.username = dto.getUsername();
     }
 
     public Post(PostDTO dto, ClubDelLibro clubDelLibro, Esperto esperto, List<Commento> commenti){
@@ -62,6 +66,8 @@ public class Post {
         this.setCommenti(commenti);
         this.setDate(dto.getDate());
         this.setContent(dto.getContent());
+        this.username = dto.getUsername();
+
     }
 
 }

@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.gestionebiblioteca.service;
 
 
 import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
@@ -79,13 +80,16 @@ public class BibliotecaServiceImplTest {
     private static Stream<Arguments> provideLibro() {
         return Stream.of(
                 Arguments.of(
-                        new Libro(
-                                "Amore Amaro",
+                        new LibroDTO(
+                                1,
                                 "Fru",
                                 "9597845613497",
-                                LocalDateTime.of(LocalDate.of(2010, 10, 15), LocalTime.now()),
-                                "Biblioteche 2.0",
-                                "Mondadori"
+                                "1234567891234",
+                                2010,
+                                "Mondadori",
+                                "Casa",
+                                "@@@@@",
+                                null
                         )
                 )
         );

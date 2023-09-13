@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.TicketPrestitoDTO;
@@ -24,7 +25,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
@@ -71,15 +74,18 @@ public class PrenotazioneLibriControllerTest {
         return Stream.of(Arguments.of(new TicketPrestito(
                                 TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA,
                                 LocalDateTime.now(),
-                                new Libro(
+                                new Libro(new LibroDTO(
+                                        1,
                                         "BiblioNet",
                                         "Stefano Lambiase",
                                         "1234567890123",
-                                        LocalDateTime.now(),
+                                        1995,
+                                        "Aooo",
+                                        "Mondadori",
                                         "Biblioteche 2.0",
-                                        "Mondadori"
+                                        new HashSet<String>()
 
-                                ),
+                                )),
                                 new Biblioteca(
                                         "b4@gmail.com",
                                         "aaaaa",
@@ -115,15 +121,17 @@ public class PrenotazioneLibriControllerTest {
         return Stream.of(Arguments.of(new TicketPrestito(
                                 TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE,
                                 LocalDateTime.now(),
-                                new Libro(
-                                        "BiblioNet",
-                                        "Stefano Lambiase",
-                                        "1234567890123",
-                                        LocalDateTime.now(),
-                                        "Biblioteche 2.0",
-                                        "Mondadori"
+                        new Libro(new LibroDTO(2,
+                                "BiblioNet",
+                                "Stefano Lambiase",
+                                "1234567890123",
+                                1995,
+                                "Aooo",
+                                "Mondadori",
+                                "Biblioteche 2.0",
+                                new HashSet<String>()
 
-                                ),
+                        )),
                                 new Biblioteca(
                                         "b4@gmail.com",
                                         "aaaaa",
@@ -159,15 +167,17 @@ public class PrenotazioneLibriControllerTest {
         return Stream.of(Arguments.of(new TicketPrestito(
                                 TicketPrestito.Stati.CHIUSO,
                                 LocalDateTime.now(),
-                                new Libro(
-                                        "BiblioNet",
-                                        "Stefano Lambiase",
-                                        "1234567890123",
-                                        LocalDateTime.now(),
-                                        "Biblioteche 2.0",
-                                        "Mondadori"
+                        new Libro(new LibroDTO(3,
+                                "BiblioNet",
+                                "Stefano Lambiase",
+                                "1234567890123",
+                                1995,
+                                "Aooo",
+                                "Mondadori",
+                                "Biblioteche 2.0",
+                                new HashSet<String>()
 
-                                ),
+                        )),
                                 new Biblioteca(
                                         "b4@gmail.com",
                                         "aaaaa",
@@ -203,15 +213,17 @@ public class PrenotazioneLibriControllerTest {
         return Stream.of(Arguments.of(new TicketPrestito(
                                 TicketPrestito.Stati.RIFIUTATO,
                                 LocalDateTime.now(),
-                                new Libro(
-                                        "BiblioNet",
-                                        "Stefano Lambiase",
-                                        "1234567890123",
-                                        LocalDateTime.now(),
-                                        "Biblioteche 2.0",
-                                        "Mondadori"
+                        new Libro(new LibroDTO(3,
+                                "BiblioNet",
+                                "Stefano Lambiase",
+                                "1234567890123",
+                                1995,
+                                "Aooo",
+                                "Mondadori",
+                                "Biblioteche 2.0",
+                                new HashSet<String>()
 
-                                ),
+                        )),
                                 new Biblioteca(
                                         "b4@gmail.com",
                                         "aaaaa",

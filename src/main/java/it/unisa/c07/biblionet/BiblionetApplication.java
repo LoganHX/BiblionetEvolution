@@ -2419,7 +2419,7 @@ public class BiblionetApplication {
 
     }
 
-
+*/
     public static String getCopertinaClubFromUrl(String filePath) {
         try{
             byte[] fileContent = FileUtils.readFileToByteArray(new File(filePath));
@@ -2431,7 +2431,7 @@ public class BiblionetApplication {
         }
 
     }
-*/
+
     public static void main(String[] args) throws NoSuchAlgorithmException {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);

@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 
 import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.filter.JwtFilter;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
@@ -172,14 +173,18 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
-        Libro l = new Libro(
+        Libro l =  new Libro(new LibroDTO(
+                1,
                 "BiblioNet",
-                "Paulo Dybala",
-                isbn,
-                LocalDateTime.now(),
+                "Stefano Lambiase",
+                "1234567890123",
+                1995,
+                "Aooo",
+                "Mondadori",
                 "Biblioteche 2.0",
-                "Mondadori"
-        );
+                new HashSet<String>()
+
+        ));
         l.setIdLibro(3);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -256,14 +261,18 @@ public class BibliotecaControllerTest {
         String isbn = "1234567890123";
         Biblioteca b = new Biblioteca();
         b.setEmail("a");
-        Libro l = new Libro(
+        Libro l =  new Libro(new LibroDTO(
+                1,
                 "BiblioNet",
-                "Paulo Dybala",
-                isbn,
-                LocalDateTime.now(),
+                "Stefano Lambiase",
+                "1234567890123",
+                1995,
+                "Aooo",
+                "Mondadori",
                 "Biblioteche 2.0",
-                "Mondadori"
-        );
+                new HashSet<String>()
+
+        ));
         l.setIdLibro(3);
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
@@ -335,7 +344,7 @@ public class BibliotecaControllerTest {
         l.setTitolo("BiblioNet");
         l.setAutore("Stefano Lambiase");
         l.setCasaEditrice("Mondadori");
-        l.setAnnoDiPubblicazione(LocalDateTime.of(2010, 1, 1, 1, 1));
+        l.setAnnoDiPubblicazione(2010);
         l.setImmagineLibro(null);
         l.setIdLibro(0);
         Set<String> generi = new HashSet<>();
@@ -345,7 +354,7 @@ public class BibliotecaControllerTest {
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(prenotazioneService.inserimentoManuale(
+        when(prenotazioneService.creaLibroDaModel(
                 Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any()))
                 .thenReturn(l);
         when(bibliotecaService.findBibliotecaByEmail("a"))
@@ -382,7 +391,7 @@ public class BibliotecaControllerTest {
         l.setTitolo("BiblioNet");
         l.setAutore("Stefano Lambiase");
         l.setCasaEditrice("Mondadori");
-        l.setAnnoDiPubblicazione(LocalDateTime.of(2010, 1, 1, 1, 1));
+        l.setAnnoDiPubblicazione(2010);
         l.setImmagineLibro(null);
         l.setIdLibro(0);
         l.setIsbn("1234");
@@ -401,8 +410,8 @@ public class BibliotecaControllerTest {
         when(bibliotecaService.findBibliotecaByEmail("a"))
                 .thenReturn(b);
 
-        when(prenotazioneService.inserimentoManuale(
-                l, "a", 1, generi))
+        when(prenotazioneService.creaLibroDaModel(
+                new LibroDTO(l), "a", 1, generi))
                 .thenReturn(l);
         this.mockMvc.perform(post("/biblioteca/inserimento-manuale")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

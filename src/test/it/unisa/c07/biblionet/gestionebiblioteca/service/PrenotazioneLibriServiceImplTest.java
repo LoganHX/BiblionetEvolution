@@ -3,6 +3,7 @@ package it.unisa.c07.biblionet.gestionebiblioteca.service;
 
 import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.LibroDAO;
+import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
@@ -572,7 +573,7 @@ public class PrenotazioneLibriServiceImplTest {
      */
     @ParameterizedTest
     @MethodSource("provideLibro")
-    public void inserimentoManuale(Libro libro){
+    public void inserimentoManuale(LibroDTO libro){
 
         Biblioteca biblioteca= new Biblioteca();
         biblioteca.setEmail("test");
@@ -583,7 +584,7 @@ public class PrenotazioneLibriServiceImplTest {
         when(genereService.doGeneriExist(generi)).thenReturn(true);
 
         ArrayList<Libro> libri = new ArrayList<>();
-        libri.add(libro);
+        libri.add(new Libro(libro));
 
 
 
@@ -591,7 +592,7 @@ public class PrenotazioneLibriServiceImplTest {
         ;
         when(libroDAO.findAll()).thenReturn(libri);
 
-        assertEquals(libro,prenotazioneService.inserimentoManuale(libro,"test",1,generi));
+        assertEquals(libro,prenotazioneService.creaLibroDaModel(libro,"test",1,generi));
     }
 
     /**
@@ -601,8 +602,9 @@ public class PrenotazioneLibriServiceImplTest {
      */
     @ParameterizedTest
     @MethodSource("provideLibro")
-    public void inserimentoManualeGiaEsistente(Libro libro){
+    public void inserimentoManualeGiaEsistente(LibroDTO libroDTO){
 
+        Libro libro = new Libro(libroDTO);
         libro.setIdLibro(1);
         Biblioteca biblioteca= new Biblioteca();
         biblioteca.setEmail("test");
@@ -629,7 +631,7 @@ public class PrenotazioneLibriServiceImplTest {
         when(libroDAO.findAll()).thenReturn(libri);
         when(libroDAO.save(libro)).thenReturn(libro);
 
-        assertEquals(libro,prenotazioneService.inserimentoManuale(libro,"test",1,generi));
+        assertEquals(libro,prenotazioneService.creaLibroDaModel(libroDTO,"test",1,generi));
     }
 
     /**
@@ -639,7 +641,8 @@ public class PrenotazioneLibriServiceImplTest {
      */
     @ParameterizedTest
     @MethodSource("provideLibro")
-    public void inserimentoManualePossessoNonEsistente(Libro libro){
+    public void inserimentoManualePossessoNonEsistente(LibroDTO libroDTO){
+        Libro libro = new Libro(libroDTO);
 
         libro.setIdLibro(1);
         Biblioteca biblioteca= new Biblioteca();
@@ -667,7 +670,7 @@ public class PrenotazioneLibriServiceImplTest {
         when(libroDAO.findAll()).thenReturn(libri);
         when(libroDAO.save(libro)).thenReturn(libro);
 
-        assertEquals(libro,prenotazioneService.inserimentoManuale(libro,"test",1,generi));
+        assertEquals(libro,prenotazioneService.creaLibroDaModel(libroDTO,"test",1,generi));
     }
 
     /**

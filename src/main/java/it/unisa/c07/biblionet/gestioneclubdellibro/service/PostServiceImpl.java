@@ -23,12 +23,12 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public List<PostDTO> visualizzaListaPostByClubId(long id){
-        return this.getInformazioniPost(postDAO.findPostByClubDelLibro_IdClub(id));
+    public List<Post> visualizzaListaPostByClubId(int id){
+        return postDAO.findPostByClubDelLibro_IdClub(id);
     }
 
     @Override
-    public Post getPostByID(long id){
+    public Post getPostByID(int id){
         Optional<Post> p = postDAO.findById(id);
         return p.orElse(null);
     }
@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post aggiungiCommento(long id, CommentoDTO commentoDTO, UtenteRegistrato utente){
+    public Post aggiungiCommento(int id, CommentoDTO commentoDTO, UtenteRegistrato utente){
         if(utente == null) return  null;
         Optional<Post> optionalPost = postDAO.findById(id);
         if(optionalPost.isEmpty()) return null;
@@ -53,12 +53,24 @@ public class PostServiceImpl implements PostService {
 
         return p;
     }
+    @Override
+    public List<Commento> getCommentiByPostId(int idPost){
+        return commentoDAO.findAllCommentiByPostId(idPost);
+    }
 
     @Override
     public List<PostDTO> getInformazioniPost(List<Post> posts){
         List<PostDTO> dtos = new ArrayList<>();
         for(Post p: posts){
             dtos.add(new PostDTO(p));
+        }
+        return dtos;
+    }
+    @Override
+    public List<CommentoDTO> getInformazioniCommenti(List<Commento> commenti){
+        List<CommentoDTO> dtos = new ArrayList<>();
+        for(Commento c: commenti){
+            dtos.add(new CommentoDTO(c));
         }
         return dtos;
     }

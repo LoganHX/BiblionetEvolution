@@ -1,6 +1,5 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
-import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
@@ -44,13 +43,12 @@ public final class RegistrazioneController {
      @CrossOrigin
      public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute EspertoDTO esperto,
      BindingResult bindingResult,
-     final @RequestParam("conferma_password") String password,
-     final @RequestParam("email_biblioteca") String bibliotecaEmail) {
+     final @RequestParam("conferma_password") String password) {
 
          BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) esperto);
          if(response != null) return response;
 
-         Esperto e = espertoService.creaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(bibliotecaEmail));
+         Esperto e = espertoService.creaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(esperto.getEmailBiblioteca()));
          if(e == null)
              return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
 

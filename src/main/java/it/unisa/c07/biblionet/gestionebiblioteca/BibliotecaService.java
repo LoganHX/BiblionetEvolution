@@ -22,4 +22,6 @@ public interface BibliotecaService {
     List<BibliotecaDTO> getInformazioniBiblioteche(List<Biblioteca> biblioteche);
 
     Biblioteca aggiornaBiblioteca(Biblioteca utente);
+
+    BibliotecaDTO getInformazioniBiblioteca(Biblioteca biblioteca);
 }

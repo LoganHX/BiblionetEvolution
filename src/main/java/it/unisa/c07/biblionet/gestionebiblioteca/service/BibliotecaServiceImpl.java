@@ -82,5 +82,9 @@ public class BibliotecaServiceImpl implements BibliotecaService {
         return bibliotecaDAO.save(utente);
     }
 
+    @Override
+    public BibliotecaDTO getInformazioniBiblioteca(Biblioteca biblioteca){
+        return new BibliotecaDTO(biblioteca);
+    }
 
 }

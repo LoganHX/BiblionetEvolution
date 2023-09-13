@@ -6,6 +6,7 @@ import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Pattern;
 @Getter
 @Data
@@ -18,6 +19,8 @@ public class BibliotecaDTO extends UtenteRegistratoDTO {
      * Rappresenta l'ID di un utente registrato.
      */
     @NonNull
+    @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
+    @Column(length = 60)
     private String nomeBiblioteca;
     /**
      * Rappresenta la password di un utente registrato.

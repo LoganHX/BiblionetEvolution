@@ -1,9 +1,6 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
@@ -39,6 +36,15 @@ public class LettoreController {
         return clubDelLibroService.getInformazioniClubs(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs());
         //return lettore.getClubs();
     }
+
+    @PostMapping(value = "/informazioni")
+    @ResponseBody
+    @CrossOrigin
+    public LettoreDTO getInformazioniLettore(final @RequestHeader(name = "Authorization") String token) {
+        if (!utils.isUtenteLettore(token)) return null;
+        return new LettoreDTO(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)));
+    }
+
 
 
 

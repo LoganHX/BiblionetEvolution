@@ -309,7 +309,7 @@ public class ClubDelLibroController {
         if (clubService.getClubByID(id) == null) {
             return null;
         }
-        if (!utils.isUtenteLettore(token)) return null;
+        //if (!utils.isUtenteLettore(token)) return null;
 
         //Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         //if (l == null) return null;

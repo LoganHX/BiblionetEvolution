@@ -14,12 +14,13 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class PostDTO {
 
-    private Long id;
+    private int id;
     private String espertoMail;
     private LocalDateTime date;
     private String titolo;
     private String content;
-    private List<CommentoDTO> commenti;
+    private String username;
+    //private List<CommentoDTO> commenti;
 
 
     public PostDTO(Post post) {
@@ -28,15 +29,16 @@ public class PostDTO {
         this.espertoMail = post.getEsperto().getEmail();
         this.date = post.getDate();
         this.content = post.getContent();
-        this.commenti = new ArrayList<>();
+        this.username = post.getUsername();
+        //this.commenti = new ArrayList<>();
     }
 
-    public PostDTO(Post post, List<CommentoDTO> commenti) {
+  /*  public PostDTO(Post post, List<CommentoDTO> commenti) {
         this.titolo = post.getTitolo();
         this.id = post.getId();
         this.espertoMail = post.getEsperto().getEmail();
         this.date = post.getDate();
         this.content = post.getContent();
-        this.commenti = commenti;
-    }
+        //this.commenti = commenti;
+    }*/
 }

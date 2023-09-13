@@ -13,9 +13,11 @@ import java.util.Date;
 public class CommentoDTO {
     private Long id;
     private String emailUtente;
-    private Long postId;
+    private String username;
+    private int postId;
     private LocalDateTime date;
     private String content;
+    private boolean boolEsperto;
 
     public CommentoDTO(Commento commento) {
         this.id = commento.getId();
@@ -23,5 +25,7 @@ public class CommentoDTO {
         this.postId = commento.getPost().getId();
         this.date = commento.getDate();
         this.content = commento.getContent();
+        this.username = commento.getUsername();
+        this.boolEsperto = commento.isBoolEsperto();
     }
 }

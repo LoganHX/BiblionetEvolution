@@ -5,6 +5,7 @@ import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Getter
@@ -21,25 +22,33 @@ public class EspertoDTO extends UtenteRegistratoDTO {
     private Set<String> generi;
 
     @NonNull
+    @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String nome;
     @NonNull
+    @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String cognome;
     @NonNull
+    @Size(max = 30, message = "Il campo 'nome' può avere al massimo 50 caratteri")
     private String username;
+    @NonNull
+    private String emailBiblioteca;
 
-    public EspertoDTO(@NonNull String email, @NonNull String password, @NonNull String provincia, @NonNull String citta, @NonNull @Pattern(regexp = BiblionetConstraints.ADDRESS_REGEX) String via, @NonNull @Pattern(regexp = BiblionetConstraints.PHONE_REGEX) String recapitoTelefonico, String nome, String cognome, String username) {
+    public EspertoDTO(String email, String password, String provincia, String citta, String via, String recapitoTelefonico, String nome, String cognome, String username, String emailBiblioteca) {
         super(email, password, provincia, citta, via, recapitoTelefonico);
         this.cognome = cognome;
         this.nome = nome;
         this.username = username;
-        this.generi = generi;
+        //this.generi = generi;
+        this.emailBiblioteca = emailBiblioteca;
     }
-    public EspertoDTO(@NonNull String email, @NonNull byte[] password, @NonNull String provincia, @NonNull String citta, @NonNull @Pattern(regexp = BiblionetConstraints.ADDRESS_REGEX) String via, @NonNull @Pattern(regexp = BiblionetConstraints.PHONE_REGEX) String recapitoTelefonico, String nome, String cognome, String username) {
+    public EspertoDTO(String email, byte[] password, String provincia, String citta, String via, String recapitoTelefonico, String nome, String cognome, String username, String emailBiblioteca) {
         super(email, password, provincia, citta, via, recapitoTelefonico);
         this.cognome = cognome;
         this.nome = nome;
         this.username = username;
-        this.generi = generi;
+        //this.generi = generi;
+        this.emailBiblioteca = emailBiblioteca;
+
     }
 
     public EspertoDTO(Esperto esperto) {
@@ -48,5 +57,7 @@ public class EspertoDTO extends UtenteRegistratoDTO {
         this.nome = esperto.getNome();
         this.username = esperto.getUsername();
         this.generi = esperto.getGeneri();
+        this.emailBiblioteca = esperto.getBiblioteca().getEmail();
+
     }
 }

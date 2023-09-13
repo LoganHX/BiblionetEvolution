@@ -36,10 +36,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     private final LettoreService lettoreService;
     private final GenereService genereService;
 
-
-
-
-
     /**
      * Implementa la funzionalità che permette
      * di visualizzare la lista completa dei libri
@@ -134,6 +130,9 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     public TicketPrestito richiediPrestito(final String lettoreMail,
                                            final String idBiblioteca,
                                            final int idLibro) {
+
+        //todo violazione architettura
+
         UtenteRegistrato lettore = lettoreService.findLettoreByEmail(lettoreMail);
         TicketPrestito ticket = new TicketPrestito();
         if(!lettore.getTipo().equals("Lettore")) return null;

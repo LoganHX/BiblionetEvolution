@@ -14,6 +14,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class LibroDTO {
 
+    private int id;
     /**
      * Rappresenta il titolo di un libro.
      */
@@ -69,13 +70,14 @@ public class LibroDTO {
     @ToString.Exclude
     private Set<String> generi;
 
-    public LibroDTO(Libro libroBiblioteca){
-        this.annoDiPubblicazione = libroBiblioteca.getAnnoDiPubblicazione();
-        this.generi = libroBiblioteca.getGeneri();
-        this.immagineLibro = libroBiblioteca.getImmagineLibro();
-        this.titolo = libroBiblioteca.getTitolo();
-        this.autore = libroBiblioteca.getAutore();
-        this.casaEditrice = libroBiblioteca.getCasaEditrice();
-        this.isbn = libroBiblioteca.getIsbn();
+    public LibroDTO(Libro l){
+        this.id = l.getIdLibro();
+        this.annoDiPubblicazione = l.getAnnoDiPubblicazione();
+        this.generi = l.getGeneri();
+        this.immagineLibro = l.getImmagineLibro();
+        this.titolo = l.getTitolo();
+        this.autore = l.getAutore();
+        this.casaEditrice = l.getCasaEditrice();
+        this.isbn = l.getIsbn();
     }
 }

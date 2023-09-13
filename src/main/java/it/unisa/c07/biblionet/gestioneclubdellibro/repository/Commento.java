@@ -29,12 +29,16 @@ public class Commento {
 
     private LocalDateTime date;
     private String content;
+    private String username;
+    private boolean boolEsperto;
 
     public Commento(CommentoDTO dto, UtenteRegistrato utenteRegistrato, Post post){
         this.user = utenteRegistrato;
+        this.username = dto.getUsername();
         this.date = dto.getDate();
         this.content = dto.getContent();
         this.post = post;
+        this.boolEsperto = dto.isBoolEsperto();
 
     }
 }

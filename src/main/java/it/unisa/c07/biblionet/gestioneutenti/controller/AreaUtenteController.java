@@ -77,11 +77,10 @@ public class AreaUtenteController {
     /**
      * Implementa la funzionalità di modifica dati di un esperto.
      *
-     * @param esperto         Un esperto da modificare.
+     * @param esperto         Il dto dell'esperto da modificare.
      * @param vecchia         La vecchia password dell'account.
      * @param nuova           La nuova password dell'account.
      * @param conferma        La password di conferma password dell'account.
-     * @param emailBiblioteca L'email della biblioteca scelta.
      * @return login Se la modifica va a buon fine.
      * modifica_dati_esperto Se la modifica non va a buon fine
      */
@@ -94,8 +93,7 @@ public class AreaUtenteController {
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
             final @RequestParam("nuova_password") String nuova,
-            final @RequestParam("conferma_password") String conferma,
-            final @RequestParam("email_biblioteca") String emailBiblioteca) {
+            final @RequestParam("conferma_password") String conferma) {
 
 
         if (!utils.isUtenteEsperto(token))
@@ -105,7 +103,7 @@ public class AreaUtenteController {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
 
-        if(bibliotecaService.findBibliotecaByEmail(emailBiblioteca) == null){
+        if(bibliotecaService.findBibliotecaByEmail(esperto.getEmailBiblioteca()) == null){
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         }
 
@@ -113,7 +111,7 @@ public class AreaUtenteController {
         if (s != null) return s;
         esperto.setPassword(conferma);
 
-        Esperto e = espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(emailBiblioteca));
+        Esperto e = espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(esperto.getEmailBiblioteca()));
         if(e == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
 
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);

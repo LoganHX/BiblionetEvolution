@@ -1,24 +1,15 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoDTO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
+import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
+import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
-import it.unisa.c07.biblionet.utils.BiblionetConstraints;
-import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -78,7 +69,28 @@ public class EspertoController {
         return clubDelLibroService.getInformazioniClubs(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs());
     }
 
-
+//    @PostMapping(value = "/informazioni")
+//    @ResponseBody
+//    @CrossOrigin
+//    public Map<String, Object> getInformazioniEsperto(final @RequestHeader(name = "Authorization") String token) {
+//
+//        if (!utils.isUtenteEsperto(token)) return null;
+//
+//        Map map = new HashMap();
+//        Esperto e = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
+//        //Biblioteca b = (Biblioteca) e.getBiblioteca();
+//        map.put("Esperto", new EspertoDTO(e));
+//        //map.put("Biblioteca", b.getNomeBiblioteca());
+//
+//        return map;
+//    }
+    @PostMapping(value = "/informazioni")
+    @ResponseBody
+    @CrossOrigin
+    public EspertoDTO getInformazioniEsperto(final @RequestHeader(name = "Authorization") String token) {
+        if (!utils.isUtenteLettore(token)) return null;
+        return new EspertoDTO(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)));
+    }
 
 
 

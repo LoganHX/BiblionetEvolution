@@ -170,16 +170,16 @@ public class BibliotecaController {
         };
     }
 
-//    /**
-//     * Implementa la funzionalità di visualizzazione
-//     * del profilo di una singola biblioteca.
-//     * @param email della biblioteca
-//     * @return La view di visualizzazione singola biblioteca
-//     */
-//    @GetMapping(value = "/{email}")
-//    @ResponseBody
-//    @CrossOrigin
-//    public BibliotecaDTO visualizzaDatiBiblioteca(final @PathVariable String email) {
-//        return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
-//    }
+    /**
+     * Implementa la funzionalità di visualizzazione
+     * del profilo di una singola biblioteca.
+     * @param email della biblioteca
+     * @return La view di visualizzazione singola biblioteca
+     */
+    @GetMapping(value = "/{email}")
+    @ResponseBody
+    @CrossOrigin
+    public BibliotecaDTO visualizzaDatiBiblioteca(final @PathVariable String email) {
+        return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
+    }
 }
