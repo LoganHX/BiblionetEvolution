@@ -42,14 +42,13 @@ public class PrenotazioneLibriController {
      * Implementa la funzionalità che permette di
      * richiedere il prestito di un libro.
      *
-     * @param idBiblioteca L'ID della biblioteca che possiede il libro
      * @param idLibro      L'ID del libro di cui effettuare la prenotazione
      * @return La view che visualizza la lista dei libri prenotabili
      */
     @PostMapping(value = "/conferma-prenotazione")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse confermaPrenotazione(@RequestParam final String idBiblioteca,
+    public BiblionetResponse confermaPrenotazione(@RequestParam final String emailBiblioteca,
                                                   @RequestParam final String idLibro,
                                                   @RequestHeader(name = "Authorization") final String token) {
 
@@ -58,9 +57,9 @@ public class PrenotazioneLibriController {
         }
         String subject = utils.getSubjectFromToken(token);
         prenotazioneService.richiediPrestito(subject,
-                idBiblioteca,
+                emailBiblioteca,
                 Integer.parseInt(idLibro));
-        return new BiblionetResponse("OK", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
     /**
@@ -117,12 +116,13 @@ public class PrenotazioneLibriController {
         return bibliotecaService.getInformazioniBiblioteche(prenotazioneService.getBibliotecheLibro(prenotazioneService.getLibroByID(id)));
     }
 
-    //todo viene usato?
-    @GetMapping(value = "/{id}/ottieni-libro")
+    @PostMapping(value = "/ottieni-libro")
     @ResponseBody
     @CrossOrigin
-    public Libro ottieniLibro(@PathVariable final int id) {
-        return prenotazioneService.getLibroByID(id);
+    public LibroDTO ottieniLibro(@RequestParam final int id, @RequestHeader(name = "Authorization") final String token
+    ) {
+        if (!utils.isUtenteLettore(token)) return null;
+        return new LibroDTO( prenotazioneService.getLibroByID(id));
     }
 
 
