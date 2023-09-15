@@ -42,7 +42,7 @@ public class BiblionetApplication {
 
         return libroDAO.save(libro);
     }
-/*
+
 
     public static void init(ApplicationContext configurableApplicationContext) {
 
@@ -2419,7 +2419,7 @@ public class BiblionetApplication {
 
     }
 
-*/
+
     public static String getCopertinaClubFromUrl(String filePath) {
         try{
             byte[] fileContent = FileUtils.readFileToByteArray(new File(filePath));
@@ -2436,7 +2436,7 @@ public class BiblionetApplication {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);
 
-        //init(configurableApplicationContext);
+        init(configurableApplicationContext);
     }
 
 }

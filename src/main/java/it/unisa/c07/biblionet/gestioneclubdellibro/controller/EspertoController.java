@@ -88,7 +88,7 @@ public class EspertoController {
     @ResponseBody
     @CrossOrigin
     public EspertoDTO getInformazioniEsperto(final @RequestHeader(name = "Authorization") String token) {
-        if (!utils.isUtenteLettore(token)) return null;
+        if (!utils.isUtenteEsperto(token)) return null;
         return new EspertoDTO(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)));
     }
 
