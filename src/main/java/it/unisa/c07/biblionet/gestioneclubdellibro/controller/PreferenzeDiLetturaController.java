@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,10 +46,12 @@ public class PreferenzeDiLetturaController {
     @PostMapping(value = "/modifica-generi")
     @CrossOrigin
     @ResponseBody
-    public BiblionetResponse modificaGeneri(@RequestParam("genere") final String[] generi,
+    public BiblionetResponse modificaGeneri(@RequestParam("generi") final String[] generi,
                                             @RequestHeader(name = "Authorization") final String token) {
 
-        Set<Genere> toAdd = genereService.getGeneriByName(generi);
+        Set<Genere> toAdd = genereService.getGeneriByName(Arrays.asList(generi.clone()));
+
+        if(toAdd == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
 
         if (utils.isUtenteEsperto(token)) {
             preferenzeDiLetturaService

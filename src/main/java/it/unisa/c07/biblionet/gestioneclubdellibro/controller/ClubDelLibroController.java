@@ -100,7 +100,7 @@ public class ClubDelLibroController {
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
                                               @RequestHeader(name = "Authorization") final String token,
                                               BindingResult bindingResult,
-                                              @RequestParam @NonNull MultipartFile copertina) throws IOException {
+                                              @RequestParam @NonNull MultipartFile immagineCopertina) throws IOException {
 
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
@@ -109,7 +109,7 @@ public class ClubDelLibroController {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        clubDTO.setCopertina(Utils.getBase64Image(copertina));
+        clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina));
 
         Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
 
@@ -118,7 +118,7 @@ public class ClubDelLibroController {
         listaClub.add(clubDelLibro);
         espertoService.aggiornaEsperto(esperto);
         if(clubDelLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
-        return new BiblionetResponse("Club del Libro creato", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
 
@@ -132,7 +132,10 @@ public class ClubDelLibroController {
     @PostMapping(value = "/modifica")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse modificaDatiClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token, final @Valid @ModelAttribute ClubDTO clubDTO, BindingResult bindingResult) {
+    public BiblionetResponse modificaDatiClub(final @RequestParam int id,
+                                              @RequestHeader(name = "Authorization") final String token,
+                                              final @Valid @ModelAttribute ClubDTO clubDTO,
+                                              BindingResult bindingResult) {
 
         ClubDelLibro clubPers = this.clubService.getClubByID(id);
         if(clubPers == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -143,8 +146,6 @@ public class ClubDelLibroController {
         if (!utils.isUtenteEsperto(token) || !utils.getSubjectFromToken(token).equals(clubPers.getEsperto().getEmail())) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-
-        //todo
 
         //String copertina = utils.getBase64Image(clubDTO.getCopertina());
         //if (copertina != null) clubPers.setImmagineCopertina(copertina);
@@ -168,7 +169,7 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse abbandonaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
-        if (!utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
+        if (!utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
         boolean esito = lettoreService.abbandonaClub(clubDelLibro, lettore);
@@ -258,8 +259,22 @@ public class ClubDelLibroController {
      @PostMapping(value = "/info-club")
      @CrossOrigin
      @ResponseBody
-     public ClubDTO visualizzaDatiClub(final @RequestParam int id) {
-        return new ClubDTO(clubService.getClubByID(id));
+     public Map<String, Object> visualizzaDatiClub(final @RequestParam int id) {
+
+         ClubDelLibro club = clubService.getClubByID(id);
+         if(club == null) return null;
+
+
+         Map<String, Object> clubData = new HashMap<>();
+         clubData.put("nome", club.getNome());
+         clubData.put("descrizione", club.getDescrizione());
+         clubData.put("nomeEsperto", club.getEsperto().getNome() + " " + club.getEsperto().getCognome());
+         clubData.put("emailEsperto", club.getEsperto().getEmail());
+         clubData.put("immagineCopertina", club.getImmagineCopertina());
+         clubData.put("generi", club.getGeneri());
+         clubData.put("idClub", club.getIdClub());
+         clubData.put("iscritti", club.getLettori().size());
+         return clubData;
      }
 
 

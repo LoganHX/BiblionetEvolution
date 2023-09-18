@@ -43,7 +43,7 @@ public class BiblionetApplication {
         return libroDAO.save(libro);
     }
 
-
+/*
     public static void init(ApplicationContext configurableApplicationContext) {
 
 //----------------------------Definizione oggetti DAO per ogni entity---------------------------------------------------
@@ -2279,7 +2279,7 @@ public class BiblionetApplication {
 //------------------Associo dei generi ai club del libro----------------------------------------------------------------
         Set<String> generi = new HashSet<>();
         generi.add("Giallo");
-        generi.add("Saggistica");
+        generi.add("Saggio");
 
 
         clubDelLibro1.setGeneri(generi);
@@ -2418,7 +2418,7 @@ public class BiblionetApplication {
         out.info("*************************** INIZIALIZZAZIONE DI BIBLIONET TERMINATA ***************************");
 
     }
-
+*/
 
     public static String getCopertinaClubFromUrl(String filePath) {
         try{
@@ -2436,7 +2436,7 @@ public class BiblionetApplication {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);
 
-        init(configurableApplicationContext);
+       // init(configurableApplicationContext);
     }
 
 }

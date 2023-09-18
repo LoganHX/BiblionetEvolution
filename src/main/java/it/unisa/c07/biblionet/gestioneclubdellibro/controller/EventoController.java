@@ -6,12 +6,15 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 
@@ -89,14 +92,14 @@ public class EventoController {
      * Implementa la funzionalità che permette di eliminare
      * un evento.
      *
-     * @param club L'identificativo del Club dell'evento
-     * @param id   L'identificativo dell'evento da eliminare
+     * @param idClub L'identificativo del Club dell'evento
+     * @param idEvento   L'identificativo dell'evento da eliminare
      * @return La view della lista degli eventi
      */
     @PostMapping(value = "/elimina-evento")
-    public BiblionetResponse eliminaEvento(final @RequestParam int club, final @RequestParam int id) {
+    public BiblionetResponse eliminaEvento(final @RequestParam int idClub, final @RequestParam int idEvento) {
         //todo possibile non ci sia un check sul token?
-        Optional<Evento> eventoEliminato = this.eventiService.eliminaEvento(id);
+        Optional<Evento> eventoEliminato = this.eventiService.eliminaEvento(idEvento);
 
         if (eventoEliminato.isEmpty()) {
             return new BiblionetResponse("Evento inesistente", false);
@@ -112,13 +115,16 @@ public class EventoController {
      * @param eventoDTO il form dell'evento
      * @return la view che visualizza la lista degli eventi
      */
-    @PostMapping(value = "/eventi/modifica")
+    @PostMapping(value = "/modifica")
     @CrossOrigin
     @ResponseBody
     public BiblionetResponse modificaEvento(final @RequestParam int idClub,
                                             final @RequestParam int idEvento,
                                             final @Valid @ModelAttribute EventoDTO eventoDTO, BindingResult bindingResult,
-                                            @RequestHeader(name = "Authorization") final String token) {
+                                            @RequestHeader(name = "Authorization") final String token ,final @RequestParam String timeString,
+                                            final @RequestParam String dateString) {
+        eventoDTO.setData(LocalDate.parse(dateString));
+        eventoDTO.setOra(LocalTime.parse(timeString));
 
 
         Optional<Evento> e = eventiService.getEventoById(idEvento);
@@ -146,20 +152,27 @@ public class EventoController {
      * di gestire la chiamata POST
      * per creare un evento un club del libro.
      *
-     * @param id         l'id dell'evento
+     * @param idClub         l'id dell'evento
      * @param eventoDTO il form dell'evento
      * @return la view della lista degli eventi
      */
-    @PostMapping(value = "/eventi/crea")
+    @PostMapping(value = "/crea")
     @CrossOrigin
     @ResponseBody
-    public BiblionetResponse creaEvento(final @RequestParam int id,
+    public BiblionetResponse creaEvento(final @RequestParam int idClub,
                                         final @Valid @ModelAttribute EventoDTO eventoDTO,
-                                        BindingResult bindingResult) {
-        return this.modificaCreaEvento(
+                                        BindingResult bindingResult,
+                                        final @RequestParam @NonNull String timeString,
+                                        final @RequestParam @NonNull String dateString) {
+eventoDTO.setData(LocalDate.parse(dateString));
+eventoDTO.setOra(LocalTime.parse(timeString));
+
+    //System.err.println(eventoDTO.getData());
+    //System.err.println(eventoDTO.getOra());
+return this.modificaCreaEvento(
                 eventoDTO,
                 bindingResult,
-                id,
+                idClub,
                 Optional.empty()
         );
     }
@@ -210,6 +223,8 @@ public class EventoController {
             }
             evento.setLibro(libro.get());
         }
+
+        eventiService.modificaEvento(evento);
 
         return new BiblionetResponse("Evento creato/modificato", true);
 

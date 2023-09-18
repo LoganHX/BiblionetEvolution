@@ -21,7 +21,7 @@ public interface ClubDelLibroService {
     /**
      * Implementa la funzionalità che permette
      * a un Esperto di creare un Club del Libro.
-     * @param club Il Club del Libro da memorizzare
+     * @param clubDTO Il DTO del Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
 

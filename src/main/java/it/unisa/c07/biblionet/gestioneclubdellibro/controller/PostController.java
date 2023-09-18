@@ -37,6 +37,7 @@ public class PostController {
                                                   final @RequestParam("idClub") int idClub) {
 
 
+        postDTO.setDate(LocalDateTime.now());
         ClubDelLibro clubDelLibro = clubDelLibroService.getClubByID(idClub);
         if(clubDelLibro == null)
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -67,6 +68,7 @@ public class PostController {
                                               final @RequestParam("idPost") int idPost) {
 
         Post post = postService.getPostByID(idPost);
+        commentoDTO.setDate(LocalDateTime.now());
         if(post == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
 
         ClubDelLibro clubDelLibro = post.getClubDelLibro();

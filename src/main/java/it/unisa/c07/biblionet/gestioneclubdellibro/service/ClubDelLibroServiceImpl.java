@@ -33,6 +33,7 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
             public final String nome = club.getNome();
             public final String descrizione = club.getDescrizione();
             public final String nomeEsperto = club.getEsperto().getNome() + " " + club.getEsperto().getCognome();
+
             public final String immagineCopertina = club.getImmagineCopertina();
             public final Set <String> generi = club.getGeneri();
             public final int idClub = club.getIdClub();
