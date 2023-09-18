@@ -16,6 +16,8 @@ import java.util.function.Predicate;
 public interface ClubDelLibroService {
 
 
+    List<Object> dettagliClub(List<ClubDelLibro> listaClubs);
+
     /**
      * Implementa la funzionalità che permette
      * a un Esperto di creare un Club del Libro.
