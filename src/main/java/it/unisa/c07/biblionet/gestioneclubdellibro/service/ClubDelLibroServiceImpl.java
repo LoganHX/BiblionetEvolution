@@ -25,7 +25,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClubDelLibroServiceImpl implements ClubDelLibroService {
 
+    @Override
+    public List<Object> dettagliClub(List<ClubDelLibro> listaClubs){
 
+        // Necessito di un oggetto anonimo per evitare problemi con JS
+        return listaClubs.stream().map(club -> new Object() {
+            public final String nome = club.getNome();
+            public final String descrizione = club.getDescrizione();
+            public final String nomeEsperto = club.getEsperto().getNome() + " " + club.getEsperto().getCognome();
+
+            public final String immagineCopertina = club.getImmagineCopertina();
+            public final Set <String> generi = club.getGeneri();
+            public final int idClub = club.getIdClub();
+            public final int iscritti = club.getLettori().size();
+            public final String email = club.getEsperto().getEmail();
+        }).collect(Collectors.toList());
+
+
+    }
 
     /**
      * Si occupa delle operazioni CRUD per un club.

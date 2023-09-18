@@ -28,16 +28,16 @@ public class GenereServiceImpl implements GenereService {
      * presenti nel database
      */
     @Override
-    public Set<Genere> getGeneriByName(final String[] generi) {
+    public Set<Genere> getGeneriByName(final List<String> generi) {
         Set<Genere> toReturn = new HashSet<>();
 
         for (String g: generi) {
             Genere gen = genereDAO.findByName(g);
             if(gen == null) return null;
-            Genere dto = new Genere();
-            dto.setDescrizione(gen.getDescrizione());
-            dto.setNome(gen.getNome());
-            toReturn.add(dto);
+//            Genere dto = new Genere();
+//            dto.setDescrizione(gen.getDescrizione());
+//            dto.setNome(gen.getNome());
+            toReturn.add(gen);
 
         }
 

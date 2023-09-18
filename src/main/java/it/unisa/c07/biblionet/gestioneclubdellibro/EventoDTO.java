@@ -42,14 +42,12 @@ public class EventoDTO {
     /**
      * La data dell'evento.
      */
-    @NonNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
 
     /**
      * L'ora dell'evento.
      */
-    @NonNull
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime ora;
 

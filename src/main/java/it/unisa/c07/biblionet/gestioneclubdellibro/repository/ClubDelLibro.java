@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.DoubleStream;
 
 /**
  * Questa classe rappresenta un Club del Libro.
@@ -104,5 +105,6 @@ public class ClubDelLibro {
         this.immagineCopertina = (dto.getCopertina());
         this.esperto = esperto;
     }
+
 
 }

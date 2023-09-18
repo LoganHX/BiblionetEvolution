@@ -2,9 +2,11 @@ package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Genere;
 
+import java.util.List;
 import java.util.Set;
 
 public interface GenereService {
+
 
     boolean doGeneriExist(Set<String> generi);
 
@@ -24,6 +26,6 @@ public interface GenereService {
      * @return la lista di generi contenente solamente i generi effettivamente
      * presenti nel database
      */
-    Set<Genere> getGeneriByName(String[] generi);
+    Set<Genere> getGeneriByName(List<String> generi);
 
 }

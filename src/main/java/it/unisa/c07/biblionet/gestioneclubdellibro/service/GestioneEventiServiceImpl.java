@@ -72,7 +72,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     @Override
     public Optional<Evento> modificaEvento(final Evento evento) {
         if (!this.eventoDAO.existsById(evento.getIdEvento())) {
-            return Optional.empty();
+            return Optional.ofNullable(creaEvento(evento));
         }
         var eventoSalvato = eventoDAO.save(evento);
         return Optional.of(eventoSalvato);

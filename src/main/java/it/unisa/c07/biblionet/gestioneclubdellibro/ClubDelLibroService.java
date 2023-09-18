@@ -16,10 +16,12 @@ import java.util.function.Predicate;
 public interface ClubDelLibroService {
 
 
+    List<Object> dettagliClub(List<ClubDelLibro> listaClubs);
+
     /**
      * Implementa la funzionalità che permette
      * a un Esperto di creare un Club del Libro.
-     * @param club Il Club del Libro da memorizzare
+     * @param clubDTO Il DTO del Club del Libro da memorizzare
      * @return Il Club del Libro appena creato
      */
 

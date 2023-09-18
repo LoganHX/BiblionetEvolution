@@ -13,6 +13,7 @@ public class FilterConfig {
         FilterRegistrationBean filter = new FilterRegistrationBean();
         filter.setFilter(new JwtFilter());
 
+
         filter.addUrlPatterns("/biblioteca/inserimento-isbn");
         filter.addUrlPatterns("/biblioteca/inserimento-archivio");
         filter.addUrlPatterns("/biblioteca/inserimento-manuale");
@@ -25,4 +26,6 @@ public class FilterConfig {
 
         return filter;
     }
+
+
 }

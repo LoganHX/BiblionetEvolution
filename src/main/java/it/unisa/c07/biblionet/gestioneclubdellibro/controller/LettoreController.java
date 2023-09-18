@@ -29,11 +29,14 @@ public class LettoreController {
     @PostMapping(value = "/visualizza-clubs-lettore")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDTO> visualizzaClubsLettore(
+    public List<Object> visualizzaClubsLettore(
             final @RequestHeader(name = "Authorization") String token
     ) {
         if (!utils.isUtenteLettore(token)) return null;
-        return clubDelLibroService.getInformazioniClubs(lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs());
+        Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
+        if(l == null) return null;
+        return clubDelLibroService.dettagliClub(l.getClubs());
+
         //return lettore.getClubs();
     }
 

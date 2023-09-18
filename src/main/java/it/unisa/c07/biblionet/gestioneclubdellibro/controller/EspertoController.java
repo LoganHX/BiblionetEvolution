@@ -64,9 +64,11 @@ public class EspertoController {
     @PostMapping(value = "/visualizza-clubs-esperto")
     @ResponseBody
     @CrossOrigin
-    public List<ClubDTO> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
+    public List<Object> visualizzaClubsEsperto(final @RequestHeader(name = "Authorization") String token) {
         if (!utils.isUtenteEsperto(token)) return null;
-        return clubDelLibroService.getInformazioniClubs(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)).getClubs());
+        Esperto e = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
+        if(e == null) return null;
+        return clubDelLibroService.dettagliClub(e.getClubs());
     }
 
 //    @PostMapping(value = "/informazioni")
@@ -88,7 +90,7 @@ public class EspertoController {
     @ResponseBody
     @CrossOrigin
     public EspertoDTO getInformazioniEsperto(final @RequestHeader(name = "Authorization") String token) {
-        if (!utils.isUtenteLettore(token)) return null;
+        if (!utils.isUtenteEsperto(token)) return null;
         return new EspertoDTO(espertoService.findEspertoByEmail(utils.getSubjectFromToken(token)));
     }
 

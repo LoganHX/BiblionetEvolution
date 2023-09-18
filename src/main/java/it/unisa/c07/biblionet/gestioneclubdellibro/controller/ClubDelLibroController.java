@@ -58,8 +58,8 @@ public class ClubDelLibroController {
     @GetMapping(value = "")
     @ResponseBody
     @CrossOrigin
-    public List <Object> visualizzaListaClubs(@RequestParam(value = "generi") final Optional < List < String >> generi,
-                                                @RequestParam(value = "citta") final Optional < List < String >> citta) {
+    public List <Object> visualizzaListaClubs(@RequestParam(value = "generi") final Optional <List<String >> generi,
+                                                @RequestParam(value = "citta") final Optional<List<String>> citta) {
 
         // Molto più pulito della concatenazione con gli stream
         Predicate <ClubDelLibro> filtroGenere = x -> true;
@@ -83,22 +83,12 @@ public class ClubDelLibroController {
             }
         }
 
-        List < ClubDelLibro > listaClubs = clubService.visualizzaClubsDelLibro(filtroCitta.and(filtroGenere));
+        List <ClubDelLibro> listaClubs = clubService.visualizzaClubsDelLibro(filtroCitta.and(filtroGenere));
 
-        // Necessito di un oggetto anonimo per evitare problemi con JS
-        return listaClubs.stream().map(club -> new Object() {
-            public final String nome = club.getNome();
-            public final String descrizione = club.getDescrizione();
-            public final String nomeEsperto = club.getEsperto().getNome() + " " + club.getEsperto().getCognome();
-            public final String immagineCopertina = club.getImmagineCopertina();
-            public final Set < String > generi = club.getGeneri();
-            public final int idClub = club.getIdClub();
-            public final int iscritti = club.getLettori().size();
-            public final String email = club.getEsperto().getEmail();
-        }).collect(Collectors.toList());
-
+        return clubService.dettagliClub(listaClubs);
 
     }
+
 
     /**
      * Implementa la funzionalità di creazione di un club del libro.
@@ -195,7 +185,7 @@ public class ClubDelLibroController {
     @ResponseBody
     public BiblionetResponse abbandonaClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
 
-        if (!utils.isUtenteLettore(token)) return new BiblionetResponse("Non sei autorizzato.", false);
+        if (!utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
         boolean esito = lettoreService.abbandonaClub(clubDelLibro, lettore);
@@ -282,12 +272,28 @@ public class ClubDelLibroController {
      * @param id l'ID del Club di cui visualizzare i dati
      * @return La view che visualizza i dati
     */
-     @GetMapping(value = "/{id}")
+     @PostMapping(value = "/info-club")
      @CrossOrigin
      @ResponseBody
-     public ClubDTO visualizzaDatiClub(final @PathVariable int id) {
-        return new ClubDTO(clubService.getClubByID(id));
+     public Map<String, Object> visualizzaDatiClub(final @RequestParam int id) {
+
+         ClubDelLibro club = clubService.getClubByID(id);
+         if(club == null) return null;
+
+
+         Map<String, Object> clubData = new HashMap<>();
+         clubData.put("nome", club.getNome());
+         clubData.put("descrizione", club.getDescrizione());
+         clubData.put("nomeEsperto", club.getEsperto().getNome() + " " + club.getEsperto().getCognome());
+         clubData.put("emailEsperto", club.getEsperto().getEmail());
+         clubData.put("immagineCopertina", club.getImmagineCopertina());
+         clubData.put("generi", club.getGeneri());
+         clubData.put("idClub", club.getIdClub());
+         clubData.put("iscritti", club.getLettori().size());
+         return clubData;
      }
+
+
     @PostMapping(value = "/lettori-club")
     @CrossOrigin
     @ResponseBody
@@ -321,7 +327,7 @@ public class ClubDelLibroController {
     @PostMapping(value = "/eventi-club")
     @CrossOrigin
     @ResponseBody
-    public List<EventoDTO> visualizzaListaEventiClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token) {
+    public List<EventoDTO> visualizzaListaEventiClub(final @RequestParam int id) {
 
         if (clubService.getClubByID(id) == null) {
             return null;
@@ -345,7 +351,6 @@ public class ClubDelLibroController {
         }*/
         return eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi());
     }
-
 
 
 

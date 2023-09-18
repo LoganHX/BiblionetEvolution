@@ -140,7 +140,7 @@ public class BibliotecaController {
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
         libro.setImmagineLibro(Utils.getBase64Image(copertina));
-        System.err.println(libro);
+        //System.err.println(libro);
 
         Libro newLibro = prenotazioneService.creaLibroDaModel(libro, b.getEmail(), numCopie, libro.getGeneri());
         if(newLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
