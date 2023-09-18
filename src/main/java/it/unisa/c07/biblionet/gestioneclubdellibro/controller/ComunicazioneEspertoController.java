@@ -37,7 +37,7 @@ public class ComunicazioneEspertoController {
      * ai generi preferiti del lettore.
      * @return la view contenente la lista
      */
-    @GetMapping(value = "/visualizza-esperti-genere")
+    @PostMapping(value = "/visualizza-esperti-per-preferenze-lettore")
     @ResponseBody
     @CrossOrigin
     //todo da bypassare
