@@ -20,6 +20,8 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 /**
  * Implementa il controller per il sottosistema
@@ -108,18 +110,25 @@ public class ClubDelLibroController {
     @CrossOrigin
     @ResponseBody
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
-                                              @RequestHeader(name = "Authorization") final String token,
                                               BindingResult bindingResult,
-                                              @RequestParam @NonNull MultipartFile copertina) throws IOException {
+                                              @RequestHeader(name = "Authorization") final String token,
+                                              @RequestParam @NonNull MultipartFile immagineCopertina,
+                                              BindingResult grandezzaImmagine) throws IOException {
+
 
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
+
+        if (grandezzaImmagine.hasErrors() || !utils.immagineOk(immagineCopertina)) {
+            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        }
+
         if (!utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        clubDTO.setCopertina(Utils.getBase64Image(copertina));
+        clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina));
 
         Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
 
@@ -128,7 +137,7 @@ public class ClubDelLibroController {
         listaClub.add(clubDelLibro);
         espertoService.aggiornaEsperto(esperto);
         if(clubDelLibro == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
-        return new BiblionetResponse("Club del Libro creato", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
 
@@ -142,7 +151,17 @@ public class ClubDelLibroController {
     @PostMapping(value = "/modifica")
     @ResponseBody
     @CrossOrigin
-    public BiblionetResponse modificaDatiClub(final @RequestParam int id, @RequestHeader(name = "Authorization") final String token, final @Valid @ModelAttribute ClubDTO clubDTO, BindingResult bindingResult) {
+    public BiblionetResponse modificaDatiClub(final @RequestParam int id,
+                                              @RequestHeader(name = "Authorization") final String token,
+                                              final @Valid @ModelAttribute ClubDTO clubDTO,
+                                              BindingResult bindingResult,
+                                              @RequestParam MultipartFile immagineCopertina,
+                                              BindingResult grandezzaImmagine) throws IOException {
+
+        if (grandezzaImmagine.hasErrors() || !utils.immagineOk(immagineCopertina)) {
+            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        }
+
 
         ClubDelLibro clubPers = this.clubService.getClubByID(id);
         if(clubPers == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -154,15 +173,13 @@ public class ClubDelLibroController {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        //todo
 
-        //String copertina = utils.getBase64Image(clubDTO.getCopertina());
-        //if (copertina != null) clubPers.setImmagineCopertina(copertina);
+        if (immagineCopertina != null && !immagineCopertina.isEmpty()) clubPers.setImmagineCopertina(Utils.getBase64Image(immagineCopertina));
         clubPers.setGeneri(new HashSet<>(clubDTO.getGeneri()));
         clubPers.setNome(clubDTO.getNome());
         clubPers.setDescrizione(clubDTO.getDescrizione());
         this.clubService.salvaClub(clubPers);
-        return new BiblionetResponse("Modifiche apportate", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
     /**
@@ -328,6 +345,7 @@ public class ClubDelLibroController {
         }*/
         return eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi());
     }
+
 
 
 

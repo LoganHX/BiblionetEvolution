@@ -56,8 +56,8 @@ public class AreaUtenteController {
             final @Valid @ModelAttribute("Biblioteca") BibliotecaDTO biblioteca,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
-            final @RequestParam("nuova_password") String nuova,
-            final @RequestParam("conferma_password") String conferma) {
+            final @RequestParam(value = "nuova_password", required = false) String nuova,
+            final @RequestParam(value = "conferma_password", required = false) String conferma) {
 
         if(!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
@@ -65,9 +65,11 @@ public class AreaUtenteController {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
 
-        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, nuova, conferma, biblioteca, token);
+        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, biblioteca, token);
         if (s != null) return s;
-        biblioteca.setPassword(conferma);
+        String password = qualePassword(vecchia, nuova, conferma);
+        if(password == null) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        biblioteca.setPassword(password);
 
 
         Biblioteca b = bibliotecaService.aggiornaBibliotecaDaModel(biblioteca);
@@ -92,8 +94,8 @@ public class AreaUtenteController {
             final @Valid @ModelAttribute("Esperto") EspertoDTO esperto,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
-            final @RequestParam("nuova_password") String nuova,
-            final @RequestParam("conferma_password") String conferma) {
+            final @RequestParam(value = "nuova_password", required = false) String nuova,
+            final @RequestParam(value = "conferma_password", required = false) String conferma) {
 
 
         if (!utils.isUtenteEsperto(token))
@@ -107,9 +109,11 @@ public class AreaUtenteController {
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         }
 
-        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, nuova, conferma, esperto, token);
+        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, esperto, token);
         if (s != null) return s;
-        esperto.setPassword(conferma);
+        String password = qualePassword(vecchia, nuova, conferma);
+        if(password == null) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        esperto.setPassword(password);
 
         Esperto e = espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(esperto.getEmailBiblioteca()));
         if(e == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
@@ -125,8 +129,8 @@ public class AreaUtenteController {
             final @Valid @ModelAttribute("Lettore") LettoreDTO lettore,
             BindingResult bindingResult,
             final @RequestParam("vecchia_password") String vecchia,
-            final @RequestParam("nuova_password") String nuova,
-            final @RequestParam("conferma_password") String conferma) {
+            final @RequestParam(value = "nuova_password", required = false) String nuova,
+            final @RequestParam(value = "conferma_password", required = false) String conferma) {
 
 
         if (!utils.isUtenteLettore(token))
@@ -136,9 +140,11 @@ public class AreaUtenteController {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
 
-        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, nuova, conferma, lettore, token);
+        BiblionetResponse s = controlliPreliminari(bindingResult, vecchia, lettore, token);
         if (s != null) return s;
-        lettore.setPassword(conferma);
+        String password = qualePassword(vecchia, nuova, conferma);
+        if(password == null) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        lettore.setPassword(password);
 
         Lettore l = lettoreService.aggiornaLettoreDaModel(lettore);
         if(l == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
@@ -146,10 +152,7 @@ public class AreaUtenteController {
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
 
-    private BiblionetResponse controlliPreliminari(BindingResult bindingResult, String vecchia, String nuova, String conferma, UtenteRegistratoDTO utenteRegistrato, String token) {
-
-        String password = BiblionetConstraints.confrontoPassword(nuova, conferma);
-        if(password.isEmpty()) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+    private BiblionetResponse controlliPreliminari(BindingResult bindingResult, String vecchia, UtenteRegistratoDTO utenteRegistrato, String token) {
 
         if (!utils.getSubjectFromToken(token).equals(utenteRegistrato.getEmail()))
             return new BiblionetResponse(BiblionetResponse.ERRORE, false);
@@ -164,6 +167,13 @@ public class AreaUtenteController {
 
         return null;
 
+    }
+
+    private String qualePassword(String vecchia, String nuova, String conferma){
+        String password = BiblionetConstraints.confrontoPassword(nuova, conferma);
+        if(password == null) return vecchia;
+        if(password.isEmpty()) return null;
+        else return password;
     }
 
 }

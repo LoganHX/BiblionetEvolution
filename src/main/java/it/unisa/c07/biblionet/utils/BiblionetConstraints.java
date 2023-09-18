@@ -2,7 +2,10 @@ package it.unisa.c07.biblionet.utils;
 
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -87,6 +90,8 @@ public class BiblionetConstraints {
         return Arrays.equals(passwordUtente, trasformaPassword(password));
     }
     public static String confrontoPassword(String nuova, String conferma){
+        if(nuova == null || conferma == null) return null;
+        if (nuova.isEmpty() || conferma.isEmpty()) return null;
         if (!nuova.isEmpty() && !conferma.isEmpty()) {
             if (nuova.length() <= 7)
                 return "";
@@ -106,5 +111,8 @@ public class BiblionetConstraints {
         }
         return new byte[0];
     }
+
+
+
 
 }

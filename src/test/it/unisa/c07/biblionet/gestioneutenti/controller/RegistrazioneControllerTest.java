@@ -1067,7 +1067,7 @@ public final class RegistrazioneControllerTest {
                         .param("username", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                         .param("nome", lettoreDTO.getNome())
                         .param("cognome", lettoreDTO.getCognome())
-                        .param("password", "LettorePassword")
+                        .param("password", confermaPassword)
                         .param("conferma_password", confermaPassword)
                         .param("provincia", lettoreDTO.getProvincia())
                         .param("citta", lettoreDTO.getCitta())

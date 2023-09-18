@@ -41,9 +41,9 @@ public final class RegistrazioneController {
      @PostMapping(value = "/esperto")
      @ResponseBody
      @CrossOrigin
-     public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute EspertoDTO esperto,
-     BindingResult bindingResult,
-     final @RequestParam("conferma_password") String password) {
+     public BiblionetResponse registrazioneEsperto( BindingResult bindingResult,
+                                                    final @Valid @ModelAttribute EspertoDTO esperto,
+                                                    final @RequestParam("conferma_password") String password) {
 
          BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) esperto);
          if(response != null) return response;

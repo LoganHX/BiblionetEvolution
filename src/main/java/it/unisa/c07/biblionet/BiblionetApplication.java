@@ -2418,8 +2418,8 @@ public class BiblionetApplication {
         out.info("*************************** INIZIALIZZAZIONE DI BIBLIONET TERMINATA ***************************");
 
     }
-
 */
+
     public static String getCopertinaClubFromUrl(String filePath) {
         try{
             byte[] fileContent = FileUtils.readFileToByteArray(new File(filePath));

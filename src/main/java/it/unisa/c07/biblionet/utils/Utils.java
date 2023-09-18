@@ -6,6 +6,8 @@ import io.jsonwebtoken.impl.DefaultJwtParser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -50,6 +52,18 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public boolean immagineOk(MultipartFile imageFile) throws IOException {
+        BufferedImage image = ImageIO.read(imageFile.getInputStream());
+
+        int larghezzaImmagine = image.getWidth();
+        int altezzaImmagine = image.getHeight();
+
+        if (larghezzaImmagine > 1920 || altezzaImmagine > 1080) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -131,6 +131,76 @@ public class AreaUtenteControllerTest {
     @ParameterizedTest
     @DisplayName("Modifica Dati Lettore")
     @MethodSource("provideModificaLettore")
+    public void modificaLettore_SenzaCambioPassword(
+            final LettoreDTO utenteDTO,
+            final String vecchiaPassword,
+            final String nuovaPassword,
+            final String confermaPassword) throws Exception {
+
+        //todo dovrei testare controlli preliminari sia qua che in registrazione?
+        String token="";
+        Lettore lettore = new Lettore();
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
+        when(lettoreService.findLettoreByEmail(utenteDTO.getEmail())).thenReturn(lettore);
+        when(lettoreService.aggiornaLettoreDaModel(Mockito.any())).thenReturn(lettore);
+        when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(lettore);
+
+        this.mockMvc.perform(post("/area-utente/modifica-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("vecchia_password", vecchiaPassword)
+                        .param("nuova_password", "")
+                        .param("conferma_password", "")
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Modifica Dati Lettore")
+    @MethodSource("provideModificaLettore")
+    public void modificaLettore_SenzaModificaPassword(
+            final LettoreDTO utenteDTO,
+            final String vecchiaPassword,
+            final String nuovaPassword,
+            final String confermaPassword) throws Exception {
+
+        //todo dovrei testare controlli preliminari sia qua che in registrazione?
+        String token="";
+        Lettore lettore = new Lettore();
+
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(utenteDTO.getEmail());
+        when(lettoreService.findLettoreByEmail(utenteDTO.getEmail())).thenReturn(lettore);
+        when(lettoreService.aggiornaLettoreDaModel(Mockito.any())).thenReturn(lettore);
+        when(autenticazioneService.login(Mockito.anyString(), Mockito.anyString())).thenReturn(lettore);
+
+        this.mockMvc.perform(post("/area-utente/modifica-lettore")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("vecchia_password", vecchiaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+
+    @ParameterizedTest
+    @DisplayName("Modifica Dati Lettore")
+    @MethodSource("provideModificaLettore")
     public void modificaLettore_FormatoIndirizzoNonValido(
             final LettoreDTO utenteDTO,
             final String vecchiaPassword,

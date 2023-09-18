@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
+
 /**
  * Classe che rappresenta il form per la creazione di un club del libro.
  */
@@ -24,12 +27,14 @@ public class ClubDTO {
      * Nome del club.
      */
     @NonNull
+    @Size(max = 30)
     private String nome;
 
     /**
      * Descrizione del club.
      */
     @NonNull
+    @Size(max = 255)
     private String descrizione;
 
     /**
@@ -41,7 +46,6 @@ public class ClubDTO {
     /**
      * Copertina del club.
      */
-
     private String copertina;
 
     public ClubDTO(ClubDelLibro clubDelLibro){
