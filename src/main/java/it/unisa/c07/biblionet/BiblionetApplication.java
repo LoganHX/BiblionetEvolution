@@ -2436,7 +2436,7 @@ public class BiblionetApplication {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);
 
-       // init(configurableApplicationContext);
+       //init(configurableApplicationContext);
     }
 
 }

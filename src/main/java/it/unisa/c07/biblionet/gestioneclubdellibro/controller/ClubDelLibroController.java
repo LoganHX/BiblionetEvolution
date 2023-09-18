@@ -61,7 +61,6 @@ public class ClubDelLibroController {
     public List <Object> visualizzaListaClubs(@RequestParam(value = "generi") final Optional <List<String >> generi,
                                                 @RequestParam(value = "citta") final Optional<List<String>> citta) {
 
-        // Molto più pulito della concatenazione con gli stream
         Predicate <ClubDelLibro> filtroGenere = x -> true;
 
         if (generi.isPresent()) {
