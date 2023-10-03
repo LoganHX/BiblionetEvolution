@@ -4,6 +4,8 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Set;
@@ -12,7 +14,6 @@ import java.util.Set;
 @Data
 @SuperBuilder
 @RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class EspertoDTO extends UtenteRegistratoDTO {
     /**
      * Rappresenta l'ID di un utente registrato.
@@ -21,15 +22,18 @@ public class EspertoDTO extends UtenteRegistratoDTO {
 
     private Set<String> generi;
 
+    @NotNull
     @NonNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String nome;
+    @NotNull
     @NonNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String cognome;
-    @NonNull
+    @NotNull
     @Size(max = 30, message = "Il campo 'nome' può avere al massimo 50 caratteri")
     private String username;
+    @NotNull
     @NonNull
     private String emailBiblioteca;
 

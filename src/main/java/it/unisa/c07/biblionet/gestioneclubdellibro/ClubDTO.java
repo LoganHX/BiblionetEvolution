@@ -7,18 +7,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.NonNull;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  * Classe che rappresenta il form per la creazione di un club del libro.
  */
 @Data
-@NoArgsConstructor
 @RequiredArgsConstructor
+@NoArgsConstructor
 public class ClubDTO {
 
     private int id;
@@ -26,20 +27,23 @@ public class ClubDTO {
     /**
      * Nome del club.
      */
+    @NotNull
     @NonNull
-    @Size(max = 30)
+    @Size(min=3, max = 30)
     private String nome;
 
     /**
      * Descrizione del club.
      */
+    @NotNull
     @NonNull
-    @Size(max = 255)
+    @Size(min=3, max = 255)
     private String descrizione;
 
     /**
      * Lista di generi del club.
      */
+    @NotNull
     @NonNull
     private Set<String> generi;
 

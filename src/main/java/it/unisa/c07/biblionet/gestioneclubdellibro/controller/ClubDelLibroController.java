@@ -101,7 +101,7 @@ public class ClubDelLibroController {
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
                                               BindingResult bindingResult,
                                               @RequestHeader(name = "Authorization") final String token,
-                                              @RequestParam @NonNull MultipartFile immagineCopertina,
+                                              @RequestParam Optional<MultipartFile> immagineCopertina,
                                               BindingResult grandezzaImmagine) throws IOException {
 
 
@@ -109,15 +109,21 @@ public class ClubDelLibroController {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
 
-        if (grandezzaImmagine.hasErrors() || !utils.immagineOk(immagineCopertina)) {
-            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        if(!immagineCopertina.isEmpty()){
+
+            if (grandezzaImmagine.hasErrors() || !utils.immagineOk(immagineCopertina.get())) {
+                return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+            }
+
+            clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina.get()));
+
         }
+
 
         if (!utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-        clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina));
 
         Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
 
@@ -328,27 +334,13 @@ public class ClubDelLibroController {
     @ResponseBody
     public List<EventoDTO> visualizzaListaEventiClub(final @RequestParam int id) {
 
-        if (clubService.getClubByID(id) == null) {
+        ClubDelLibro clubDelLibro = clubService.getClubByID(id);
+
+        if (clubDelLibro == null) {
             return null;
         }
-        //if (!utils.isUtenteLettore(token)) return null;
 
-        //Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
-        //if (l == null) return null;
-
-        /* List <Evento> mieiEventi = l.getEventi();
-        List <Evento> mieiEventiClub = new ArrayList < > ();
-        for (Evento e: mieiEventi) {
-            if (e.getClub().getIdClub() == id) {
-                mieiEventiClub.add(e);
-            }
-        }
-        for (Evento e: mieiEventiClub) {
-            if (tutti.contains(e)) {
-                tutti.remove(e);
-            }
-        }*/
-        return eventiService.getInformazioniEventi(clubService.getClubByID(id).getEventi());
+        return eventiService.getInformazioniEventi(clubDelLibro.getEventi());
     }
 
 

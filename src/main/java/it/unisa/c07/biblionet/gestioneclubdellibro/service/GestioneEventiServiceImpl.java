@@ -175,8 +175,9 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
 
     @Override
     public List<EventoDTO> getInformazioniEventi(List<Evento> eventiList) {
-        List<EventoDTO> eventi = new ArrayList < > ();
-        for (   Evento e: eventiList){
+        List<EventoDTO> eventi = new ArrayList<>();
+        for (Evento e: eventiList){
+            System.err.println(e.getNomeEvento());
             eventi.add(new EventoDTO(e));
         }
         return eventi;

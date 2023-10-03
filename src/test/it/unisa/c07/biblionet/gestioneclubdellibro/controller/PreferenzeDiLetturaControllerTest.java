@@ -16,6 +16,7 @@ package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
         import org.springframework.test.web.servlet.MockMvc;
         import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+        import java.util.Arrays;
         import java.util.HashSet;
         import java.util.Set;
 
@@ -79,7 +80,7 @@ public class PreferenzeDiLetturaControllerTest {
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(genereService.getGeneriByName(gen)).thenReturn(generi);
+        when(genereService.getGeneriByName(Arrays.stream(gen).toList())).thenReturn(generi);
         when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
         doNothing().when(preferenzeDiLetturaService).addGeneriEsperto(Mockito.any(),Mockito.any());
 
@@ -106,7 +107,7 @@ public class PreferenzeDiLetturaControllerTest {
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(genereService.getGeneriByName(gen)).thenReturn(generi);
+        when(genereService.getGeneriByName(Arrays.stream(gen).toList())).thenReturn(generi);
         when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
         doNothing().when(preferenzeDiLetturaService).addGeneriEsperto(Mockito.any(),Mockito.any());
 
@@ -127,7 +128,7 @@ public class PreferenzeDiLetturaControllerTest {
         String token="";
         String[] gen = {""};
 
-        when(genereService.getGeneriByName(gen)).thenReturn(new HashSet<>());
+        when(genereService.getGeneriByName(Arrays.stream(gen).toList())).thenReturn(new HashSet<>());
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 

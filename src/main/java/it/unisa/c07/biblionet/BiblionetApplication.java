@@ -42,8 +42,8 @@ public class BiblionetApplication {
 
         return libroDAO.save(libro);
     }
-
 /*
+
     public static void init(ApplicationContext configurableApplicationContext) {
 
 //----------------------------Definizione oggetti DAO per ogni entity---------------------------------------------------
