@@ -3,6 +3,7 @@ package it.unisa.c07.biblionet.gestioneclubdellibro;
 import java.util.Set;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
+import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -29,7 +30,7 @@ public class ClubDTO {
      */
     @NotNull
     @NonNull
-    @Size(min=3, max = 30)
+    @Size(min= BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME)
     private String nome;
 
     /**
@@ -37,7 +38,7 @@ public class ClubDTO {
      */
     @NotNull
     @NonNull
-    @Size(min=3, max = 255)
+    @Size(min=BiblionetConstraints.LUNGHEZZA_MINIMA_DESCRIZIONE, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_DESCRIZIONE)
     private String descrizione;
 
     /**

@@ -20,7 +20,7 @@ public class BiblionetConstraints {
     /**
      * Lunghezza minima del nome dell'evento.
      */
-    public static final int LUNGHEZZA_MINIMA_NOME = 1;
+    public static final int LUNGHEZZA_MINIMA_NOME = 3;
     /**
      * Lunghezza massima del nome di un evento.
      */
@@ -33,7 +33,7 @@ public class BiblionetConstraints {
     /**
      * Lunghezza minima della descrizione di un evento.
      */
-    public static final int LUNGHEZZA_MINIMA_DESCRIZIONE = 0;
+    public static final int LUNGHEZZA_MINIMA_DESCRIZIONE = 3;
     /**
      * Lunghezza 10.
      */

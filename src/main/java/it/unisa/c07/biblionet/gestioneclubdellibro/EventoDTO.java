@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -29,6 +30,7 @@ public class EventoDTO {
      * Il nome dell'evento.
      */
     @NonNull
+    @NotNull
     @Size(min = BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME)
     private String nome;
 
@@ -36,6 +38,7 @@ public class EventoDTO {
      * Una descrizione dell'evento.
      */
     @NonNull
+    @NotNull
     @Size(min = BiblionetConstraints.LUNGHEZZA_MINIMA_DESCRIZIONE, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_DESCRIZIONE)
     private String descrizione;
 

@@ -31,6 +31,7 @@ public class EspertoDTO extends UtenteRegistratoDTO {
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String cognome;
     @NotNull
+    @NonNull
     @Size(max = 30, message = "Il campo 'nome' può avere al massimo 50 caratteri")
     private String username;
     @NotNull

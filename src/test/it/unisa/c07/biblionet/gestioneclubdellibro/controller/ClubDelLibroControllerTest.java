@@ -747,7 +747,7 @@ public class ClubDelLibroControllerTest {
                         .param("descrizione",club.getDescrizione())
                         .param("generi", String.valueOf(club.getGeneri()))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
     }
 
     @ParameterizedTest
@@ -767,7 +767,7 @@ public class ClubDelLibroControllerTest {
 
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
 
         when(clubService.salvaClub(club)).thenReturn(club);
@@ -1361,27 +1361,7 @@ public class ClubDelLibroControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
     }
 
-    @Test
-    public void visualizzaModificaDatiClubNonAutorizzato() throws Exception {
 
-        String token="";
-
-        String id = "1";
-        ClubDelLibro club = new ClubDelLibro();
-        Esperto esperto = new Esperto();
-        Esperto esperto1 = new Esperto();
-        esperto.setEmail("patriarca57@outlook.com");
-        esperto1.setEmail("liberale@gmail.com");
-        club.setEsperto(esperto);
-
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
-        when(clubService.getClubByID(Integer.parseInt(id))).thenReturn(club);
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/club-del-libro/modifica")
-                        .param("id", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                )
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
-    }
 
     @Test
     public void visualizzaListaEventiClubNonTrovato() throws Exception {

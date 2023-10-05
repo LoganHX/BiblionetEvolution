@@ -1,6 +1,9 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
 
+import it.unisa.c07.biblionet.common.Libro;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
+import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
@@ -27,8 +30,8 @@ public class EventoController {
     private final GestioneEventiService eventiService;
     private final ClubDelLibroService clubService;
     private final LettoreService lettoreService;
+    private final PrenotazioneLibriService prenotazioneLibriService;
     private final Utils utils;
-
 
     /**
      * Implementa la funzionalità che permette di disiscriversi
@@ -114,6 +117,7 @@ public class EventoController {
     @ResponseBody
     public BiblionetResponse modificaEvento(final @RequestParam int idClub,
                                             final @RequestParam int idEvento,
+                                            final @RequestParam (required = false) int idLibro,
                                             final @Valid @ModelAttribute EventoDTO eventoDTO, BindingResult bindingResult,
                                             @RequestHeader(name = "Authorization") final String token ,final @RequestParam String timeString,
                                             final @RequestParam String dateString) {
@@ -123,6 +127,7 @@ public class EventoController {
         ClubDelLibro clubDelLibro = clubService.getClubByID(idClub);
         BiblionetResponse br = checkPermessi(clubDelLibro, token);
         if(br != null) return br;
+
 
 
         Optional<Evento> e = eventiService.getEventoById(idEvento);
@@ -136,8 +141,8 @@ public class EventoController {
                 eventoDTO,
                 bindingResult,
                 clubDelLibro,
-                Optional.of(idEvento)
-
+                Optional.of(idEvento),
+                Optional.ofNullable(idLibro)
 
         );
     }
@@ -155,12 +160,14 @@ public class EventoController {
     @CrossOrigin
     @ResponseBody
     public BiblionetResponse creaEvento(final @RequestParam int idClub,
+                                        final @RequestParam (required = false) Integer idLibro,
                                         final @Valid @ModelAttribute EventoDTO eventoDTO,
                                         BindingResult bindingResult,
                                         final @RequestParam @NonNull String timeString,
                                         final @RequestParam @NonNull String dateString, @RequestHeader(name = "Authorization") final String token) {
         eventoDTO.setData(LocalDate.parse(dateString));
         eventoDTO.setOra(LocalTime.parse(timeString));
+
 
         ClubDelLibro clubDelLibro = clubService.getClubByID(idClub);
         BiblionetResponse br = checkPermessi(clubDelLibro, token);
@@ -170,7 +177,8 @@ public class EventoController {
                         eventoDTO,
                         bindingResult,
                         clubDelLibro,
-                        Optional.empty()
+                        Optional.empty(),
+                Optional.ofNullable(idLibro)
         );
     }
 
@@ -186,14 +194,14 @@ public class EventoController {
      */
     private BiblionetResponse modificaCreaEvento(final EventoDTO eventoDTO, BindingResult bindingResult,
                                                  final ClubDelLibro club,
-                                                 final Optional<Integer> idEvento ) {
+                                                 final Optional<Integer> idEvento, final Optional<Integer> idLibro ) {
 
         if (bindingResult.hasErrors())
-            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
         var evento = new Evento();
 
-        idEvento.ifPresent(evento::setIdEvento); //if evento is present
+        idEvento.ifPresent(evento::setIdEvento);//if evento is present
 
         evento.setClub(club);
         evento.setNomeEvento(eventoDTO.getNome());
@@ -206,8 +214,8 @@ public class EventoController {
 
         evento.setDataOra(dataOra);
 
-        if (eventoDTO.getLibro() != null) {
-            var libro = this.eventiService.getLibroById(eventoDTO.getLibro());
+        if (idLibro.isPresent()) {
+            var libro = this.eventiService.getLibroById(idLibro.get());
             if (libro.isEmpty()) {
                 return new BiblionetResponse("Libro inserito non valido", false);
             }
