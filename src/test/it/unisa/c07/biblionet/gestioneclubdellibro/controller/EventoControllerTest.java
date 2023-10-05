@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
 
+import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
@@ -302,19 +303,32 @@ public class EventoControllerTest {
      * @throws Exception Eccezione per MovkMvc
      */
     @Test
-    public void creaEventoClubNonEsistente() throws Exception {
-        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(null);
-        //todo il token
+    public void creaEventoClubOk() throws Exception {
+
+    String token = "";
+
+        ClubDelLibro clubDelLibro = Mockito.mock(ClubDelLibro.class);
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(clubDelLibro.getEsperto()).thenReturn(esperto);
+        when(esperto.getEmail()).thenReturn("a");
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+
         this.mockMvc
                 .perform(MockMvcRequestBuilders
-                        .post("/gestione-eventi/eventi/crea")
+                        .post("/gestione-eventi/crea")
                         .param("nome", "Prova")
                         .param("descrizione", "Prova")
-                        .param("data", "2024-12-12")
-                        .param("ora", "11:24")
-                        .param("id", "1")
-                        .param("libro", "1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
+                        .param("dateString", "2024-12-12")
+                        .param("timeString", "11:24")
+                        .param("idClub", "1")
+                        .param("libro", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
 
     /**

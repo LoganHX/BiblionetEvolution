@@ -54,6 +54,9 @@ public class Utils {
         return null;
     }
 
+    public boolean match(String a, String b){
+        return a.equals(b);
+    }
     public boolean immagineOk(MultipartFile imageFile) throws IOException {
         BufferedImage image = ImageIO.read(imageFile.getInputStream());
 

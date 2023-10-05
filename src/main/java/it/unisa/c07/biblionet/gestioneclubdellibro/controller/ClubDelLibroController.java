@@ -101,7 +101,7 @@ public class ClubDelLibroController {
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
                                               BindingResult bindingResult,
                                               @RequestHeader(name = "Authorization") final String token,
-                                              @RequestParam Optional<MultipartFile> immagineCopertina,
+                                              @RequestParam(required = false) MultipartFile immagineCopertina,
                                               BindingResult grandezzaImmagine) throws IOException {
 
 
@@ -109,14 +109,12 @@ public class ClubDelLibroController {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
 
-        if(!immagineCopertina.isEmpty()){
 
-            if (grandezzaImmagine.hasErrors() || !utils.immagineOk(immagineCopertina.get())) {
+        if (immagineCopertina != null) {
+            if (!utils.immagineOk(immagineCopertina)) {
                 return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
             }
-
-            clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina.get()));
-
+            clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina));
         }
 
 
@@ -150,11 +148,13 @@ public class ClubDelLibroController {
                                               @RequestHeader(name = "Authorization") final String token,
                                               final @Valid @ModelAttribute ClubDTO clubDTO,
                                               BindingResult bindingResult,
-                                              @RequestParam MultipartFile immagineCopertina,
-                                              BindingResult grandezzaImmagine) throws IOException {
+                                              @RequestParam(required = false) MultipartFile immagineCopertina) throws IOException {
 
-        if (grandezzaImmagine.hasErrors() || !utils.immagineOk(immagineCopertina)) {
-            return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        if (immagineCopertina != null) {
+            if (!utils.immagineOk(immagineCopertina)) {
+                return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+            }
+            clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina));
         }
 
 
@@ -164,12 +164,10 @@ public class ClubDelLibroController {
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
-        if (!utils.isUtenteEsperto(token) || !utils.getSubjectFromToken(token).equals(clubPers.getEsperto().getEmail())) {
+        if (!utils.isUtenteEsperto(token) || !utils.match(utils.getSubjectFromToken(token), clubPers.getEsperto().getEmail())) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
 
-
-        if (immagineCopertina != null && !immagineCopertina.isEmpty()) clubPers.setImmagineCopertina(Utils.getBase64Image(immagineCopertina));
         clubPers.setGeneri(new HashSet<>(clubDTO.getGeneri()));
         clubPers.setNome(clubDTO.getNome());
         clubPers.setDescrizione(clubDTO.getDescrizione());
@@ -342,9 +340,6 @@ public class ClubDelLibroController {
 
         return eventiService.getInformazioniEventi(clubDelLibro.getEventi());
     }
-
-
-
 
 
 }

@@ -29,7 +29,7 @@ public class BiblionetApplication {
     private static final BookApiAdapter bookApiAdapter = new GoogleBookApiAdapterImpl();
 
     private static LibroDAO libroDAO = null;
-
+/*
     public static Libro getLibroFromAPI(String isbn, Genere... generi) {
         Set<String> gen = new HashSet<>();
         gen.add("Giallo");
@@ -42,7 +42,7 @@ public class BiblionetApplication {
 
         return libroDAO.save(libro);
     }
-/*
+
 
     public static void init(ApplicationContext configurableApplicationContext) {
 
@@ -2418,7 +2418,7 @@ public class BiblionetApplication {
         out.info("*************************** INIZIALIZZAZIONE DI BIBLIONET TERMINATA ***************************");
 
     }
-*/
+
 
     public static String getCopertinaClubFromUrl(String filePath) {
         try{
@@ -2431,7 +2431,7 @@ public class BiblionetApplication {
         }
 
     }
-
+*/
     public static void main(String[] args) throws NoSuchAlgorithmException {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);

@@ -6,12 +6,11 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
-import lombok.NonNull;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +21,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +28,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -163,6 +160,81 @@ public class ClubDelLibroControllerTest {
      */
     @ParameterizedTest
     @MethodSource("provideClubDTO")
+    public void creaClubDelLibro_TokenNonDellaGiustaTipologia(final ClubDTO clubDTO) throws Exception {
+        String[] list = {"A", "B"};
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        List<ClubDelLibro> listaClub = new ArrayList<>();
+        esperto.setClubs(listaClub);
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        ClubDelLibro cdl = new ClubDelLibro();
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
+        when(clubService.creaClubDelLibro(Mockito.any(), Mockito.any())).thenReturn(cdl);
+        when(espertoService.aggiornaEsperto(esperto)).thenReturn(esperto);
+        // Assert del test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/crea")
+                        .file(copertina)
+                        .param("nome", clubDTO.getNome())
+                        .param("descrizione", clubDTO.getDescrizione())
+                        .param("generi", list)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideClubDTO")
+    public void creaClubDelLibro_TokenNonValido(final ClubDTO clubDTO) throws Exception {
+        String[] list = {"A", "B"};
+        String token="aaa";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        List<ClubDelLibro> listaClub = new ArrayList<>();
+        esperto.setClubs(listaClub);
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        ClubDelLibro cdl = new ClubDelLibro();
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
+        when(clubService.creaClubDelLibro(Mockito.any(), Mockito.any())).thenReturn(cdl);
+        when(espertoService.aggiornaEsperto(esperto)).thenReturn(esperto);
+
+        // Assert del test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/crea")
+                        .file(copertina)
+                        .param("nome", clubDTO.getNome())
+                        .param("descrizione", clubDTO.getDescrizione())
+                        .param("generi", list)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().is(500));
+    }
+    @ParameterizedTest
+    @MethodSource("provideClubDTO")
     public void creaClubDelLibroOK(final ClubDTO clubDTO) throws Exception {
         String[] list = {"A", "B"};
         String token="";
@@ -200,6 +272,44 @@ public class ClubDelLibroControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideClubDTO")
+    public void creaClubDelLibro_TokenNonFornito(final ClubDTO clubDTO) throws Exception {
+        String[] list = {"A", "B"};
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        List<ClubDelLibro> listaClub = new ArrayList<>();
+        esperto.setClubs(listaClub);
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        ClubDelLibro cdl = new ClubDelLibro();
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
+        when(clubService.creaClubDelLibro(Mockito.any(), Mockito.any())).thenReturn(cdl);
+        when(espertoService.aggiornaEsperto(esperto)).thenReturn(esperto);
+        // Assert del test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/crea")
+                        .file(copertina)
+                        .param("nome", clubDTO.getNome())
+                        .param("descrizione", clubDTO.getDescrizione())
+                        .param("generi", list))
+                        //.header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().is(400));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideClubDTO")
     public void creaClubDelLibro_CopertinaNonFornita(final ClubDTO clubDTO) throws Exception {
         String[] list = {"A", "B"};
         String token="";
@@ -213,7 +323,6 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
-        when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
@@ -467,6 +576,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
@@ -503,6 +613,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
@@ -536,12 +647,12 @@ public class ClubDelLibroControllerTest {
      */
     @ParameterizedTest
     @MethodSource("provideClubDelLibro")
-    public void modificaDatiClubOK(final ClubDelLibro club)
+    public void modificaDatiClub_TokenNonAssociatoAEspertoClub(final ClubDelLibro club)
             throws Exception {
 
         String token="";
 
-        byte[] imageData = new byte[0]; // Creiamo un'immagine di 2 MB
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
 
         MockMultipartFile copertina =
                 new MockMultipartFile("immagineCopertina",
@@ -549,6 +660,42 @@ public class ClubDelLibroControllerTest {
                         "image/png",
                         imageData);
 
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClubOK(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
@@ -567,24 +714,29 @@ public class ClubDelLibroControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
 
+
     @ParameterizedTest
     @MethodSource("provideClubDelLibro")
-    public void modificaDatiClub_DescrizioneTroppoLunga(final ClubDelLibro club)
+    public void modificaDatiClub_TokenNonValido(final ClubDelLibro club)
             throws Exception {
 
         String token="";
 
-        when(clubService.getClubByID(1)).thenReturn(club);
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
-        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
-
-        when(clubService.salvaClub(club)).thenReturn(club);
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
 
         MockMultipartFile copertina =
                 new MockMultipartFile("immagineCopertina",
                         "filename.png",
                         "image/png",
-                        new byte[2 * 1024 * 1024]);
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+
+        when(clubService.salvaClub(club)).thenReturn(club);
 
         // Test
         this.mockMvc.perform(MockMvcRequestBuilders
@@ -592,11 +744,315 @@ public class ClubDelLibroControllerTest {
                         .file(copertina)
                         .param("id", "1")
                         .param("nome",club.getNome())
-                        .param("descrizione", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_TokenNonFornito(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri())))
+                .andExpect(status().is(400));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_TokenNonDellaGiustaTipologia(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
+    }
+
+
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_CopertinaTroppoPesante(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[16 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.RICHIESTA_NON_VALIDA));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_CopertinaNonFornita(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_FormatoCopertinaNonValido(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(false);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.RICHIESTA_NON_VALIDA));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_DescrizioneClubNonFornita(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
                         .param("generi", String.valueOf(club.getGeneri()))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
     }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_NomeClubNonFornito(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_DescrizioneTroppoLunga(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_DescrizioneTroppoCorta(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        byte[] imageData = new byte[0]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome",club.getNome())
+                        .param("descrizione", "aa")
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+
+
+
 
     @ParameterizedTest
     @MethodSource("provideClubDelLibro")
@@ -605,6 +1061,7 @@ public class ClubDelLibroControllerTest {
 
         String token="";
 
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
@@ -622,6 +1079,36 @@ public class ClubDelLibroControllerTest {
                         .file(copertina)
                         .param("id", "1")
                         .param("nome", "Il conta caratteri è Il conta i")
+                        .param("descrizione",club.getDescrizione())
+                        .param("generi", String.valueOf(club.getGeneri()))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void modificaDatiClub_NomeTroppoCorto(final ClubDelLibro club)
+            throws Exception {
+
+        String token="";
+
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(clubService.getClubByID(1)).thenReturn(club);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn(club.getEsperto().getEmail());
+        when(clubService.salvaClub(club)).thenReturn(club);
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("immagineCopertina",
+                        "filename.png",
+                        "image/png",
+                        new byte[2 * 1024 * 1024]);
+        // Test
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/club-del-libro/modifica")
+                        .file(copertina)
+                        .param("id", "1")
+                        .param("nome", "Il")
                         .param("descrizione",club.getDescrizione())
                         .param("generi", String.valueOf(club.getGeneri()))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))

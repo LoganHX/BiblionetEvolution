@@ -22,6 +22,9 @@ public class FilterConfig {
         filter.addUrlPatterns("/prenotazione-libri/visualizza-richieste");
         filter.addUrlPatterns("/prenotazione-libri/visualizza-prenotazioni");
 
+        filter.addUrlPatterns("/club-del-libro/crea");
+        filter.addUrlPatterns("/club-del-libro/modifica");
+
 
 
         return filter;
