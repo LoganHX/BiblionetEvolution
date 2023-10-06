@@ -1,8 +1,5 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
-
-import it.unisa.c07.biblionet.common.Libro;
-import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
@@ -115,9 +112,9 @@ public class EventoController {
     @PostMapping(value = "/modifica")
     @CrossOrigin
     @ResponseBody
-    public BiblionetResponse modificaEvento(final @RequestParam int idClub,
-                                            final @RequestParam int idEvento,
-                                            final @RequestParam (required = false) int idLibro,
+    public BiblionetResponse modificaEvento(final @RequestParam Integer idClub,
+                                            final @RequestParam Integer idEvento,
+                                            final @RequestParam (required = false) Integer idLibro,
                                             final @Valid @ModelAttribute EventoDTO eventoDTO, BindingResult bindingResult,
                                             @RequestHeader(name = "Authorization") final String token ,final @RequestParam String timeString,
                                             final @RequestParam String dateString) {
@@ -127,7 +124,6 @@ public class EventoController {
         ClubDelLibro clubDelLibro = clubService.getClubByID(idClub);
         BiblionetResponse br = checkPermessi(clubDelLibro, token);
         if(br != null) return br;
-
 
 
         Optional<Evento> e = eventiService.getEventoById(idEvento);
@@ -159,7 +155,7 @@ public class EventoController {
     @PostMapping(value = "/crea")
     @CrossOrigin
     @ResponseBody
-    public BiblionetResponse creaEvento(final @RequestParam int idClub,
+    public BiblionetResponse creaEvento(final @RequestParam Integer idClub,
                                         final @RequestParam (required = false) Integer idLibro,
                                         final @Valid @ModelAttribute EventoDTO eventoDTO,
                                         BindingResult bindingResult,

@@ -26,6 +26,7 @@ public class FilterConfig {
         filter.addUrlPatterns("/club-del-libro/modifica");
 
         filter.addUrlPatterns("/gestione-eventi/crea");
+        filter.addUrlPatterns("/gestione-eventi/modifica");
 
 
 
