@@ -43,14 +43,16 @@ public final class RegistrazioneController {
      @CrossOrigin
      public BiblionetResponse registrazioneEsperto(final @Valid @ModelAttribute EspertoDTO esperto,
                                                              BindingResult bindingResult,
-                                                    final @RequestParam("conferma_password") String password) {
+                                                    final @RequestParam("confermaPassword") String password) {
 
+
+         System.err.println(bindingResult);
          BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) esperto);
          if(response != null) return response;
 
          Esperto e = espertoService.creaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(esperto.getEmailBiblioteca()));
          if(e == null)
-             return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
 
          return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
      }
@@ -69,13 +71,15 @@ public final class RegistrazioneController {
     @CrossOrigin
     public BiblionetResponse registrazioneBiblioteca(@Valid @ModelAttribute BibliotecaDTO biblioteca,
                                                      BindingResult bindingResult,
-                                                     @RequestParam("conferma_password") String password
+                                                     @RequestParam("confermaPassword") String password
     ) {
+        System.err.println(bindingResult);
+
         BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) biblioteca);
         if(response != null) return response;
 
         Biblioteca b = bibliotecaService.creaBibliotecaDaModel(biblioteca);
-        if(b == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+        if(b == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
 
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
     }
@@ -98,9 +102,11 @@ public final class RegistrazioneController {
     @CrossOrigin
     public BiblionetResponse registrazioneLettore(@Valid @ModelAttribute LettoreDTO lettore,
                                                   BindingResult bindingResult,
-                                                  final @RequestParam("conferma_password")
+                                                  final @RequestParam("confermaPassword")
                                                   String password
     ) {
+        System.err.println(bindingResult);
+
         BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) lettore);
         if(response != null) return response;
 
@@ -117,7 +123,7 @@ public final class RegistrazioneController {
         }
 
         if(!BiblionetConstraints.passwordRispettaVincoli(utenteRegistrato.getPassword(), password)) {
-            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+            return new BiblionetResponse(BiblionetResponse.ERRORE, false);
         }
 
         return null;

@@ -26,6 +26,7 @@ import javax.validation.constraints.Size;
 @RequiredArgsConstructor
 public class EventoDTO {
 
+    private int idEvento;
     /**
      * Il nome dell'evento.
      */
@@ -66,5 +67,6 @@ public class EventoDTO {
         if(evento.getLibro() != null)
             this.libro = evento.getLibro().getIdLibro();
         this.descrizione = evento.getDescrizione();
+        this.idEvento = evento.getIdEvento();
     }
 }

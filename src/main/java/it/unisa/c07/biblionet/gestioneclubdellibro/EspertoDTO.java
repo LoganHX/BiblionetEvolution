@@ -14,6 +14,7 @@ import java.util.Set;
 @Data
 @SuperBuilder
 @RequiredArgsConstructor
+@NoArgsConstructor
 public class EspertoDTO extends UtenteRegistratoDTO {
     /**
      * Rappresenta l'ID di un utente registrato.

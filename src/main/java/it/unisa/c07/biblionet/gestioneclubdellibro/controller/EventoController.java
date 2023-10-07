@@ -118,6 +118,7 @@ public class EventoController {
                                             final @Valid @ModelAttribute EventoDTO eventoDTO, BindingResult bindingResult,
                                             @RequestHeader(name = "Authorization") final String token ,final @RequestParam String timeString,
                                             final @RequestParam String dateString) {
+       System.err.println(token);
         eventoDTO.setData(LocalDate.parse(dateString));
         eventoDTO.setOra(LocalTime.parse(timeString));
 
