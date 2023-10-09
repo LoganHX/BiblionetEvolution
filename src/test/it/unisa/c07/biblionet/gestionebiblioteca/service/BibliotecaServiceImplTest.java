@@ -85,7 +85,7 @@ public class BibliotecaServiceImplTest {
                                 "Fru",
                                 "9597845613497",
                                 "1234567891234",
-                                2010,
+                                "2010",
                                 "Mondadori",
                                 "Casa",
                                 "@@@@@",

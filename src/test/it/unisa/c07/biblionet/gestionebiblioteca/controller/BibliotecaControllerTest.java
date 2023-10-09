@@ -3,41 +3,37 @@ package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.LibroDTO;
-import it.unisa.c07.biblionet.filter.JwtFilter;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Genere;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.servlet.ServletException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * Implementa il testing di unità per la classe
@@ -178,11 +174,11 @@ public class BibliotecaControllerTest {
                 "BiblioNet",
                 "Stefano Lambiase",
                 "1234567890123",
-                1995,
+                "1995",
                 "Aooo",
                 "Mondadori",
                 "Biblioteche 2.0",
-                new HashSet<String>()
+                new HashSet<>()
 
         ));
         l.setIdLibro(3);
@@ -266,7 +262,7 @@ public class BibliotecaControllerTest {
                 "BiblioNet",
                 "Stefano Lambiase",
                 "1234567890123",
-                1995,
+                "1995",
                 "Aooo",
                 "Mondadori",
                 "Biblioteche 2.0",
@@ -289,20 +285,8 @@ public class BibliotecaControllerTest {
 
     }
 
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per l'inserimento di un libro con form manuale
-     * simulando la richiesta http.
-     *
-     * @throws Exception Eccezione per MockMvc
-     */
-    @Test
-    public void inserimentoManualeUserNull() throws Exception {
-        //todo : Nel nostro caso l'utente non può essere null trovare una soluzione
 
-        this.mockMvc.perform(post("/biblioteca/inserimento-manuale")
-                .param("numCopie", "1"));
-    }
+
 
     /**
      * Implementa il test della funzionalità gestita dal
@@ -311,121 +295,778 @@ public class BibliotecaControllerTest {
      *
      * @throws Exception Eccezione per MockMvc
      */
-    @Test
-    public void inserimentoManualeUserNotValid() throws Exception {
-
-        String token="";
-
-        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
-
-        this.mockMvc.perform(post("/biblioteca/inserimento-manuale")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .param("numCopie", "1"));
-    }
-
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per l'inserimento di un libro con form manuale
-     * simulando la richiesta http.
-     *
-     * @throws Exception Eccezione per MockMvc
-     */
-    @Test
-    public void inserimentoManualeIsbnDescrizioneImmagineVuoto() throws Exception {
-
-
-        String token="";
-        //todo Required LibroDTO parameter 'libro' is not present, quindi sostanzialmente è na bad request. Manca qualcosa per i parametri obbligatori di LibroDTO
-        //todo manca il test per il rispetto del formato
-        Biblioteca b = new Biblioteca();
-
-        b.setEmail("a");
-        Libro l = new Libro();
-        l.setTitolo("BiblioNet");
-        l.setAutore("Stefano Lambiase");
-        l.setCasaEditrice("Mondadori");
-        l.setAnnoDiPubblicazione(2010);
-        l.setImmagineLibro(null);
-        l.setIdLibro(0);
-        Set<String> generi = new HashSet<>();
-        generi.add("g1");
-        generi.add("g2");
-        l.setGeneri(generi);
-
-        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
-        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(prenotazioneService.creaLibroDaModel(
-                Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any()))
-                .thenReturn(l);
-        when(bibliotecaService.findBibliotecaByEmail("a"))
-                .thenReturn(b);
-
-        this.mockMvc.perform(post("/biblioteca/inserimento-manuale")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                        .param("isbn", "a")
-                        .param("descrizione", "a")
-                        .param("titolo", "BiblioNet")
-                        .param("casaEditrice", "Mondadori")
-                        .param("autore", "Stefano Lambiase")
-                        .param("annoPubblicazione", "2010")
-                        .param("generi", "g1")
-                        .param("numCopie", "1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
-    }
-
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per l'inserimento di un libro con form manuale
-     * simulando la richiesta http.
-     *
-     * @throws Exception Eccezione per MockMvc
-     */
-    @Test
-    public void inserimentoManuale() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_CasaEditriceTroppoCorta(LibroDTO l) throws Exception {
 
         String token="";
 
         Biblioteca b = new Biblioteca();
         b.setEmail("a");
-        Libro l = new Libro();
-        l.setTitolo("BiblioNet");
-        l.setAutore("Stefano Lambiase");
-        l.setCasaEditrice("Mondadori");
-        l.setAnnoDiPubblicazione(2010);
-        l.setImmagineLibro(null);
-        l.setIdLibro(0);
-        l.setIsbn("1234");
-        l.setDescrizione("descrizione");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
         Set<String> generi = new HashSet<>();
-        generi.add("g1");
-        generi.add("g2");
-        Genere g1 = new Genere();
-        Genere g2 = new Genere();
-        List<Genere> glist = new ArrayList<>();
-        glist.add(g1);
-        glist.add(g2);
+        generi.add("Giallo"); //todo check esistenza generi
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(bibliotecaService.findBibliotecaByEmail("a"))
-                .thenReturn(b);
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
 
-        when(prenotazioneService.creaLibroDaModel(
-                new LibroDTO(l), "a", 1, generi))
-                .thenReturn(l);
-        this.mockMvc.perform(post("/biblioteca/inserimento-manuale")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                        .param("titolo", "BiblioNet")
-                        .param("casaEditrice", "Mondadori")
-                        .param("autore", "Stefano Lambiase")
-                        .param("annoPubblicazione", "2010")
-                        .param("generi", "g1")
-                        .param("generi", "g2")
-                        .param("isbn", "1234")
-                        .param("descrizione", "descrizione")
-                        .param("numCopie", "1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
-    }
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", "aa")
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_CasaEditriceTroppoLunga(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", "Il conta caratteri è semplice d")
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManualeOk(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_DescrizioneTroppoLunga(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", "Il conta caratteri è semplice da usare, scrivi nella casella di input oppure copia e incolla un testo e sulla destra appariranno automaticamentee")
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_DescrizioneTroppoCorta(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", "aa")
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_AnnoDiPubblicazioneNonFornito(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_DescrizioneNonFornita(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_AnnoDiPubblicazioneNonValido(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(202))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_CasaEditriceNonFornita(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_AutoreTroppoLungo(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore","Il conta caratteri è semplice da usare, scrivi nella casella di input oppure copia e incoll")
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_AutoreNonFornito(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_AutoreTroppoCorto(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore","aa")
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_FormatoCopertinaNonValido(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(false);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_CopertinaTroppoPesante(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[16 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_TitoloNonFornito(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_TitoloTroppoCorto(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo","AA")
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_TitoloTroppoLungo(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo","Il conta caratteri è semplice da usare, scrivi nella casella di input oppure copia e incoll")
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_ISBNNonFornito(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_ISBNNonValido(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("descrizione", l.getDescrizione())
+                        .param("isbn", "123456789")
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
 
     /**
      * Implementa il test della funzionalità che permette di
@@ -487,4 +1128,25 @@ public class BibliotecaControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(biblioteca.getEmail()));
     }
 
+    /**
+     * Utilizzato per fornire il libro ai test
+     * @return il libro
+     */
+    private static Stream<Arguments> provideLibroDTO() {
+        return Stream.of(
+                Arguments.of(
+                        new LibroDTO(
+                                1,
+                                "Fru",
+                                "9597845613497",
+                                "1234567891234",
+                                "2010",
+                                "Mondadori",
+                                "Casa",
+                                "@@@@@",
+                                null
+                        )
+                )
+        );
+    }
 }

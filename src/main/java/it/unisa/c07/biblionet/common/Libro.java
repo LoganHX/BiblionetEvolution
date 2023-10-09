@@ -50,7 +50,7 @@ public class Libro {
      * Rappresenta l'anno di pubblicazione di un libro.
      */
     @Column
-    private int annoDiPubblicazione;
+    private String annoDiPubblicazione;
 
     /**
      * Rappresenta la descrizione di un libro.

@@ -4,7 +4,12 @@ import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.RegEx;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -19,14 +24,18 @@ public class LibroDTO {
      * Rappresenta il titolo di un libro.
      */
     @NonNull
+    @NotNull
     @Column(length = BiblionetConstraints.LENGTH_90)
+    @Size(min= BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LENGTH_90)
     private String titolo;
 
     /**
      * Rappresenta l'autore di un libro.
      */
     @NonNull
-    @Column(length = BiblionetConstraints.LENGTH_60)
+    @NotNull
+    @Column(length = BiblionetConstraints.LENGTH_90)
+    @Size(min= BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LENGTH_90)
     private String autore;
 
     /**
@@ -34,18 +43,24 @@ public class LibroDTO {
      */
     @Column(unique = true, length = BiblionetConstraints.LENGTH_13)
     @NonNull
+    @NotNull
+    @Pattern(regexp = BiblionetConstraints.ISBN_REGEX)
     private String isbn;
 
     /**
      * Rappresenta l'anno di pubblicazione di un libro.
      */
     @Column
-    private int annoDiPubblicazione;
+    @NotNull
+    @Pattern(regexp = BiblionetConstraints.YEAR_REGEX)
+    private String annoDiPubblicazione;
 
     /**
      * Rappresenta la descrizione di un libro.
      */
     @Column(nullable = false, length = BiblionetConstraints.LENGTH_144)
+    @NotNull
+    @Size(min= BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LENGTH_144)
     private String descrizione;
 
     /**
@@ -53,6 +68,8 @@ public class LibroDTO {
      */
     @Column(nullable = false, length = BiblionetConstraints.LENGTH_30)
     @NonNull
+    @NotNull
+    @Size(min= BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LENGTH_30)
     private String casaEditrice;
 
     /**

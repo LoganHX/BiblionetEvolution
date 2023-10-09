@@ -169,7 +169,7 @@ public class GoogleBookApiAdapterImpl implements BookApiAdapter {
                 libro.setCasaEditrice(casaEditrice);
             }
             libro.setAutore(autore);
-            libro.setAnnoDiPubblicazione(annoPubblicazioneDateTime);
+            libro.setAnnoDiPubblicazione(String.valueOf(annoPubblicazioneDateTime));
             libro.setIsbn(isbn);
             libro.setImmagineLibro(base64Image);
         } catch (Exception e) {

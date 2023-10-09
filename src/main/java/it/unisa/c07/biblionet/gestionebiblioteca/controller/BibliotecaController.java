@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -127,9 +128,9 @@ public class BibliotecaController {
     public BiblionetResponse inserisciManualmente(
             @RequestHeader (name="Authorization") final String token,
             @Valid @ModelAttribute final LibroDTO libro,
-            @RequestParam final int numCopie,
             BindingResult bindingResult,
-            @RequestParam @NonNull MultipartFile copertina) {
+            @RequestParam final int numCopie,
+            @RequestParam @NonNull MultipartFile copertina) throws IOException {
 
 
         if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
@@ -139,7 +140,9 @@ public class BibliotecaController {
         }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
-        libro.setImmagineLibro(Utils.getBase64Image(copertina));
+        if(utils.immagineOk(copertina))
+            libro.setImmagineLibro(utils.getBase64Image(copertina));
+        else return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         //System.err.println(libro);
 
         Libro newLibro = prenotazioneService.creaLibroDaModel(libro, b.getEmail(), numCopie, libro.getGeneri());
