@@ -130,7 +130,7 @@ public class BibliotecaController {
             @Valid @ModelAttribute final LibroDTO libro,
             BindingResult bindingResult,
             @RequestParam final int numCopie,
-            @RequestParam @NonNull MultipartFile copertina) throws IOException {
+            @RequestParam (required = false) MultipartFile copertina) throws IOException {
 
 
         if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
@@ -140,8 +140,8 @@ public class BibliotecaController {
         }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
-        if(utils.immagineOk(copertina))
-            libro.setImmagineLibro(utils.getBase64Image(copertina));
+        if(copertina != null && utils.immagineOk(copertina))
+            libro.setImmagineLibro(Utils.getBase64Image(copertina));
         else return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         //System.err.println(libro);
 

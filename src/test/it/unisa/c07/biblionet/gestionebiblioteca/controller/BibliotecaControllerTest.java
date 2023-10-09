@@ -956,6 +956,40 @@ public class BibliotecaControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_CopertinaNonFornita(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo"); //todo check esistenza generi
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(false);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        //.file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
     public void inserimentoManuale_CopertinaTroppoPesante(LibroDTO l) throws Exception {
 
         String token="";
