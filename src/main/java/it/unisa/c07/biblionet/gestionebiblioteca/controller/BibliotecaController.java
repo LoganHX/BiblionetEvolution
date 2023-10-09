@@ -108,8 +108,12 @@ public class BibliotecaController {
         if (!utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
+
+        if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+
         Biblioteca b =  bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
-        prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
+        Libro l = prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
+        if(l== null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
@@ -132,6 +136,7 @@ public class BibliotecaController {
             @RequestParam final int numCopie,
             @RequestParam (required = false) MultipartFile copertina) throws IOException {
 
+        if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
 
         if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 

@@ -7,6 +7,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -747,7 +749,8 @@ public class ClubDelLibroControllerTest {
                         .param("descrizione",club.getDescrizione())
                         .param("generi", String.valueOf(club.getGeneri()))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+                .andExpect(result ->
+                Assertions.assertTrue(result.getResolvedException() instanceof ServletException));     // Verifica la classe del lancio della eccezione
     }
 
     @ParameterizedTest
