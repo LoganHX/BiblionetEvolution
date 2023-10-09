@@ -6,6 +6,7 @@ import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
+import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import jdk.jfr.Name;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -68,24 +70,32 @@ public class BibliotecaController {
     @CrossOrigin
     public BiblionetResponse inserisciPerIsbn(@RequestParam final String isbn,
                                               @RequestHeader (name="Authorization") final String token,
-                                              @RequestParam final String[] generi,
+                                              @RequestParam (required = false) final String[] generi,
                                               @RequestParam final int numCopie) {
+
+        if(!isbn.matches(BiblionetConstraints.ISBN_REGEX)) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
         if (!utils.isUtenteBiblioteca(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        if (isbn == null) {
-            return new BiblionetResponse("L'ISBN inserito non è valido", false);
-        }
+//        if (isbn == null) {
+//            return new BiblionetResponse("L'ISBN inserito non è valido", false);
+//        }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
-        Set<String> gSet =  new HashSet<>(Arrays.asList(generi.clone()));
+        Set<String> gSet = new HashSet<>();
+        if(generi != null){
+            gSet =  new HashSet<>(Arrays.asList(generi.clone()));
+        }
+
+        if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+
         Libro l = prenotazioneService.inserimentoPerIsbn(
                 isbn, b.getEmail(), numCopie, gSet);
         if (l == null) {
-            return new BiblionetResponse("Libro non creato", false);
+            return new BiblionetResponse(BiblionetResponse.ERRORE, false);
         }
-        return new BiblionetResponse("Libro creato con successo", true);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
 

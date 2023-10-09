@@ -136,44 +136,258 @@ public class BibliotecaControllerTest {
      * @throws Exception Eccezione per MockMvc
      */
     @Test
-    public void inserimentoIsbn() throws Exception {
+    public void inserimentoIsbnOK() throws Exception {
 
 
         String token="";
         String[] generi = {""};
-        String isbn = "1234567890123";
+        String isbn = "9780735611313";
         Biblioteca b = new Biblioteca();
         b.setEmail("a");
 
         Set<String> stlist = new HashSet<>();
 
-        Libro l =  new Libro(new LibroDTO(
-                1,
-                "BiblioNet",
-                "Stefano Lambiase",
-                "1234567890123",
-                "1995",
-                "Aooo",
-                "Mondadori",
-                "Biblioteche 2.0",
-                new HashSet<>()
-
-        ));
-        l.setIdLibro(3);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
 
         when(prenotazioneService.inserimentoPerIsbn(
                 isbn, "a", 1, stlist))
-                .thenReturn(l);
+                .thenReturn(new Libro());
 
         this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .param("isbn", isbn)
                         .param("generi", generi)
                         .param("numCopie", "1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(true));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+
+    @Test
+    public void inserimentoIsbn_TokenNonValido() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+    }
+
+    @Test
+    public void inserimentoIsbn_TokenNonDellaGiustaTipologia() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
+    }
+
+    @Test
+    public void inserimentoIsbn_TokenNonFornito() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        //.header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(status().is(400));
+    }
+
+
+
+    @Test
+    public void inserimentoIsbn_NumeroCopieNonValido() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "-1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.RICHIESTA_NON_VALIDA));
+    }
+
+    @Test
+    public void inserimentoIsbn_NumeroCopieNonFornito() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi))
+                        //.param("numCopie", "1"))
+                .andExpect(status().is(400));
+    }
+
+
+    @Test
+    public void inserimentoIsbn_ISBNNonFornito() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        //.param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    public void inserimentoIsbn_ISBNNonValido() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", "123456789")
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @Test
+    public void inserimentoIsbn_ISBNLibroNonPresenteNelCatalogoRemoto() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(null);
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
     }
 
 
@@ -187,7 +401,7 @@ public class BibliotecaControllerTest {
      * @throws Exception Eccezione per MockMvc
      */
     @Test
-    public void inserimentoDatabase() throws Exception {
+    public void inserimentoDatabaseOK() throws Exception {
         int idLibro = 1;
         int numCopie = 5;
         String token="";
@@ -205,6 +419,72 @@ public class BibliotecaControllerTest {
                         .param("idLibro", String.valueOf(idLibro))
                         .param("numCopie", String.valueOf(numCopie)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+
+    }
+
+    @Test
+    public void inserimentoDatabase_TokenNonFornito() throws Exception {
+        int idLibro = 1;
+        int numCopie = 5;
+        String token="";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+        when(prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie))
+                .thenReturn(new Libro());
+        this.mockMvc.perform(post("/biblioteca/inserimento-archivio")
+                        //.header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("idLibro", String.valueOf(idLibro))
+                        .param("numCopie", String.valueOf(numCopie)))
+                .andExpect(status().is(400));
+
+    }
+
+    @Test
+    public void inserimentoDatabase_TokenNonDellaGiustaTipologia() throws Exception {
+        int idLibro = 1;
+        int numCopie = 5;
+        String token="";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+        when(prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie))
+                .thenReturn(new Libro());
+        this.mockMvc.perform(post("/biblioteca/inserimento-archivio")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("idLibro", String.valueOf(idLibro))
+                        .param("numCopie", String.valueOf(numCopie)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
+
+    }
+
+    @Test
+    public void inserimentoDatabase_TokenNonValido() throws Exception {
+        int idLibro = 1;
+        int numCopie = 5;
+        String token="";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+        when(prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie))
+                .thenReturn(new Libro());
+        this.mockMvc.perform(post("/biblioteca/inserimento-archivio")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("idLibro", String.valueOf(idLibro))
+                        .param("numCopie", String.valueOf(numCopie)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
 
     }
 
