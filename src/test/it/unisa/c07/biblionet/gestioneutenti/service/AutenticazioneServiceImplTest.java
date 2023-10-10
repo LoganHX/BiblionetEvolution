@@ -12,6 +12,7 @@ import it.unisa.c07.biblionet.gestionebiblioteca.repository.BibliotecaDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EspertoDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LettoreDAO;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
+import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -108,9 +109,6 @@ public class AutenticazioneServiceImplTest {
         byte[] arr = md.digest(password.getBytes());
 
         when(BiblionetConstraints.trasformaPassword(password)).thenReturn(arr);
-
-
-
 
         Biblioteca biblioteca = new Biblioteca();
 

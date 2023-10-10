@@ -1,9 +1,11 @@
 package it.unisa.c07.biblionet.common;
 
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,6 +21,7 @@ public abstract class UtenteRegistratoDTO {
      * Rappresenta l'ID di un utente registrato.
      */
     @NonNull
+    @NotNull
     @Pattern(regexp = BiblionetConstraints.EMAIL_REGEX)
     private String email;
 
@@ -27,24 +30,28 @@ public abstract class UtenteRegistratoDTO {
      * Rappresenta la password di un utente registrato.
      */
     @NonNull
+    @NotNull
     private byte[] password;
 
     /**
      * Rappresente la provincia dove vive l'utente registrato.
      */
     @NonNull
+    @NotNull
     private String provincia;
 
     /**
      * Rappresenta la città dove vive l'utente registrato.
      */
     @NonNull
+    @NotNull
     private String citta;
 
     /**
      * Rappresenta la via dove vive l'utente registrato.
      */
     @NonNull
+    @NotNull
     @Pattern(regexp = BiblionetConstraints.ADDRESS_REGEX)
     private String via;
 
@@ -52,6 +59,7 @@ public abstract class UtenteRegistratoDTO {
      * Rappresenta il recapito telefonico dell'utente registrato.
      */
     @NonNull
+    @NotNull
     @Pattern(regexp = BiblionetConstraints.PHONE_REGEX)
     private String recapitoTelefonico;
 

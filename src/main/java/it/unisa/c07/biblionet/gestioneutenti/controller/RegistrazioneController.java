@@ -12,6 +12,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
+import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public final class RegistrazioneController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final BibliotecaService bibliotecaService;
+    private final Utils utils;
 
     /**
      * Implementa la funzionalità di registrazione di un esperto.*/
@@ -105,7 +107,6 @@ public final class RegistrazioneController {
                                                   final @RequestParam("confermaPassword")
                                                   String password
     ) {
-        System.err.println(bindingResult);
 
         BiblionetResponse response = controlliPreliminari(bindingResult, password, (UtenteRegistratoDTO) lettore);
         if(response != null) return response;

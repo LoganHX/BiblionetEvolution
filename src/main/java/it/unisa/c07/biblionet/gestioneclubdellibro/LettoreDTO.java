@@ -5,6 +5,8 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 
@@ -20,12 +22,15 @@ public class LettoreDTO extends UtenteRegistratoDTO {
 
     private Set<String> generi;
     @NonNull
+    @NotNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String nome;
     @NonNull
+    @NotNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String cognome;
     @NonNull
+    @NotNull
     @Size(max = 30, message = "Il campo 'nome' può avere al massimo 50 caratteri")
     private String username;
 
