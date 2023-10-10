@@ -6,11 +6,10 @@ import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
+import it.unisa.c07.biblionet.gestioneclubdellibro.GenereService;
 import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
-import jdk.jfr.Name;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -42,7 +39,7 @@ public class BibliotecaController {
     private final BibliotecaService bibliotecaService;
     private final PrenotazioneLibriService prenotazioneService;
     private final Utils utils;
-
+    private final GenereService genereService;
 
 
     /**
@@ -75,12 +72,8 @@ public class BibliotecaController {
 
         if(!isbn.matches(BiblionetConstraints.ISBN_REGEX)) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
-        if (!utils.isUtenteBiblioteca(token)) {
-            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        }
-//        if (isbn == null) {
-//            return new BiblionetResponse("L'ISBN inserito non è valido", false);
-//        }
+        if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        if (!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
         Set<String> gSet = new HashSet<>();
@@ -88,7 +81,8 @@ public class BibliotecaController {
             gSet =  new HashSet<>(Arrays.asList(generi.clone()));
         }
 
-        if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        if(!genereService.doGeneriExist(gSet)) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+
 
         Libro l = prenotazioneService.inserimentoPerIsbn(
                 isbn, b.getEmail(), numCopie, gSet);
@@ -115,11 +109,8 @@ public class BibliotecaController {
                                                  @RequestHeader (name="Authorization") final String token,
                                                  @RequestParam final int numCopie) {
 
-        if (!utils.isUtenteBiblioteca(token)) {
-            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        }
-
         if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
+        if (!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
         Biblioteca b =  bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
         Libro l = prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
@@ -147,12 +138,10 @@ public class BibliotecaController {
             @RequestParam (required = false) MultipartFile copertina) throws IOException {
 
         if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
-
+        if (!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        if(!genereService.doGeneriExist(libro.getGeneri()))return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
         if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
-        if (!utils.isUtenteBiblioteca(token)) {
-            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        }
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
         if(copertina != null && utils.immagineOk(copertina))
@@ -200,4 +189,6 @@ public class BibliotecaController {
     public BibliotecaDTO visualizzaDatiBiblioteca(final @PathVariable String email) {
         return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
     }
+
+
 }

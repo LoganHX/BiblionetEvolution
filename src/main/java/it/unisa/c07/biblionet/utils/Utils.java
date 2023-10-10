@@ -15,6 +15,7 @@ import java.util.Base64;
 public class Utils {
     private Utils(){}
 
+
     public Claims getClaimsFromTokenWithoutKey(String token){
         token = token.substring(7);
         String[] splitToken = token.split("\\.");

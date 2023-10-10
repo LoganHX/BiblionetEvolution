@@ -6,6 +6,7 @@ import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
+import it.unisa.c07.biblionet.gestioneclubdellibro.GenereService;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.Assertions;
@@ -60,6 +61,13 @@ public class BibliotecaControllerTest {
      */
     @MockBean
     private BibliotecaService bibliotecaService;
+
+    /**
+     * Mock del service per simulare
+     * le operazioni dei metodi.
+     */
+    @MockBean
+    private GenereService genereService;
 
     @MockBean
     private Utils utils;
@@ -136,7 +144,7 @@ public class BibliotecaControllerTest {
      * @throws Exception Eccezione per MockMvc
      */
     @Test
-    public void inserimentoIsbnOK() throws Exception {
+    public void inserimentoIsbn_GenereSingoloEsistente_OK() throws Exception {
 
 
         String token="";
@@ -147,6 +155,35 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+    @Test
+    public void inserimentoIsbn_GeneriMultipliEsistenti_OK() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -164,6 +201,94 @@ public class BibliotecaControllerTest {
     }
 
     @Test
+    public void inserimentoIsbn_GenereSingoloNonEsistente() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
+    }
+
+    @Test
+    public void inserimentoIsbn_GeneriMultipliNonEsistenti() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
+    }
+
+    @Test
+    public void inserimentoIsbn_GeneriMultipliEsistentiENonEsistenti() throws Exception {
+
+
+        String token="";
+        String[] generi = {""};
+        String isbn = "9780735611313";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        Set<String> stlist = new HashSet<>();
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+
+        when(prenotazioneService.inserimentoPerIsbn(
+                isbn, "a", 1, stlist))
+                .thenReturn(new Libro());
+
+        this.mockMvc.perform(post("/biblioteca/inserimento-isbn")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("isbn", isbn)
+                        .param("generi", generi)
+                        .param("numCopie", "1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
+    }
+
+
+    @Test
     public void inserimentoIsbn_TokenNonValido() throws Exception {
 
 
@@ -175,6 +300,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -203,6 +329,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -222,8 +349,6 @@ public class BibliotecaControllerTest {
     @Test
     public void inserimentoIsbn_TokenNonFornito() throws Exception {
 
-
-        String token="";
         String[] generi = {""};
         String isbn = "9780735611313";
         Biblioteca b = new Biblioteca();
@@ -231,6 +356,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -261,6 +387,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -289,6 +416,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -318,6 +446,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -346,6 +475,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -374,6 +504,7 @@ public class BibliotecaControllerTest {
 
         Set<String> stlist = new HashSet<>();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -409,6 +540,7 @@ public class BibliotecaControllerTest {
         b.setEmail("a");
 
 
+
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
@@ -422,11 +554,11 @@ public class BibliotecaControllerTest {
 
     }
 
+
     @Test
     public void inserimentoDatabase_TokenNonFornito() throws Exception {
         int idLibro = 1;
         int numCopie = 5;
-        String token="";
         Biblioteca b = new Biblioteca();
         b.setEmail("a");
 
@@ -579,7 +711,7 @@ public class BibliotecaControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideLibroDTO")
-    public void inserimentoManualeOk(LibroDTO l) throws Exception {
+    public void inserimentoManuale_GenereSingoloEsistente_Ok(LibroDTO l) throws Exception {
 
         String token="";
 
@@ -597,6 +729,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -620,6 +753,174 @@ public class BibliotecaControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_GenereSingoloNonEsistente_Ok(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Poggibonsi"); //todo check esistenza generi
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_GeneriMultipliEsistenti_Ok(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Poggibonsi"); //todo check esistenza generi
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_GeneriMultipliNonEsistenti(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Poggibonsi"); //todo check esistenza generi
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
+    public void inserimentoManuale_GeneriMultipliEsistentiENonEsistenti(LibroDTO l) throws Exception {
+
+        String token="";
+
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+        byte[] imageData = new byte[2 * 1024 * 1024]; // Creiamo un'immagine di 2 MB
+
+        MockMultipartFile copertina =
+                new MockMultipartFile("copertina",
+                        "filename.png",
+                        "image/png",
+                        imageData);
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Poggibonsi"); //todo check esistenza generi
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(false);
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.immagineOk(Mockito.any())).thenReturn(true);
+        when(prenotazioneService.creaLibroDaModel(Mockito.any(), Mockito.anyString(), Mockito.anyInt(), Mockito.any())).thenReturn(new Libro(l));
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b);
+
+
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/biblioteca/inserimento-manuale")
+                        .file(copertina)
+                        .param("titolo",l.getTitolo())
+                        .param("autore",l.getAutore())
+                        .param("annoDiPubblicazione", String.valueOf(l.getAnnoDiPubblicazione()))
+                        .param("casaEditrice", l.getCasaEditrice())
+                        .param("isbn", l.getIsbn())
+                        .param("descrizione", l.getDescrizione())
+                        .param("numCopie", String.valueOf(5))
+                        .param("generi", String.valueOf(generi))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));    }
+
+    @ParameterizedTest
+    @MethodSource("provideLibroDTO")
     public void inserimentoManuale_NumeroCopieNonFornito(LibroDTO l) throws Exception {
 
         String token="";
@@ -638,6 +939,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -679,6 +981,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -720,6 +1023,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -761,6 +1065,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -786,8 +1091,6 @@ public class BibliotecaControllerTest {
     @MethodSource("provideLibroDTO")
     public void inserimentoManuale_TokenNonFornito(LibroDTO l) throws Exception {
 
-        String token="";
-
         Biblioteca b = new Biblioteca();
         b.setEmail("a");
 
@@ -802,6 +1105,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(false);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -854,6 +1158,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -895,6 +1200,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -937,6 +1243,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -978,6 +1285,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1019,6 +1327,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1059,6 +1368,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1099,6 +1409,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1140,6 +1451,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1180,6 +1492,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1221,6 +1534,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1261,6 +1575,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1302,6 +1617,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(false);
@@ -1336,6 +1652,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(false);
@@ -1377,6 +1694,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1418,6 +1736,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1458,6 +1777,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1499,6 +1819,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1540,6 +1861,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1580,6 +1902,7 @@ public class BibliotecaControllerTest {
         Set<String> generi = new HashSet<>();
         generi.add("Giallo"); //todo check esistenza generi
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -1662,7 +1985,7 @@ public class BibliotecaControllerTest {
     }
 
     /**
-     * Utilizzato per fornire il libro ai test
+     * Utilizzato per fornire il libro ai vari test
      * @return il libro
      */
     private static Stream<Arguments> provideLibroDTO() {

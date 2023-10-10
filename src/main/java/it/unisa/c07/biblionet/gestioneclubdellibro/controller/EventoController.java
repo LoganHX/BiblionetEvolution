@@ -27,7 +27,6 @@ public class EventoController {
     private final GestioneEventiService eventiService;
     private final ClubDelLibroService clubService;
     private final LettoreService lettoreService;
-    private final PrenotazioneLibriService prenotazioneLibriService;
     private final Utils utils;
 
     /**
