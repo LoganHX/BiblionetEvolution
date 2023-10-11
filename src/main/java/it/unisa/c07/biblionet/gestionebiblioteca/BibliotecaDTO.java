@@ -7,7 +7,10 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 @Getter
 @Data
 @SuperBuilder
@@ -19,8 +22,10 @@ public class BibliotecaDTO extends UtenteRegistratoDTO {
      * Rappresenta l'ID di un utente registrato.
      */
     @NonNull
+    @NotNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
-    @Column(length = 60)
+    @Size(min = BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME, message = "Il campo 'nome' può avere al massimo 50 caratteri")
+    @Column(length = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME)
     private String nomeBiblioteca;
     /**
      * Rappresenta la password di un utente registrato.

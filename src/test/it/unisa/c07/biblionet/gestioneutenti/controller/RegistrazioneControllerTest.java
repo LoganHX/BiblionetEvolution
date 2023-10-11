@@ -91,8 +91,9 @@ public final class RegistrazioneControllerTest {
      * @param confermaPassword la password da confermare
      * @throws Exception Eccezione per MockMvc
      */
+
+
     @ParameterizedTest
-    @DisplayName("Registrazione Esperto che va a buon fine")
     @MethodSource("provideRegistrazioneEsperto")
     public void registrazioneEspertoOk(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
@@ -115,18 +116,627 @@ public final class RegistrazioneControllerTest {
 
 
         this.mockMvc.perform(post("/registrazione/esperto")
-                .param("email", utenteDTO.getEmail())
-                .param("nome", utenteDTO.getNome())
-                .param("cognome", utenteDTO.getCognome())
-                .param("username", utenteDTO.getUsername())
-                .param("password", "EspertoPassword")
-                .param("confermaPassword", confermaPassword)
-                .param("provincia", utenteDTO.getProvincia())
-                .param("citta", utenteDTO.getCitta())
-                .param("via", utenteDTO.getVia())
-                .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
-                .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_NomeUtenteNonFornito(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        //.param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_NomeNonFornito(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        //.param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_CognomeNonFornito(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        //.param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_EmailNonFornita(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        //.param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_RecapitoTelefonicoNonFornito(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        //.param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_PasswordNonFornita(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        //.param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_ConfermaPasswordNonFornita(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        //.param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(status().is(400));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_EmailBibliotecaNonFornita(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                        //.param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_UsernameTroppoLungo(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", "aaaaa-aaaaa-aaaaa-aaaaa-aaaaa-a")
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_UsernameTroppoCorto(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", "aa")
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_CittàNonFornita(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        //.param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_ProvinciaNonFornita(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        //.param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_FormatoProvinciaNonValido(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", "$@1€rn0")
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_FormatoCittàNonValido(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", "$@1€rn0")
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_IndirizzoNonFornito(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        //.param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_FormatoEmailBibliotecaNonValido(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", utenteDTO.getCognome())
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", "email@ao"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
 
     }
 
@@ -172,7 +782,7 @@ public final class RegistrazioneControllerTest {
     @ParameterizedTest
     @DisplayName("Registrazione Esperto che va a buon fine")
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEspertoFormatoRecapitoTelefonicoNonValido(
+    public void registrazioneEsperto_FormatoRecapitoTelefonicoNonValido(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -290,7 +900,7 @@ public final class RegistrazioneControllerTest {
     @ParameterizedTest
     @DisplayName("Registrazione Esperto che va a buon fine")
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEspertoPasswordTroppoCorta(
+    public void registrazioneEsperto_PasswordTroppoCorta(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -322,7 +932,7 @@ public final class RegistrazioneControllerTest {
                         .param("via", utenteDTO.getVia())
                         .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
                         .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
 
     }
 
@@ -403,6 +1013,45 @@ public final class RegistrazioneControllerTest {
 
     }
 
+    @ParameterizedTest
+    @DisplayName("Registrazione Esperto che va a buon fine")
+    @MethodSource("provideRegistrazioneEsperto")
+    public void registrazioneEsperto_CognomeTroppoLungo(
+            final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
+
+        Biblioteca biblioteca = new Biblioteca(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "123456780",
+                "Biblioteca Carrisi"
+        );
+
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(espertoService.creaEspertoDaModel(utenteDTO, biblioteca)).
+                thenReturn((esperto));
+        when(bibliotecaService.findBibliotecaByEmail(utenteDTO.getEmailBiblioteca())).
+                thenReturn(biblioteca);
+
+
+        this.mockMvc.perform(post("/registrazione/esperto")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nome", utenteDTO.getNome())
+                        .param("cognome", "aaaaa-aaaaa-aaaaa-aaaaa-aaaaa-aa")
+                        .param("username", utenteDTO.getUsername())
+                        .param("password", "EspertoPassword")
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
+                        .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+
+    }
+
     /**
      * Metodo che testa la funzionalità gestita dal
      * controller per la registrazione di un esperto
@@ -417,7 +1066,7 @@ public final class RegistrazioneControllerTest {
     @DisplayName("Registrazione Esperto che non va a buon fine "
                + "perché la conferma password è sbagliata")
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEspertoErrorePassword(
+    public void registrazioneEsperto_PasswordNonCombacia(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -448,7 +1097,7 @@ public final class RegistrazioneControllerTest {
                         .param("via", utenteDTO.getVia())
                         .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
                         .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Formato dati non valido"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
     }
 
 
@@ -463,11 +1112,8 @@ public final class RegistrazioneControllerTest {
      * @throws Exception Eccezione per MockMvc
 */
     @ParameterizedTest
-    @DisplayName("Registrazione Esperto che non va a buon fine "
-               + "perché la mail della biblioteca non corrisponde a "
-               + "nessun utente")
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEspertoEmailBibliotecaErrata(
+    public void registrazioneEsperto_EmailBibliotecaInesistente(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -501,7 +1147,7 @@ public final class RegistrazioneControllerTest {
                         .param("via", utenteDTO.getVia())
                         .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico())
                         .param("emailBiblioteca", utenteDTO.getEmailBiblioteca()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.RICHIESTA_NON_VALIDA));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
     }
 
 
@@ -519,7 +1165,7 @@ public final class RegistrazioneControllerTest {
     @DisplayName("Registrazione Esperto che non va a buon fine" +
                  "perchè la mail inserita è già presente")
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEspertoEmailPresente(
+    public void registrazioneEsperto_EmailGiàPresente(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -616,31 +1262,6 @@ public final class RegistrazioneControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
 
-    @ParameterizedTest
-    @DisplayName("Registrazione Biblioteca che va a buon fine")
-    @MethodSource("provideRegistrazioneBiblioteca")
-    public void registrazioneBiblioteca_FormatoIndirizzoNonValido(final BibliotecaDTO utenteDTO,
-                                          final String confermaPassword)
-            throws Exception {
-
-        Biblioteca biblioteca = new Biblioteca(utenteDTO);
-        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO))
-                .thenReturn(biblioteca);
-        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
-
-
-        this.mockMvc.perform(post("/registrazione/biblioteca")
-                        .param("email", utenteDTO.getEmail())
-                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
-                        .param("password", "BibliotecaPassword")
-                        .param("confermaPassword", confermaPassword)
-                        .param("provincia", utenteDTO.getProvincia())
-                        .param("citta", utenteDTO.getCitta())
-                        .param("via", "<>")
-                        .param("recapitoTelefonico",
-                                utenteDTO.getRecapitoTelefonico()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
-    }
 
     @ParameterizedTest
     @DisplayName("Registrazione Biblioteca che va a buon fine")
@@ -668,57 +1289,7 @@ public final class RegistrazioneControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
     }
 
-    @ParameterizedTest
-    @DisplayName("Registrazione Biblioteca che va a buon fine")
-    @MethodSource("provideRegistrazioneBiblioteca")
-    public void registrazioneBibliotecaPasswordTroppoCorta(final BibliotecaDTO utenteDTO,
-                                          final String confermaPassword)
-            throws Exception {
 
-        Biblioteca biblioteca = new Biblioteca(utenteDTO);
-        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO))
-                .thenReturn(biblioteca);
-        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
-
-
-        this.mockMvc.perform(post("/registrazione/biblioteca")
-                        .param("email", utenteDTO.getEmail())
-                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
-                        .param("password", "1234")
-                        .param("confermaPassword", "1234")
-                        .param("provincia", utenteDTO.getProvincia())
-                        .param("citta", utenteDTO.getCitta())
-                        .param("via", utenteDTO.getVia())
-                        .param("recapitoTelefonico",
-                                utenteDTO.getRecapitoTelefonico()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
-    }
-
-    @ParameterizedTest
-    @DisplayName("Registrazione Biblioteca che va a buon fine")
-    @MethodSource("provideRegistrazioneBiblioteca")
-    public void registrazioneBiblioteca_FormatoEmailNonValido(final BibliotecaDTO utenteDTO,
-                                          final String confermaPassword)
-            throws Exception {
-
-        Biblioteca biblioteca = new Biblioteca(utenteDTO);
-        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO))
-                .thenReturn(biblioteca);
-        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
-
-
-        this.mockMvc.perform(post("/registrazione/biblioteca")
-                        .param("email", "contatti.unisa.com")
-                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
-                        .param("password", "BibliotecaPassword")
-                        .param("confermaPassword", confermaPassword)
-                        .param("provincia", utenteDTO.getProvincia())
-                        .param("citta", utenteDTO.getCitta())
-                        .param("via", utenteDTO.getVia())
-                        .param("recapitoTelefonico",
-                                utenteDTO.getRecapitoTelefonico()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
-    }
     @ParameterizedTest
     @DisplayName("Registrazione Biblioteca che va a buon fine")
     @MethodSource("provideRegistrazioneBiblioteca")
@@ -757,7 +1328,7 @@ public final class RegistrazioneControllerTest {
     @DisplayName("Registrazione Biblioteca che non va a buon fine "
            + "perché la conferma password è sbagliata")
     @MethodSource("provideRegistrazioneBiblioteca")
-    public void registrazioneBibliotecaPasswordErrata(
+    public void registrazioneBiblioteca_PasswordErrata(
                                                 final BibliotecaDTO utenteDTO,
                                                 final String confermaPassword)
                                                             throws Exception {
@@ -779,7 +1350,7 @@ public final class RegistrazioneControllerTest {
                         .param("via", utenteDTO.getVia())
                         .param("recapitoTelefonico",
                                 utenteDTO.getRecapitoTelefonico()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
     }
 
     /**
@@ -1553,6 +2124,503 @@ public final class RegistrazioneControllerTest {
                         ), "LettorePassword"//Password Conferma
                 )
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneLettoreOK(final BibliotecaDTO utenteDTO,
+                                       final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_FormatoProvinciaNonValido(final BibliotecaDTO utenteDTO,
+                                                                  final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", "$@1€rn0")
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_FormatoCittàNonValido(final BibliotecaDTO utenteDTO,
+                                                              final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", "$@1€rn0")
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_RecapitoNonFornito(final BibliotecaDTO utenteDTO,
+                                                           final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia()))
+                //.param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_FormatoEmailNonValido(final BibliotecaDTO utenteDTO,
+                                                              final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", "abaco")
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_EmailNonFornita(final BibliotecaDTO utenteDTO,
+                                                        final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        //.param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_EmailGiàRegistrata(final BibliotecaDTO utenteDTO,
+                                                           final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(true);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ISCRIZIONE_FALLITA));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_PasswordNonFornita(final BibliotecaDTO utenteDTO,
+                                                           final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        //.param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_ConfermaPasswordNonFornita(final BibliotecaDTO utenteDTO,
+                                                                   final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        //.param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(status().is(400));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_PasswordNonCombaciano(final BibliotecaDTO utenteDTO,
+                                                              final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", "EspertoPassword")
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+    }
+
+
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_NomeTroppoLungo(final BibliotecaDTO utenteDTO,
+                                                        final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", "aaaaa-aaaaa-aaaaa-aaaaa-aaaaa-a")
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_NomeTroppoCorto(final BibliotecaDTO utenteDTO,
+                                                        final String confermaPassword)
+            throws Exception {
+
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", "aa")
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_IndirizzoNonFornito(final BibliotecaDTO utenteDTO,
+                                                            final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        //.param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_CittaNonFornita(final BibliotecaDTO utenteDTO,
+                                                        final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        //.param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_NomeNonFornito(final BibliotecaDTO utenteDTO,
+                                                       final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        //.param("nome", utenteDTO.getNome())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_ProvinciaNonFornita(final BibliotecaDTO utenteDTO,
+                                                            final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", utenteDTO.getEmail())
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        //.param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_RecapitoTelefonicoNonValido(final BibliotecaDTO utenteDTO,
+                                                                    final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", "a")
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", "Roosevekt"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_FormatoIndirizzoNonValido(final BibliotecaDTO utenteDTO,
+                                                                  final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", "a")
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", "Via Casilina Vecchia $")
+                        .param("recapitoTelefonico", "Roosevekt"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_FormatoNomeNonValido(final BibliotecaDTO utenteDTO,
+                                                             final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", "a")
+                        .param("nomeBiblioteca", "ישׁמעאל")
+                        .param("password", confermaPassword)
+                        .param("confermaPassword", confermaPassword)
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_PasswordTroppoCorta(final BibliotecaDTO utenteDTO,
+                                                            final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", "a")
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", "1234")
+                        .param("confermaPassword", "1234")
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", utenteDTO.getRecapitoTelefonico()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRegistrazioneBiblioteca")
+    public void registrazioneBiblioteca_FormatoRecapitoNonValido(final BibliotecaDTO utenteDTO,
+                                                                 final String confermaPassword)
+            throws Exception {
+
+        Biblioteca b = new Biblioteca(utenteDTO);
+        when(bibliotecaService.creaBibliotecaDaModel(utenteDTO)).thenReturn(b);
+        when(registrazioneService.isEmailRegistrata(Mockito.anyString())).thenReturn(false);
+
+
+        this.mockMvc.perform(post("/registrazione/biblioteca")
+                        .param("email", "a")
+                        .param("nomeBiblioteca", utenteDTO.getNomeBiblioteca())
+                        .param("password", "1234")
+                        .param("confermaPassword", "1234")
+                        .param("provincia", utenteDTO.getProvincia())
+                        .param("citta", utenteDTO.getCitta())
+                        .param("via", utenteDTO.getVia())
+                        .param("recapitoTelefonico", "recapitononvalido"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
     }
 
 }

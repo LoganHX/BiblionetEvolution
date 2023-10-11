@@ -38,6 +38,7 @@ public abstract class UtenteRegistratoDTO {
      */
     @NonNull
     @NotNull
+    @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String provincia;
 
     /**
@@ -45,6 +46,7 @@ public abstract class UtenteRegistratoDTO {
      */
     @NonNull
     @NotNull
+    @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
     private String citta;
 
     /**

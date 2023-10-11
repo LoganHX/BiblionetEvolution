@@ -24,14 +24,16 @@ public class LettoreDTO extends UtenteRegistratoDTO {
     @NonNull
     @NotNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
+    @Size(min = BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME, message = "Il campo 'nome' può avere al massimo 30 caratteri")
     private String nome;
     @NonNull
     @NotNull
     @Pattern(regexp = BiblionetConstraints.NAME_REGEX)
+    @Size(min = BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME, message = "Il campo 'cognome' può avere al massimo 30 caratteri")
     private String cognome;
     @NonNull
     @NotNull
-    @Size(max = 30, message = "Il campo 'nome' può avere al massimo 50 caratteri")
+    @Size(min = BiblionetConstraints.LUNGHEZZA_MINIMA_NOME, max = BiblionetConstraints.LUNGHEZZA_MASSIMA_NOME, message = "Il campo 'username' può avere al massimo 30 caratteri")
     private String username;
 
     public LettoreDTO(@NonNull String email, @NonNull String password, @NonNull String provincia, @NonNull String citta, @NonNull @Pattern(regexp = BiblionetConstraints.ADDRESS_REGEX) String via, @NonNull @Pattern(regexp = BiblionetConstraints.PHONE_REGEX) String recapitoTelefonico, String nome, String cognome, String username) {
