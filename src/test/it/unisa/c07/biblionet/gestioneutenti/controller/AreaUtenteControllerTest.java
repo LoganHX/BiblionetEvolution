@@ -101,7 +101,6 @@ public class AreaUtenteControllerTest {
             final String nuovaPassword,
             final String confermaPassword) throws Exception {
 
-        //todo dovrei testare controlli preliminari sia qua che in registrazione?
         String token="";
         Lettore lettore = new Lettore();
 

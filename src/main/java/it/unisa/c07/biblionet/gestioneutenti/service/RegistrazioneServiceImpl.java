@@ -21,26 +21,6 @@ public class RegistrazioneServiceImpl implements RegistrazioneService {
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
 
-/*
-
-
-    @Override
-    public final UtenteRegistrato aggiornaEsperto(final EspertoDTO esperto, final String emailBiblioteca) {
-        return espertoService.aggiornaEspertoDaModel(esperto, bibliotecaService.findBibliotecaByEmail(emailBiblioteca));
-        //todo controllare se sono inutili
-    }
-
-    @Override
-    public final UtenteRegistrato aggiornaLettore(final LettoreDTO lettore) {
-        return lettoreService.aggiornaLettoreDaModel(lettore);
-        //todo controllare se inutile
-    }
-
-    @Override
-    public UtenteRegistrato aggiornaBiblioteca(final BibliotecaDTO bibliotecaDTO) {
-        return bibliotecaService.creaBibliotecaDaModel(bibliotecaDTO);
-    }
-*/
 
     /**
      * Implementa la funzionalità di controllare se una mail è

@@ -49,7 +49,6 @@ public class LettoreServiceImpl implements LettoreService {
         listaClubs.add(club);
         lettore.setClubs(listaClubs);
         aggiornaLettore(lettore);
-        //todo non ha senso
         return true;
     }
 

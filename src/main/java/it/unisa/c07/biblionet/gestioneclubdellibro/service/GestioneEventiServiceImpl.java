@@ -2,7 +2,6 @@ package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.LibroDAO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDelLibroService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EventoDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
@@ -32,7 +31,6 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * Si occupa delle operazioni CRUD per un evento.
      */
     private final EventoDAO eventoDAO;
-    private final ClubDelLibroService clubDelLibroService;
     private final LettoreService lettoreService;
     private final LibroDAO libroDAO;
 
@@ -70,12 +68,11 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * l'evento modificato.
      */
     @Override
-    public Optional<Evento> modificaEvento(final Evento evento) {
+    public Evento modificaEvento(final Evento evento) {
         if (!this.eventoDAO.existsById(evento.getIdEvento())) {
-            return Optional.ofNullable(creaEvento(evento));
+            return creaEvento(evento);
         }
-        var eventoSalvato = eventoDAO.save(evento);
-        return Optional.of(eventoSalvato);
+       return eventoDAO.save(evento);
     }
 
     /**
@@ -100,14 +97,14 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
      * esiste.
      */
     @Override
-    public Optional<Evento> eliminaEvento(final int id) {
+    public Evento eliminaEvento(final int id) {
         var evento = this.eventoDAO.findById(id);
         if (evento.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
 
         this.eventoDAO.deleteById(id);
-        return evento;
+        return evento.get();
     }
 
     /**
@@ -123,7 +120,7 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         Evento evento = eventoDAO.getOne(idEvento);
         Lettore lettore = lettoreService.findLettoreByEmail(idLettore);
         List<Evento> listaEventi = lettore.getEventi();
-        if (listaEventi == null) {
+        if (listaEventi == null || listaEventi.isEmpty()) {
             listaEventi = new ArrayList<>();
         }
         for (Evento e : listaEventi) {
@@ -150,12 +147,10 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
         Lettore lettore = lettoreService.findLettoreByEmail(idLettore);
         List<Evento> listaEventi = lettore.getEventi();
 
-        //Per chiunque leggesse, non fate domande e non toccate. Grazie
         int pos = -1;
         for (int i = 0; i < listaEventi.size(); i++) {
             if (listaEventi.get(i).getIdEvento() == evento.getIdEvento()) {
                 pos = i;
-                //break;
             }
         }
         if (pos != -1) {
@@ -177,7 +172,6 @@ public class GestioneEventiServiceImpl implements GestioneEventiService {
     public List<EventoDTO> getInformazioniEventi(List<Evento> eventiList) {
         List<EventoDTO> eventi = new ArrayList<>();
         for (Evento e: eventiList){
-            System.err.println(e.getNomeEvento());
             eventi.add(new EventoDTO(e));
         }
         return eventi;

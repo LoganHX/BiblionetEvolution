@@ -132,7 +132,7 @@ public class EventoControllerTest {
 
         when(
                 eventiService.eliminaEvento(1)
-        ).thenReturn(Optional.of(new Evento()));
+        ).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(post("/gestione-eventi/elimina-evento")
@@ -320,7 +320,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -356,7 +356,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -392,7 +392,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -429,7 +429,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -465,7 +465,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -500,7 +500,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -535,7 +535,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(null);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -571,7 +571,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(2);
@@ -607,7 +607,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -642,7 +642,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.empty());
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -679,7 +679,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -715,7 +715,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -751,7 +751,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -786,7 +786,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -822,7 +822,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -858,7 +858,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -893,7 +893,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -929,7 +929,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -965,7 +965,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
         when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.of(e));
         when(e.getClub()).thenReturn(clubDelLibro);
         when(clubDelLibro.getIdClub()).thenReturn(idEvento);
@@ -997,7 +997,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1026,7 +1026,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(null);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1056,7 +1056,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1084,7 +1084,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1112,7 +1112,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1141,7 +1141,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1170,7 +1170,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1201,7 +1201,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1230,7 +1230,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1260,7 +1260,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1290,7 +1290,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1319,7 +1319,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1348,7 +1348,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1377,7 +1377,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1405,7 +1405,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.empty());
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1435,7 +1435,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1464,7 +1464,7 @@ public class EventoControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1492,7 +1492,7 @@ public class EventoControllerTest {
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(Optional.of(new Evento()));
+        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -1506,103 +1506,6 @@ public class EventoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
 
-//    /**
-//     * Implementa il test della funzionalità gestita dal
-//     * controller per la creazione di un evento,
-//     * simulando la richiesta http.
-//     *
-//     * @param club Un club per la simulazione
-//     * @throws Exception Eccezione per MovkMvc
-//     */
-//    /* Non possibile il mocking poiche il metodo è statico */
-//    @ParameterizedTest
-//    @MethodSource("provideClubDelLibro")
-//    public void creaEventoErroreFormatoNome(final ClubDelLibro club) throws Exception {
-//        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(club);
-//        //todo il token
-//        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/crea")
-//                        .param("nome", "Discussione sopra i due massimi sistemi")
-//                        .param("descrizione", "TestDescrizione")
-//                        .param("data", "2024-11-11")
-//                        .param("ora", "12:24")
-//                        .param("id", "1")
-//                        .param("libro", "2"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.RICHIESTA_NON_VALIDA));
-//
-//    }
-
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per la creazione di un evento,
-     * simulando la richiesta http.
-     *
-     * @param club Un club per la simulazione
-     * @throws Exception Eccezione per MovkMvc
-     */
-    @ParameterizedTest
-    @MethodSource("provideClubDelLibro")
-    public void creaEventoErroreFormatoDescrizione(final ClubDelLibro club) throws Exception {
-        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(club);
-
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/crea")
-                        .param("nome", "TestNome")
-                        .param("descrizione", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum")
-                        .param("data", "2024-08-11")
-                        .param("ora", "13:24")
-                        .param("id", "1")
-                        .param("libro", "3"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.RICHIESTA_NON_VALIDA));
-    }
-
-//    /**
-//     * Implementa il test della funzionalità gestita dal
-//     * controller per la creazione di un evento
-//     * simulando la richiesta http.
-//     *
-//     * @param club Un club per la simulazione
-//     * @throws Exception Eccezione per MovkMvc
-//     */
-//    @ParameterizedTest
-//    @MethodSource("provideClubDelLibro")
-//    public void creaEventoErroreFormatoData(final ClubDelLibro club) throws Exception {
-//        when(clubService.getClubByID(1)).thenReturn(club);
-//        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/crea")
-//                        .param("nome", "TestNome")
-//                        .param("descrizione", "TestDescrizione")
-//                        .param("data", "1985-11-10")
-//                        .param("ora", "14:24")
-//                        .param("id", "1")
-//                        .param("libro", "4"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Data non valida"));
-//    }
-
-
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per la creazione di un evento
-     * simulando la richiesta http.
-     *
-     * @param club Un club per la simulazione
-     * @throws Exception Eccezione per MovkMvc
-     */
-    @ParameterizedTest
-    @MethodSource("provideClubDelLibro")
-    public void creaEventoErroreLibro(final ClubDelLibro club) throws Exception {
-        when(clubService.getClubByID(1)).thenReturn(club);
-        when(eventiService.getLibroById(5)).thenReturn(Optional.empty());
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/crea")
-                        .param("nome", "TestNome")
-                        .param("descrizione", "TestDescrizione")
-                        .param("data", "2024-09-11")
-                        .param("ora", "15:24")
-                        .param("id", "1")
-                        .param("libro", "5"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Libro inserito non valido"));
-
-    }
-
-
-
 
     /**
      * Implementa il test della funzionalità gestita dal
@@ -1613,7 +1516,7 @@ public class EventoControllerTest {
      */
     @Test
     public void eliminaEventoInesistente() throws Exception {
-        when(eventiService.eliminaEvento(1)).thenReturn(Optional.empty());
+        when(eventiService.eliminaEvento(1)).thenReturn(null);
         System.out.println(Optional.empty());
         this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/elimina-evento")
                         .param("club", String.valueOf(1))
@@ -1621,100 +1524,10 @@ public class EventoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Evento inesistente"));
     }
 
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per la visualizzazione di una modifica ad
-     * un evento simulando la richiesta http.
-     *
-     * @throws Exception Eccezione per MovkMvc
-     */
-    @Test
-    public void visualizzaModificaEventoNonEsisteClub() throws Exception {
-        // Creo esperto
-        String token="";
-
-        // Mocking
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
-
-        when(eventiService.getEventoById(Mockito.anyInt())).thenReturn(Optional.empty());
-        // Assert Test
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/modifica")
-                        .param("idClub", "1")
-                        .param("idEvento", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
-
-    }
-
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per visualizzazione di modifica di un
-     * evento simulando la richiesta http.
-     *
-     * @param club Un club per la simulazione
-     * @throws Exception Eccezione per MovkMvc
-     */
-
-    @ParameterizedTest
-    @MethodSource("provideClubDelLibro")
-    public void visualizzaModificaEventoUserNotValid(final ClubDelLibro club) throws Exception {
-
-        //todo abbiamo ignorato tutti i bindingResults, basterebbe mockarne la classe...
-
-        //todo di fatto controllo solo che l'esperto non sia lo stesso associato al clun dell'evento
-
-        String token="";
 
 
-        Evento evento = new Evento();
-        evento.setIdEvento(1);    // todo creare metodo provideEvento errore nel creazione evento
-        evento.setClub(club);
-        Esperto esperto = new Esperto();
-        club.setEsperto(esperto);
-
-        esperto.setEmail("mamix56@gmail.it");
-        club.setIdClub(1);
-
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
-        when(eventiService.getEventoById(1)).thenReturn(Optional.of(evento));
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/modifica")
-                        .param("idClub", "1")
-                        .param("idEvento", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
-
-    }
-
-    /**
-     * Implementa il test della funzionalità gestita dal
-     * controller per visualizzazione di modifica di un
-     * evento simulando la richiesta http.
-     *
-     * @param club Un club per la simulazione
-     * @throws Exception Eccezione per MovkMvc
-     */
-    @ParameterizedTest
-    @MethodSource("provideClubDelLibro")
-    public void visualizzaModificaEventoNotMatchingClub(final ClubDelLibro club) throws Exception {
-        // Creo Evento da associare al club
-
-        String token="";
-
-        Evento evento = new Evento();
-        evento.setClub(club);
-        String idEvento = "1";
-        String idClub = "1";
-
-        // Mocking
-        when(eventiService.getEventoById(Integer.parseInt(idEvento))).thenReturn(Optional.of(evento));
-        //Assert del test
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/eventi/modifica")
-                        .param("idClub", idClub)
-                        .param("idEvento", idEvento)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
 
 
-    }
+
 
 }

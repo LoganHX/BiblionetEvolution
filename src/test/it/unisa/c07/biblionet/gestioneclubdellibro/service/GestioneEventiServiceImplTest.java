@@ -107,8 +107,8 @@ public class GestioneEventiServiceImplTest {
 
         var eventoEliminato = this.gestioneEventi.eliminaEvento(1);
 
-        assertTrue(eventoEliminato.isPresent());
-        assertEquals(evento, eventoEliminato.get());
+        assert(eventoEliminato != null);
+        assertEquals(evento, eventoEliminato);
     }
 
     /**

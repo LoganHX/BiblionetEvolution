@@ -92,9 +92,9 @@ public class EventoController {
         BiblionetResponse br = checkPermessi(clubDelLibro, token);
         if(br != null) return br;
 
-        Optional<Evento> eventoEliminato = this.eventiService.eliminaEvento(idEvento);
+        Evento eventoEliminato = this.eventiService.eliminaEvento(idEvento);
 
-        if (eventoEliminato.isEmpty()) {
+        if (eventoEliminato == null) {
             return new BiblionetResponse("Evento inesistente", false);
         }
 

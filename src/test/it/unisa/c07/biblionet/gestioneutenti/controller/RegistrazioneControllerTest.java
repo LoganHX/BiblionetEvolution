@@ -10,14 +10,11 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneutenti.RegistrazioneService;
-import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
-import it.unisa.c07.biblionet.utils.Utils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,14 +22,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.validation.BindingResult;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.HashMap;
 import java.util.stream.Stream;
 
 /**
@@ -48,12 +42,7 @@ public final class RegistrazioneControllerTest {
      */
     @MockBean
     private RegistrazioneService registrazioneService;
-    /**
-     * Mock del service per simulare
-     * le operazioni dei metodi.
-     */
-    @MockBean
-    private Utils utils;
+
     /**
      * Mock del service per simulare
      * le operazioni dei metodi.
@@ -513,7 +502,7 @@ public final class RegistrazioneControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEsperto_CittàNonFornita(
+    public void registrazioneEsperto_CittaNonFornita(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -628,7 +617,7 @@ public final class RegistrazioneControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEsperto_FormatoCittàNonValido(
+    public void registrazioneEsperto_FormatoCittaNonValido(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -1165,7 +1154,7 @@ public final class RegistrazioneControllerTest {
     @DisplayName("Registrazione Esperto che non va a buon fine" +
                  "perchè la mail inserita è già presente")
     @MethodSource("provideRegistrazioneEsperto")
-    public void registrazioneEsperto_EmailGiàPresente(
+    public void registrazioneEsperto_EmailPresente(
             final EspertoDTO utenteDTO, final String confermaPassword) throws Exception {
 
         Biblioteca biblioteca = new Biblioteca(
@@ -1473,7 +1462,7 @@ public final class RegistrazioneControllerTest {
     }
     @ParameterizedTest
     @MethodSource("provideRegistrazioneLettore")
-    public void registrazioneLettore_FormatoCittàNonValido(final LettoreDTO utenteDTO,
+    public void registrazioneLettore_FormatoCittaNonValido(final LettoreDTO utenteDTO,
                                        final String confermaPassword)
             throws Exception {
 
@@ -1577,7 +1566,7 @@ public final class RegistrazioneControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideRegistrazioneLettore")
-    public void registrazioneLettore_EmailGiàRegistrata(final LettoreDTO utenteDTO,
+    public void registrazioneLettore_EmailRegistrataPrecedentemente(final LettoreDTO utenteDTO,
                                        final String confermaPassword)
             throws Exception {
 
@@ -2175,7 +2164,7 @@ public final class RegistrazioneControllerTest {
     }
     @ParameterizedTest
     @MethodSource("provideRegistrazioneBiblioteca")
-    public void registrazioneBiblioteca_FormatoCittàNonValido(final BibliotecaDTO utenteDTO,
+    public void registrazioneBiblioteca_FormatoCittaNonValido(final BibliotecaDTO utenteDTO,
                                                               final String confermaPassword)
             throws Exception {
 
@@ -2271,7 +2260,7 @@ public final class RegistrazioneControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideRegistrazioneBiblioteca")
-    public void registrazioneBiblioteca_EmailGiàRegistrata(final BibliotecaDTO utenteDTO,
+    public void registrazioneBiblioteca_EmailRegistrataPrecedentemente(final BibliotecaDTO utenteDTO,
                                                            final String confermaPassword)
             throws Exception {
 

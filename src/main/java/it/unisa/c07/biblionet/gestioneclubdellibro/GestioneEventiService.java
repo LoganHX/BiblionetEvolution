@@ -34,12 +34,13 @@ public interface GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * di modificare un evento.
+     *
      * @param evento La nuova versione dell'evento
      * @return Optional.empty() se l'evento da modificare
-     *         non esiste, altrimenti un optional contenente
-     *         l'evento modificato.
+     * non esiste, altrimenti un optional contenente
+     * l'evento modificato.
      */
-    Optional<Evento> modificaEvento(Evento evento);
+    Evento modificaEvento(Evento evento);
 
     /**
      * Metodo di utilità per recuperare
@@ -52,12 +53,13 @@ public interface GestioneEventiService {
     /**
      * Implementa la funzionalità che permette
      * ad un Esperto di eliminare un evento.
+     *
      * @param id L'id dell'evento da eliminare
      * @return L'evento che è stato eliminato, o
-     *         un Optional vuoto se l'evento non
-     *         esiste.
+     * un Optional vuoto se l'evento non
+     * esiste.
      */
-    Optional<Evento> eliminaEvento(int id);
+    Evento eliminaEvento(int id);
 
     /**
      * Implementa la funzionalità che permette

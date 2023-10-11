@@ -154,33 +154,6 @@ public class AutenticazioneServiceImplTest {
                                                         password));
     }
 
-    /**
-     * Metodo che si occupa di testare
-     * se l'utente è un esperto.
-     */
-    @Test
-    public void isEsperto() {
-        UtenteRegistrato utenteRegistrato = new Esperto();
-
-        when(autenticazioneService.isEsperto(utenteRegistrato))
-                .thenReturn(true);
-
-        assertTrue(autenticazioneService.isEsperto(utenteRegistrato));
-    }
-
-    /**
-     * Metodo che si occupa di testare
-     * se l'utente è un lettore.
-     */
-    @Test
-    public void isLettore() {
-        UtenteRegistrato utenteRegistrato = new Lettore();
-
-        when(autenticazioneService.isLettore(utenteRegistrato))
-                .thenReturn(true);
-
-        assertTrue(autenticazioneService.isLettore(utenteRegistrato));
-    }
 
 
 

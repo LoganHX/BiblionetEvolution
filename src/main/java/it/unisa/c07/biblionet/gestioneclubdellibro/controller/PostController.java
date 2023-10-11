@@ -32,9 +32,9 @@ public class PostController {
     @ResponseBody
     @CrossOrigin
     public BiblionetResponse creaPost(final @Valid @ModelAttribute PostDTO postDTO,
-                                                  @RequestHeader(name = "Authorization") final String token,
-                                                  BindingResult bindingResult,
-                                                  final @RequestParam("idClub") int idClub) {
+                                                    BindingResult bindingResult,
+                                                    @RequestHeader(name = "Authorization") final String token,
+                                                    final @RequestParam("idClub") int idClub) {
 
 
         postDTO.setDate(LocalDateTime.now());
@@ -114,11 +114,12 @@ public class PostController {
 
     private BiblionetResponse checkAutorizzazioneEsperto(String token, ClubDelLibro clubDelLibro, BindingResult bindingResult){
 
-        if(!utils.isUtenteEsperto(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-
-        if(!utils.getSubjectFromToken(token).equals(clubDelLibro.getEsperto().getEmail()))
+        if(!utils.isUtenteEsperto(token)) {
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-
+        }
+        if(!utils.match(utils.getSubjectFromToken(token),clubDelLibro.getEsperto().getEmail())) {
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        }
 
         if(bindingResult.hasErrors()){
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);

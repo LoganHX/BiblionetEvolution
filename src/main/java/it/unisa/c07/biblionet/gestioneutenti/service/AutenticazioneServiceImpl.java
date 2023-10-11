@@ -58,41 +58,6 @@ public class AutenticazioneServiceImpl implements AutenticazioneService {
 
     }
 
-    /**
-     * Implementa la funzionalità che
-     * identifica un utente in sessione.
-     *
-     * @param utente registrato che si trova già in sessione.
-     * @return true se l'utente è un lettore altrimenti false.
-     */
-    @Override
-    public boolean isLettore(final UtenteRegistrato utente) {
-        return utente.getTipo().equalsIgnoreCase("Lettore");
-    }
-
-    /**
-     * Implementa la funzionalità che
-     * identifica di un utente in sessione.
-     *
-     * @param utente registrato che si trova già in sessione.
-     * @return true se l'utente è un esperto altrimenti false.
-     */
-    @Override
-    public boolean isEsperto(final UtenteRegistrato utente) {
-        return utente.getTipo().equalsIgnoreCase("Esperto");
-    }
-
-    /**
-     * Implementa la funzionalità che
-     * identifica un utente in sessione.
-     *
-     * @param utente registrato che si trova già in sessione.
-     * @return true se l'utente è una biblioteca altrimenti false.
-     */
-    @Override
-    public boolean isBiblioteca(final UtenteRegistrato utente) {
-        return utente.getTipo().equalsIgnoreCase("Biblioteca");
-    }
 
 
 
