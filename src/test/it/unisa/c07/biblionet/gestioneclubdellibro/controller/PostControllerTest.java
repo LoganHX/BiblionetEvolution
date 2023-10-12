@@ -97,25 +97,6 @@ public class PostControllerTest {
 
 
 
-    /**
-     * Simula i dati inviati da un metodo
-     * http attraverso uno stream.
-     * @return Lo stream di dati.
-     */
-    private static Stream<Arguments> provideLettore() {
-        return Stream.of(Arguments.of(new Lettore("giuliociccione@gmail.com",
-                "LettorePassword",
-                "Salerno",
-                "Baronissi",
-                "Via Barone 11",
-                "3456789012",
-                "SuperLettore",
-                "Giulio",
-                "Ciccione"
-        )));
-    }
-
-
     @ParameterizedTest
     @MethodSource("provideClubDelLibro")
     public void creaPostOk(ClubDelLibro clubDelLibro) throws Exception {
@@ -415,14 +396,17 @@ public class PostControllerTest {
     public void aggiungiCommento_ByLettoreOk(ClubDelLibro clubDelLibro) throws Exception {
 
         Post post = mock(Post.class);
+        Lettore lettore = new Lettore();
+        lettore.setEmail("email@email.it");
 
         clubDelLibro.setIdClub(1);
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(post.getClubDelLibro()).thenReturn(clubDelLibro);
-        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(new Lettore());
+        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
         when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
-        when(clubService.isLettoreIscrittoAClub("a", 1)).thenReturn(true);
+        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
+
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders
@@ -433,4 +417,185 @@ public class PostControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_IDPostNonFornito(ClubDelLibro clubDelLibro) throws Exception {
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        //.param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_ContenutoNonFornito(ClubDelLibro clubDelLibro) throws Exception {
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        //.param("content", "Prova")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_ContenutoTroppoCorto(ClubDelLibro clubDelLibro) throws Exception {
+
+//        Post post = mock(Post.class);
+//        Lettore lettore = new Lettore();
+//        lettore.setEmail("email@email.it");
+//
+//        clubDelLibro.setIdClub(1);
+//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
+//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
+
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "aa")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_ContenutoTroppoLungo(ClubDelLibro clubDelLibro) throws Exception {
+
+//        Post post = mock(Post.class);
+//        Lettore lettore = new Lettore();
+//        lettore.setEmail("email@email.it");
+//
+//        clubDelLibro.setIdClub(1);
+//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
+//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
+
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Il conta caratteri è semplice da usare, scrivi nella casella di input oppure copia e incolla un testo e sulla destra appariranno automaticamente tutte le statistiche. Il calcolo è dinamico, dall'istante in cui inizi a scrivere, oppure dopo aver incollato a")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_PostInesistente(ClubDelLibro clubDelLibro) throws Exception {
+
+
+        when(postService.getPostByID(Mockito.anyInt())).thenReturn(null);
+
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_TokenNonValido(ClubDelLibro clubDelLibro) throws Exception {
+
+//        Post post = mock(Post.class);
+//        Lettore lettore = new Lettore();
+//        lettore.setEmail("email@email.it");
+//
+//        clubDelLibro.setIdClub(1);
+//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
+//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
+
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_TokenNonFornito(ClubDelLibro clubDelLibro) throws Exception {
+
+//        Post post = mock(Post.class);
+//        Lettore lettore = new Lettore();
+//        lettore.setEmail("email@email.it");
+//
+//        clubDelLibro.setIdClub(1);
+//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
+//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
+//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
+
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        .param("idPost", "1"))
+                        //.header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(status().is(400));
+    }
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_TokenBiblioteca(ClubDelLibro clubDelLibro) throws Exception {
+
+
+        Post post = mock(Post.class);
+        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+
+
+        clubDelLibro.setIdClub(1);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
+
+
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
+    }
 }
+

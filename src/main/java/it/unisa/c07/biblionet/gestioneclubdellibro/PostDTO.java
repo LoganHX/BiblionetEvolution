@@ -5,6 +5,7 @@ import it.unisa.c07.biblionet.utils.BiblionetConstraints;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
 import javax.validation.constraints.NotNull;
@@ -15,7 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
+@RequiredArgsConstructor
+
 public class PostDTO {
 
     private int id;
