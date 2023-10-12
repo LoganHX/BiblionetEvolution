@@ -134,6 +134,12 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
         return club.getEsperto().getBiblioteca().getCitta();
     }
 
+    @Override
+    public final boolean isLettoreIscrittoAClub(String email, int idClub){
+        ClubDelLibro clubDelLibro = clubDAO.isLettoreIscrittoAClub(email, idClub);
+        return clubDelLibro != null;
+    }
+
 
     /**
      * Restituisce tutte le citta nel sistema.

@@ -6,10 +6,10 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 public interface LettoreService {
     Lettore findLettoreByEmail(String email);
 
-    Boolean partecipaClub(ClubDelLibro club,
-                          Lettore lettore);
+    Lettore effettuaIscrizioneClub(ClubDelLibro club,
+                                   Lettore lettore);
 
-    Boolean abbandonaClub(ClubDelLibro club,
+    Lettore abbandonaClub(ClubDelLibro club,
                           Lettore lettore);
 
     Lettore aggiornaLettore(Lettore utente);

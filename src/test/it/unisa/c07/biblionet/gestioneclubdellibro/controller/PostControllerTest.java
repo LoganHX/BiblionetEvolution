@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.stream.Stream;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,7 +56,7 @@ public class PostControllerTest {
     @MockBean
     private EspertoService espertoService;
     @MockBean
-    private ClubDelLibroService clubDelLibroService;
+    private ClubDelLibroService clubService;
     @MockBean
     private Utils utils;
     @MockBean
@@ -94,6 +95,8 @@ public class PostControllerTest {
 
 
 
+
+
     /**
      * Simula i dati inviati da un metodo
      * http attraverso uno stream.
@@ -120,7 +123,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -141,7 +144,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -162,7 +165,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -183,7 +186,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -204,7 +207,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -225,7 +228,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(null);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(null);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -247,7 +250,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -267,7 +270,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -287,7 +290,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -307,7 +310,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -328,7 +331,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -348,7 +351,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -369,7 +372,7 @@ public class PostControllerTest {
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubDelLibroService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
         when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
         when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
 
@@ -383,4 +386,51 @@ public class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_ByEspertoOk(ClubDelLibro clubDelLibro) throws Exception {
+
+        Post post = mock(Post.class);
+
+
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
+        when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
+        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideClubDelLibro")
+    public void aggiungiCommento_ByLettoreOk(ClubDelLibro clubDelLibro) throws Exception {
+
+        Post post = mock(Post.class);
+
+        clubDelLibro.setIdClub(1);
+        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
+        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(new Lettore());
+        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
+        when(clubService.isLettoreIscrittoAClub("a", 1)).thenReturn(true);
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders
+                        .post("/post/aggiungi-commento")
+                        .param("titolo", "Prova")
+                        .param("content", "Prova")
+                        .param("idPost", "1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
+    }
 }

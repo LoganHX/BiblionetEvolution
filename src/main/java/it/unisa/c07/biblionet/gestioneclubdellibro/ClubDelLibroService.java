@@ -73,6 +73,7 @@ public interface ClubDelLibroService {
     String getCittaFromClubDelLibro(ClubDelLibro club);
 
 
+    boolean isLettoreIscrittoAClub(String email, int idClub);
 
     /**
      * Restituisce tutte le citta nel sistema.

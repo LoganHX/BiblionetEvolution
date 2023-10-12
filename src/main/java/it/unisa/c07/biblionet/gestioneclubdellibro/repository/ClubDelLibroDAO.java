@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public interface ClubDelLibroDAO extends JpaRepository<ClubDelLibro, Integer> {
      * @return la lista dei club del libro a cui partecipa
      */
     List<ClubDelLibro> findAllByEsperto(Esperto esperto);
+
+    @Query("SELECT c FROM ClubDelLibro c JOIN c.lettori l WHERE l.email=?1 and c.idClub=?2")
+    ClubDelLibro isLettoreIscrittoAClub(String email, int idClub);
 
 
 }

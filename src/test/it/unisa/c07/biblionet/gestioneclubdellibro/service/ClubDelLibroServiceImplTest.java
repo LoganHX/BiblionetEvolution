@@ -80,6 +80,11 @@ public class ClubDelLibroServiceImplTest {
         assertEquals(list, clubService.visualizzaClubsDelLibro());
     }
 
+    @Test
+    public boolean isLettoreIscrittoAClub_OK(){
+        when(clubDAO.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(new ClubDelLibro());
+        return true;
+    }
 
 
     /**

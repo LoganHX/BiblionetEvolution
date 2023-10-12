@@ -1,18 +1,16 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreDTO;
-import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LettoreDAO;
-import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class LettoreServiceImpl implements LettoreService {
@@ -30,6 +28,8 @@ public class LettoreServiceImpl implements LettoreService {
         return lettoreDAO.findLettoreByEmail(email, "Lettore");
     }
 
+
+
     /**
      * Implementa la funzionalità che permette
      * a un lettore di effettuare
@@ -40,16 +40,16 @@ public class LettoreServiceImpl implements LettoreService {
      * @return true se è andato a buon fine, false altrimenti
      */
     @Override
-    public Boolean partecipaClub(final ClubDelLibro club,
-                                 final Lettore lettore) {
+    public Lettore effettuaIscrizioneClub(final ClubDelLibro club,
+                                          final Lettore lettore) {
         List<ClubDelLibro> listaClubs = lettore.getClubs();
         if (listaClubs == null) {
             listaClubs = new ArrayList<>();
         }
         listaClubs.add(club);
         lettore.setClubs(listaClubs);
-        aggiornaLettore(lettore);
-        return true;
+        return aggiornaLettore(lettore);
+        //return lettore;
     }
 
     /**
@@ -62,19 +62,19 @@ public class LettoreServiceImpl implements LettoreService {
      * @return true se è andato a buon fine, false altrimenti
      */
     @Override
-    public Boolean abbandonaClub(final ClubDelLibro clubDelLibro,
+    public Lettore abbandonaClub(final ClubDelLibro clubDelLibro,
                                  final Lettore lettore) {
         List<ClubDelLibro> listaClubs = lettore.getClubs();
         if (listaClubs == null || listaClubs.isEmpty()) {
-            return true;
+            return lettore;
         }
-        else if(!lettore.getClubs().contains(clubDelLibro)) return true;
+        else if(!lettore.getClubs().contains(clubDelLibro)) return lettore;
         if(lettore.getClubs().contains(clubDelLibro)){
             lettore.getClubs().remove(clubDelLibro);
             lettoreDAO.save(lettore);
-            return true;
+            return lettore;
         }
-        return false;
+        return null;
     }
 
 

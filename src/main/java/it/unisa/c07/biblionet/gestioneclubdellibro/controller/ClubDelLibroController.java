@@ -191,8 +191,8 @@ public class ClubDelLibroController {
         if (!utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         ClubDelLibro clubDelLibro = this.clubService.getClubByID(id);
-        boolean esito = lettoreService.abbandonaClub(clubDelLibro, lettore);
-        if (esito) {
+        Lettore esito = lettoreService.abbandonaClub(clubDelLibro, lettore);
+        if (esito != null) {
             return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
         }
         return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
@@ -218,24 +218,21 @@ public class ClubDelLibroController {
         if (clubDelLibro.getLettori().contains(lettore)) {
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
         }
-        lettoreService.partecipaClub(clubDelLibro, lettore);
+        lettoreService.effettuaIscrizioneClub(clubDelLibro, lettore);
         return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_OK, true);
     }
 
-    @GetMapping(value = "/partecipazione-lettore")
+    @PostMapping(value = "/partecipazione-lettore-ok")
     @ResponseBody
     @CrossOrigin
-    public boolean visualizzaPartecipazioneClubsLettore(
-            final @RequestHeader(name = "Authorization") String token, final @RequestParam int idClub
+    public boolean isLettoreIscrittoAClub(
+            final @RequestHeader(name = "Authorization") String token,
+            final @RequestParam int idClub
     ) {
-        //todo sostituire con una query diretta
         if (!utils.isUtenteLettore(token)) return false;
-        List<ClubDelLibro> clubs =  lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token)).getClubs();
-        for(ClubDelLibro club: clubs){
-            if(idClub == club.getIdClub()) return true;
-        }
-        return false;
+        return clubService.isLettoreIscrittoAClub(utils.getSubjectFromToken(token), idClub);
     }
+
 
     @GetMapping(value = "/visualizza-esperti-biblioteca")
     @ResponseBody

@@ -52,7 +52,7 @@ public class LettoreServiceImplTest {
     public void partecipaClub() {
         Lettore l = new Lettore();
         when(lettoreDAO.save(l)).thenReturn(l);
-        assertEquals(true, lettoreService.partecipaClub(new ClubDelLibro(), l));
+        assertEquals(true, lettoreService.effettuaIscrizioneClub(new ClubDelLibro(), l));
     }
 
 

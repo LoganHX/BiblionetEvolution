@@ -1177,7 +1177,7 @@ public class ClubDelLibroControllerTest {
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
         when(clubService.getClubByID(Mockito.anyInt())).thenReturn(club);
-        when(lettoreService.partecipaClub(club, lettore)).thenReturn(true);
+        when(lettoreService.effettuaIscrizioneClub(club, lettore)).thenReturn(lettore);
 
 
         this.mockMvc

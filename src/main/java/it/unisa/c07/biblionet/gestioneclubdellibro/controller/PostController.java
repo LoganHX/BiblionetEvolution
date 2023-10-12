@@ -6,6 +6,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.mockito.Mockito;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class PostController {
     private final EspertoService espertoService;
     private final LettoreService lettoreService;
     private final PostService postService;
-    private final ClubDelLibroService clubDelLibroService;
+    private final ClubDelLibroService clubService;
     private final Utils utils;
 
     @PostMapping(value = "/crea")
@@ -38,13 +39,17 @@ public class PostController {
 
 
         postDTO.setDate(LocalDateTime.now());
-        ClubDelLibro clubDelLibro = clubDelLibroService.getClubByID(idClub);
+        ClubDelLibro clubDelLibro = clubService.getClubByID(idClub);
         if(clubDelLibro == null)
             return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
 
-        BiblionetResponse biblionetResponse = checkAutorizzazioneEsperto(token, clubDelLibro, bindingResult);
-
-        if(null != biblionetResponse) return biblionetResponse;
+        if(bindingResult.hasErrors()) return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+        if(!utils.isUtenteEsperto(token)) {
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        }
+        if(!utils.match(utils.getSubjectFromToken(token),clubDelLibro.getEsperto().getEmail())) {
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        }
 
         Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
         if(esperto == null)
@@ -67,75 +72,63 @@ public class PostController {
                                       BindingResult bindingResult,
                                               final @RequestParam("idPost") int idPost) {
 
+        if(bindingResult.hasErrors()){
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
+        }
+
         Post post = postService.getPostByID(idPost);
-        commentoDTO.setDate(LocalDateTime.now());
         if(post == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
+        commentoDTO.setDate(LocalDateTime.now());
 
-        ClubDelLibro clubDelLibro = post.getClubDelLibro();
-
-        //todo funzioni separate per esperto e lettore?
-
-        UtenteRegistrato utenteRegistrato = null;
-        BiblionetResponse biblionetResponse = new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-
-        if(utils.isUtenteEsperto(token)) {
-            utenteRegistrato = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
-            if(utenteRegistrato == null)
-                return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
-            biblionetResponse = checkAutorizzazioneEsperto(token, post.getClubDelLibro(), bindingResult);
-
-            Esperto e = (Esperto) utenteRegistrato;
-            commentoDTO.setUsername(e.getUsername());
-            commentoDTO.setBoolEsperto(true);
-
+        if(utils.isUtenteEsperto(token)){
+            return aggiungiCommentoByEsperto(commentoDTO, token, post);
         }
         else if (utils.isUtenteLettore(token)) {
-            utenteRegistrato = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
-            if(utenteRegistrato == null)
-                return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
-            biblionetResponse = checkAutorizzazioneLettore(token, post.getClubDelLibro(), bindingResult);
-            Lettore l = (Lettore) utenteRegistrato;
-            if(!lettoreService.partecipaClub(clubDelLibro, l))
-                return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-            commentoDTO.setUsername(l.getUsername());
-            commentoDTO.setBoolEsperto(false);
-
+            return aggiungiCommentoByLettore(commentoDTO, token, post);
         }
-        if(null != biblionetResponse) return biblionetResponse;
+        else return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        commentoDTO.setEmailUtente(utenteRegistrato.getEmail());
 
-        post = postService.aggiungiCommento(idPost, commentoDTO, utenteRegistrato);
+    }
+
+    private BiblionetResponse aggiungiCommentoByEsperto(CommentoDTO commentoDTO, String token, Post post){
+        Esperto esperto = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
+        if(esperto == null)
+            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+
+        if(!utils.match(utils.getSubjectFromToken(token),post.getClubDelLibro().getEsperto().getEmail())) {
+            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        }
+        commentoDTO.setUsername(esperto.getUsername());
+        commentoDTO.setEmailUtente(esperto.getEmail());
+        commentoDTO.setBoolEsperto(true);
+
+        postService.aggiungiCommento(post.getId(), commentoDTO, esperto);
 
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
-
-
     }
 
-    private BiblionetResponse checkAutorizzazioneEsperto(String token, ClubDelLibro clubDelLibro, BindingResult bindingResult){
+    private BiblionetResponse aggiungiCommentoByLettore(CommentoDTO commentoDTO, String token, Post post){
+        Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
 
-        if(!utils.isUtenteEsperto(token)) {
+        if(lettore == null)
+            return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+
+        System.err.println(clubService.isLettoreIscrittoAClub(lettore.getEmail(), post.getClubDelLibro().getIdClub()));
+
+        if(!clubService.isLettoreIscrittoAClub(lettore.getEmail(), post.getClubDelLibro().getIdClub())){
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
         }
-        if(!utils.match(utils.getSubjectFromToken(token),clubDelLibro.getEsperto().getEmail())) {
-            return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-        }
+        commentoDTO.setUsername(lettore.getUsername());
+        commentoDTO.setEmailUtente(lettore.getEmail());
+        commentoDTO.setBoolEsperto(false);
 
-        if(bindingResult.hasErrors()){
-            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
-        }
+        postService.aggiungiCommento(post.getId(), commentoDTO, lettore);
+        return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
-        return null;
     }
-    private BiblionetResponse checkAutorizzazioneLettore(String token, ClubDelLibro clubDelLibro, BindingResult bindingResult){
 
 
-        if(bindingResult.hasErrors()){
-            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
-        }
-
-        return null;
-    }
 
     @PostMapping(value = "/visualizza-commenti")
     @ResponseBody
