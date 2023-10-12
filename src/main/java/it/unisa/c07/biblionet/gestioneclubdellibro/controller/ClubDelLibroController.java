@@ -41,6 +41,7 @@ public class ClubDelLibroController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final GestioneEventiService eventiService;
+    private final GenereService genereService;
     private final Utils utils;
 
 
@@ -101,13 +102,15 @@ public class ClubDelLibroController {
     public BiblionetResponse creaClubDelLibro(final @Valid @ModelAttribute ClubDTO clubDTO,
                                               BindingResult bindingResult,
                                               @RequestHeader(name = "Authorization") final String token,
-                                              @RequestParam(required = false) MultipartFile immagineCopertina,
-                                              BindingResult grandezzaImmagine) throws IOException {
+                                              @RequestParam(required = false) MultipartFile immagineCopertina) throws IOException {
 
 
         if (bindingResult.hasErrors()) {
             return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
         }
+
+        if(!genereService.doGeneriExist(clubDTO.getGeneri()))
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
 
         if (immagineCopertina != null) {
@@ -157,6 +160,8 @@ public class ClubDelLibroController {
             clubDTO.setCopertina(Utils.getBase64Image(immagineCopertina));
         }
 
+        if(!genereService.doGeneriExist(clubDTO.getGeneri()))
+            return new BiblionetResponse(BiblionetResponse.FORMATO_NON_VALIDO, false);
 
         ClubDelLibro clubPers = this.clubService.getClubByID(id);
         if(clubPers == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
@@ -222,7 +227,7 @@ public class ClubDelLibroController {
         return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_OK, true);
     }
 
-    @PostMapping(value = "/partecipazione-lettore-ok")
+    @PostMapping(value = "/partecipazione-lettore")
     @ResponseBody
     @CrossOrigin
     public boolean isLettoreIscrittoAClub(

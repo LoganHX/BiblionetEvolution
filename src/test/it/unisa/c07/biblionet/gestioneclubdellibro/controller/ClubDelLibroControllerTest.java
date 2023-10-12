@@ -55,6 +55,9 @@ public class ClubDelLibroControllerTest {
     @MockBean
     private ClubDelLibroService clubService;
 
+    @MockBean
+    private GenereService genereService;
+
     /**
      * Mock del service per simulare
      * le operazioni dei metodi.
@@ -180,6 +183,8 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -218,6 +223,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -255,6 +261,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -325,6 +332,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(espertoService.findEspertoByEmail("a")).thenReturn(esperto);
@@ -505,6 +513,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -541,6 +550,7 @@ public class ClubDelLibroControllerTest {
 
         ClubDelLibro cdl = new ClubDelLibro();
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(false);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -662,6 +672,7 @@ public class ClubDelLibroControllerTest {
                         "image/png",
                         imageData);
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
@@ -695,6 +706,8 @@ public class ClubDelLibroControllerTest {
                         "filename.png",
                         "image/png",
                         imageData);
+
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
 
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
@@ -732,6 +745,7 @@ public class ClubDelLibroControllerTest {
                         "image/png",
                         imageData);
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
@@ -801,6 +815,7 @@ public class ClubDelLibroControllerTest {
                         "image/png",
                         imageData);
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(false);
@@ -837,6 +852,7 @@ public class ClubDelLibroControllerTest {
                         "image/png",
                         imageData);
 
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         when(utils.immagineOk(Mockito.any())).thenReturn(true);
         when(clubService.getClubByID(1)).thenReturn(club);
@@ -865,6 +881,7 @@ public class ClubDelLibroControllerTest {
         String token="";
 
         when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(genereService.doGeneriExist(Mockito.any())).thenReturn(true);
 
         when(clubService.getClubByID(1)).thenReturn(club);
         when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
@@ -1398,6 +1415,7 @@ public class ClubDelLibroControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
 
     }
+
 
 
 }
