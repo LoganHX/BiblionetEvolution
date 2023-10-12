@@ -15,6 +15,13 @@ import java.util.Base64;
 public class Utils {
     private Utils(){}
 
+    final static String Biblioteca = "Biblioteca";
+    final static String Esperto = "Esperto";
+    final static String Lettore = "Lettore";
+
+    public boolean isUtente(String token, String tipologiaUtente){
+        return tipologiaUtente.equalsIgnoreCase((String) getClaimsFromTokenWithoutKey(token).get("role"));
+    }
 
     public Claims getClaimsFromTokenWithoutKey(String token){
         token = token.substring(7);

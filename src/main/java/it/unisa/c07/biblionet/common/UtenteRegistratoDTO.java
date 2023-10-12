@@ -29,8 +29,8 @@ public abstract class UtenteRegistratoDTO {
     /**
      * Rappresenta la password di un utente registrato.
      */
-    @NonNull
     @NotNull
+    @NonNull
     private byte[] password;
 
     /**
@@ -89,5 +89,9 @@ public abstract class UtenteRegistratoDTO {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setPasswordDigested(final byte[] password) {
+        this.password = password;
     }
 }

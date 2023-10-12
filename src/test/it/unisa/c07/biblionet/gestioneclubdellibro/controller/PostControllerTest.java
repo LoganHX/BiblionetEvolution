@@ -13,6 +13,7 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Post;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
+import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -418,7 +419,7 @@ public class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
 
-    @ParameterizedTest
+    @Test
     @MethodSource("provideClubDelLibro")
     public void aggiungiCommento_IDPostNonFornito(ClubDelLibro clubDelLibro) throws Exception {
 
@@ -451,17 +452,6 @@ public class PostControllerTest {
     @MethodSource("provideClubDelLibro")
     public void aggiungiCommento_ContenutoTroppoCorto(ClubDelLibro clubDelLibro) throws Exception {
 
-//        Post post = mock(Post.class);
-//        Lettore lettore = new Lettore();
-//        lettore.setEmail("email@email.it");
-//
-//        clubDelLibro.setIdClub(1);
-//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
-//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
-//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
-//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
-//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
 
 
         this.mockMvc
@@ -478,17 +468,6 @@ public class PostControllerTest {
     @MethodSource("provideClubDelLibro")
     public void aggiungiCommento_ContenutoTroppoLungo(ClubDelLibro clubDelLibro) throws Exception {
 
-//        Post post = mock(Post.class);
-//        Lettore lettore = new Lettore();
-//        lettore.setEmail("email@email.it");
-//
-//        clubDelLibro.setIdClub(1);
-//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
-//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
-//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
-//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
-//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
 
 
         this.mockMvc
@@ -524,17 +503,7 @@ public class PostControllerTest {
     @MethodSource("provideClubDelLibro")
     public void aggiungiCommento_TokenNonValido(ClubDelLibro clubDelLibro) throws Exception {
 
-//        Post post = mock(Post.class);
-//        Lettore lettore = new Lettore();
-//        lettore.setEmail("email@email.it");
-//
-//        clubDelLibro.setIdClub(1);
-//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
-//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
-//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
-//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
-//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
+
 
 
         this.mockMvc
@@ -550,18 +519,6 @@ public class PostControllerTest {
     @ParameterizedTest
     @MethodSource("provideClubDelLibro")
     public void aggiungiCommento_TokenNonFornito(ClubDelLibro clubDelLibro) throws Exception {
-
-//        Post post = mock(Post.class);
-//        Lettore lettore = new Lettore();
-//        lettore.setEmail("email@email.it");
-//
-//        clubDelLibro.setIdClub(1);
-//        when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
-//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-//        when(post.getClubDelLibro()).thenReturn(clubDelLibro);
-//        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
-//        when(postService.getPostByID(Mockito.anyInt())).thenReturn(post);
-//        when(clubService.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);
 
 
         this.mockMvc
