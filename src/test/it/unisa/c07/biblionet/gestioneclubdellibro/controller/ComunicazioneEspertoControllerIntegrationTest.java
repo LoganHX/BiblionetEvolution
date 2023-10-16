@@ -1,10 +1,11 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.controller;
 
 import it.unisa.c07.biblionet.BiblionetApplication;
+import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import lombok.Getter;
 import lombok.Setter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,6 +15,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -33,16 +35,17 @@ public class ComunicazioneEspertoControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
+    @Before
     public void init() {
         BiblionetApplication.init((ConfigurableApplicationContext) applicationContext);
     }
 
     @Test
     public void visualizzaListaEsperti() throws Exception {
-        this.mockMvc.perform(get("/comunicazione-esperto/lista-esperti"))
-                .andExpect(model().attributeExists("listaEsperti"))
-                .andExpect(view().name("comunicazione-esperto/lista-completa-esperti"));
+        this.mockMvc.perform(get("/comunicazione-esperto/ricerca")
+                        .param("filtro", "all")
+                        .param("stringa", "titolo"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].nome").exists());
     }
 
 }
