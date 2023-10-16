@@ -112,6 +112,8 @@ public class BibliotecaController {
         if(numCopie <= 0) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
         if (!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
+        if(prenotazioneService.getLibroByID(idLibro) == null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);
+
         Biblioteca b =  bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
         Libro l = prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie);
         if(l== null) return new BiblionetResponse(BiblionetResponse.OGGETTO_NON_TROVATO, false);

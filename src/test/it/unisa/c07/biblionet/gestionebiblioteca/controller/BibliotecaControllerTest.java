@@ -540,6 +540,9 @@ public class BibliotecaControllerTest {
         b.setEmail("a");
 
 
+        when(prenotazioneService.getLibroByID(Mockito.anyInt())).thenReturn(new Libro());
+
+
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
@@ -553,6 +556,33 @@ public class BibliotecaControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
 
     }
+
+    @Test
+    public void inserimentoDatabase_IDLibroNonPresenteNelDB() throws Exception {
+        int idLibro = 1;
+        int numCopie = 5;
+        String token="";
+        Biblioteca b = new Biblioteca();
+        b.setEmail("a");
+
+
+        when(prenotazioneService.getLibroByID(Mockito.anyInt())).thenReturn(null);
+
+
+
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b);
+        when(prenotazioneService.inserimentoDalDatabase(idLibro, b.getEmail(), numCopie))
+                .thenReturn(new Libro());
+        this.mockMvc.perform(post("/biblioteca/inserimento-archivio")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .param("idLibro", String.valueOf(idLibro))
+                        .param("numCopie", String.valueOf(numCopie)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
+
+    }
+
 
 
     @Test
