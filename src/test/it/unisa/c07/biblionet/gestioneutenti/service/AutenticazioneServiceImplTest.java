@@ -1,169 +1,50 @@
 package it.unisa.c07.biblionet.gestioneutenti.service;
-
-import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
-import it.unisa.c07.biblionet.common.UtenteRegistrato;
-
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.BibliotecaDAO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EspertoDAO;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LettoreDAO;
-import it.unisa.c07.biblionet.utils.BiblionetConstraints;
-import it.unisa.c07.biblionet.utils.Utils;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
-import java.util.stream.Stream;
+import static org.mockito.Mockito.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
-/**
- * @author Ciro Maiorino , Giulio Triggiani
- */
-@SpringBootTest
-@RunWith(SpringRunner.class)
+import static org.junit.Assert.assertEquals;
+
+@RunWith(MockitoJUnitRunner.class)
 public class AutenticazioneServiceImplTest {
 
-    /**
-     * Inject del service per simulare le operazioni.
-     */
-    @InjectMocks
-    private AutenticazioneServiceImpl autenticazioneService;
-
-
-
-    /**
-     * Mocking del dao per simulare le
-     * CRUD.
-     */
-    @InjectMocks
+    @Mock
     private LettoreService lettoreService;
-    /**
-     * Mocking del dao per simulare le
-     * CRUD.
-     */
-    @InjectMocks
+
+    @Mock
     private EspertoService espertoService;
-    /**
-     * Mocking del dao per simulare le
-     * CRUD.
-     */
-    @InjectMocks
+
+    @Mock
     private BibliotecaService bibliotecaService;
 
-    /**
-     * Implementa il test della
-     * funzionalità di login di un lettore
-     * nel service.
-     * @throws NoSuchAlgorithmException L'eccezione che può essere lanciata
-     * dal metodo getInstance().
-     */
-    @ParameterizedTest
-    @MethodSource("provideLettore")
-    public void loginLettore(final Lettore lettore) throws NoSuchAlgorithmException {
-        MessageDigest md;
-        md = MessageDigest.getInstance("SHA-256");
+    private AutenticazioneServiceImpl autenticazioneService;
 
-        String email = "lettore@lettore.com";
-        String password = "mipiaccionoglialberi";
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        autenticazioneService = new AutenticazioneServiceImpl(espertoService, lettoreService, bibliotecaService);
 
-        byte[] arr = md.digest(password.getBytes());
-
-        when(BiblionetConstraints.trasformaPassword(password)).thenReturn(arr);
-
-        when(lettoreService.findLettoreByEmailAndPassword(email,
-                                            arr)).thenReturn(lettore);
-
-        assertEquals(lettore, autenticazioneService.login(email,
-                                                        password));
     }
-    /**
-     * Implementa il test della
-     * funzionalità di login di una biblioteca
-     * nel service.
-     * @throws NoSuchAlgorithmException L'eccezione che può
-     * essere lanciata dal metodo getInstance().
-     */
+
     @Test
-    public void loginBiblioteca() throws NoSuchAlgorithmException {
-        MessageDigest md;
-        md = MessageDigest.getInstance("SHA-256");
+    public void loginLettore()  {
 
-        String email = "biblioteca@biblioteca.com";
-        String password = "mipiacelacarta";
-
-        byte[] arr = md.digest(password.getBytes());
-
-        when(BiblionetConstraints.trasformaPassword(password)).thenReturn(arr);
-
-        Biblioteca biblioteca = new Biblioteca();
-
-        when(lettoreService.findLettoreByEmailAndPassword(email,
-                                                arr)).thenReturn(null);
-
-        when(bibliotecaService.findBibliotecaByEmailAndPassword(email, arr)).thenReturn(biblioteca);
-
-        assertEquals(biblioteca, autenticazioneService.login(email,
-                                                            password));
-    }
-    /**
-     * Implementa il test della
-     * funzionalità di login di un esperto
-     * nel service.
-     * @throws NoSuchAlgorithmException L'eccezione che può
-     * essere lanciata dal metodo getInstance().
-     */
-    @Test
-    public void loginEsperto() throws NoSuchAlgorithmException {
-        MessageDigest md;
-        md = MessageDigest.getInstance("SHA-256");
-
-        String email = "esperto@esperto.com";
-        String password = "mipiacelaconsocenza";
-
-        byte[] arr = md.digest(password.getBytes());
-
-        when(BiblionetConstraints.trasformaPassword(password)).thenReturn(arr);
-
-
-        Esperto esperto = new Esperto();
-
-        when(lettoreService.findLettoreByEmailAndPassword(email,
-                arr)).thenReturn(null);
-
-        when(bibliotecaService.findBibliotecaByEmailAndPassword(email, arr)).thenReturn(null);
-
-        when(espertoService.findEspertoByEmailAndPassword(email,
-                                            arr)).thenReturn(esperto);
-
-        assertEquals(esperto, autenticazioneService.login(email,
-                                                        password));
-    }
-
-
-
-
-    /**
-     * Simula i dati inviati da un metodo
-     * http attraverso uno stream.
-     * @return Lo stream di dati.
-     */
-    private static Stream<Arguments> provideLettore() {
-        return Stream.of(Arguments.of(new Lettore("giuliociccione@gmail.com",
+        Lettore lettore = new Lettore("giuliociccione@gmail.com",
                 "LettorePassword",
                 "Salerno",
                 "Baronissi",
@@ -172,6 +53,47 @@ public class AutenticazioneServiceImplTest {
                 "SuperLettore",
                 "Giulio",
                 "Ciccione"
-        )));
+        );
+
+        when(lettoreService.findLettoreByEmailAndPassword(Mockito.any(), Mockito.any())).thenReturn(lettore);
+        assertEquals(lettore, autenticazioneService.login("a", "a"));
+    }
+
+    @Test
+    public void loginEsperto() {
+
+        Esperto esperto = new Esperto(
+                "eliaviviani@gmail.com",
+                "EspertoPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Roma 2",
+                "2345678901",
+                "Espertissimo",
+                "Elia",
+                "Viviani",
+                null
+        );
+
+        when(espertoService.findEspertoByEmailAndPassword(Mockito.any(), Mockito.any())).thenReturn(esperto);
+        assertEquals(esperto, autenticazioneService.login("a", "a"));
+    }
+
+    @Test
+    public void loginBiblioteca() {
+
+        BibliotecaDTO b = new BibliotecaDTO(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "1234567890",
+                "Biblioteca Carrisi"
+        );
+        Biblioteca biblioteca = new Biblioteca(b);
+
+        when(espertoService.findEspertoByEmailAndPassword(Mockito.any(), Mockito.any())).thenReturn(biblioteca);
+        assertEquals(biblioteca, autenticazioneService.login("a", "a"));
     }
 }

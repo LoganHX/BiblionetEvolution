@@ -1,8 +1,10 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.gestioneclubdellibro.EspertoService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EspertoDAO;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,8 +32,13 @@ public class EspertoServiceImplTest {
     /**
      * Inject del service per simulare le operazioni.
      */
-    @MockBean
-    private EspertoService espertoService; //todo ho fatto una modifica
+
+    private EspertoServiceImpl espertoService;
+
+    @Before
+    public void setUp() {
+        espertoService = new EspertoServiceImpl(espertoDAO);
+    }
 
     /**
      * Metodo che si occupa di testare
@@ -61,21 +68,23 @@ public class EspertoServiceImplTest {
     }
 
     @Test
-    @DisplayName("Non entra al secondo for")
     public void findEspertiByGeneri1(){
+        Esperto esperto = Mockito.mock(Esperto.class);
 
+        Set<String> generi = new HashSet<>();
+        generi.add("Giallo");
         ArrayList<Esperto> lista = new ArrayList<>();
+        lista.add(esperto);
 
         when(espertoDAO.findAllEsperti()).thenReturn(lista);
-        Esperto esperto = Mockito.mock(Esperto.class);
-        when(esperto.getGeneri()).thenReturn(new HashSet<>());
+
+        when(esperto.getGeneri()).thenReturn(generi);
         assertEquals(lista,
-                espertoService.findEspertiByGeneri(Mockito.any()));
+                espertoService.findEspertiByGeneri(generi));
 
     }
 
     @Test
-    @DisplayName("Non entra al primo if")
     public void findEspertiByGeneri2(){
 
         when(espertoDAO.findAll()).thenReturn(new ArrayList<>());
@@ -83,30 +92,38 @@ public class EspertoServiceImplTest {
                 espertoService.findEspertiByGeneri(new HashSet<>()));
 
     }
-    /*
-    @ParameterizedTest
-    @MethodSource("provideEsperto") //todo a che serve?
-    @DisplayName("Entra al primo for")
-    public void findEspertiByGeneri(Esperto esperto, Set<String> generi){
-        esperto.setNomeGeneri();
-        List<UtenteRegistrato> esperti = Arrays.asList(esperto);
-        when(espertoDAO.findAll()).thenReturn(esperti);
-        assertEquals(new ArrayList<>(),
-                espertoService.findEspertiByGeneri(new ArrayList<>()));
 
-    }
-    */
 
-    @ParameterizedTest
+    @Test
     @MethodSource("provideEsperto")
     @DisplayName("Entra al primo for")
-    public void findEspertiByGeneri(Esperto esperto, Set<String> generi){
+    public void findEspertiByGeneri(){
+
+        Set<String> generi = new HashSet<>();
+        generi.add("Fiction");
+        Esperto esperto = new Esperto(
+                "eliaviviani@gmail.com",
+                "EspertoPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Roma 2",
+                "2345678901",
+                "Espertissimo",
+                "Elia",
+                "Viviani",
+                null
+        );
 
         esperto.setNomeGeneri(generi);
-        List<Esperto> esperti = List.of(esperto);
-        when(espertoDAO.findAllEsperti()).thenReturn(esperti);
-        assertEquals(new ArrayList<>(),
-                espertoService.findEspertiByGeneri(new HashSet<>()));
+
+
+        ArrayList<Esperto> lista = new ArrayList<>();
+        lista.add(esperto);
+
+        when(espertoDAO.findAllEsperti()).thenReturn(lista);
+
+        assertEquals(lista,
+                espertoService.findEspertiByGeneri(generi));
     }
 
     @Test
@@ -123,68 +140,9 @@ public class EspertoServiceImplTest {
         assertEquals(espertoService.findEspertiByNome("a"), list);
     }
 
-    /*
-
-    @ParameterizedTest
-    @MethodSource("provideEsperto")
-    public void findEspertiByGenereNameForTrue(Esperto esperto) {
-        List<Esperto> list = new ArrayList<>();
-        Genere genere = new Genere();
-        genere.setNome("Test");
-        esperto.setNomeGeneri(new HashSet<>(Collections.singleton(genere.getNome())));
-        list.add(esperto);
-
-        when(genereDAO.findByName("Test")).thenReturn(genere);
-        when(espertoDAO.findAllEsperti()).thenReturn(list);
-
-        assertEquals(new ArrayList<>(), espertoService
-                .visualizzaEspertiPerGenere("a"));
-    }
-todo dovrebbero essere superati
 
 
-    @Test
-    public void getEspertiByGenereNameForFalse() {
-        List<Esperto> list = new ArrayList<>();
-        Genere genere = new Genere();
 
-        when(genereDAO.findByName("Test")).thenReturn(genere);
-        when(espertoDAO.findAllEsperti()).thenReturn(list);
 
-        assertEquals(new ArrayList<>(), espertoService
-                .visualizzaEspertiPerGenere("a"));
-    }
-*/
-
-    /**
-     * Simula i dati inviati da un metodo
-     * http attraverso uno stream.
-     *
-     * @return Lo stream di dati.
-     */
-    private static Stream<Arguments> provideEsperto() {
-
-        Set<String> generi = new HashSet<>();
-        generi.add("Fiction");
-        return Stream.of(
-                Arguments.of(
-                        new Esperto(
-                                "eliaviviani@gmail.com",
-                                "EspertoPassword",
-                                "Napoli",
-                                "Torre del Greco",
-                                "Via Roma 2",
-                                "2345678901",
-                                "Espertissimo",
-                                "Elia",
-                                "Viviani",
-                                null
-                        ),
-                        generi
-
-                )
-        );
-
-    }
 
 }

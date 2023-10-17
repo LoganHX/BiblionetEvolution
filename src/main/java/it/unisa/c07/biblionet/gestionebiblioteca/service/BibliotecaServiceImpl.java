@@ -41,7 +41,7 @@ public class BibliotecaServiceImpl implements BibliotecaService {
      */
     @Override
     public final Biblioteca findBibliotecaByEmail(final String email) {
-        return bibliotecaDAO.findBibliotecaByEmail(email, "Biblioteca"); //todo usare una costante
+        return bibliotecaDAO.findByID(email);
     }
 
     @Override

@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,14 +32,13 @@ public class ClubDelLibroServiceImplTest {
      * Inject del service per simulare
      * le operazioni del service.
      */
-    @InjectMocks
     private ClubDelLibroServiceImpl clubService;
 
     /**
      * Mocking del dao per simulare le
      * CRUD su clubDelLibro.
      */
-    @MockBean
+    @Mock
     private ClubDelLibroDAO clubDAO;
 
     /**
@@ -55,6 +55,10 @@ public class ClubDelLibroServiceImplTest {
     @Mock
     private LettoreDAO lettoreDAO;
 
+    @Before
+    public void setUp() {
+        clubService = new ClubDelLibroServiceImpl(clubDAO);
+    }
     /**
      * Implementa il test della funzionalità di
      * creazione  di un club del libro in service.
@@ -81,9 +85,8 @@ public class ClubDelLibroServiceImplTest {
     }
 
     @Test
-    public boolean isLettoreIscrittoAClub_OK(){
+    public void isLettoreIscrittoAClub_OK(){
         when(clubDAO.isLettoreIscrittoAClub(Mockito.anyString(), Mockito.anyInt())).thenReturn(new ClubDelLibro());
-        return true;
     }
 
 

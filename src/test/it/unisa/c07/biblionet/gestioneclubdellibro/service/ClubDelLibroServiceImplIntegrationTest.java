@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,10 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementa l'integration testing del service per il sottosistema
@@ -48,7 +52,7 @@ public class ClubDelLibroServiceImplIntegrationTest implements
     @Autowired
     private ClubDelLibroService clubService;
 
-    @BeforeEach
+    @Before
     public void init() {
         BiblionetApplication.init((ConfigurableApplicationContext) applicationContext);
     }
@@ -56,37 +60,34 @@ public class ClubDelLibroServiceImplIntegrationTest implements
     /**
      * Verifica il corretto funzionamento della funzionalità di creazione
      * di un Club del Libro.
-
+*/
     @Test
-    public void creaClubDelLibroValido() {
-        var esperto = (Esperto) espertoDAO.findById("eliaviviani@gmail.com")
-                                          .get();
+    public void creaClubDelLibroValido() throws IOException {
+        Esperto esperto = espertoDAO.findEspertoByEmail("eliaviviani@gmail.com","Esperto");
 
-        var c = new ClubDTO(
-            "Test",
-            "ClubDiProva",
-            esperto
-        );
+        Set<String> generi = new HashSet<>();
+        generi.add("Saggistica");
+        var c= new ClubDTO("Club1",
+                "descrizione1",
+                generi);
 
-        var club = this.clubService.creaClubDelLibro(c);
+
+
+        var club = this.clubService.creaClubDelLibro(c,esperto);
 
         assertNotEquals(club, null);
         assertEquals(club.getNome(), c.getNome());
         assertEquals(club.getDescrizione(), c.getDescrizione());
-        assertEquals(club.getEsperto(), c.getEsperto());
 
         var clubInDB = this.clubDAO.findById(club.getIdClub());
 
         assertFalse(clubInDB.isEmpty());
         assertEquals(c.getNome(), clubInDB.get().getNome());
         assertEquals(c.getDescrizione(), clubInDB.get().getDescrizione());
-        assertEquals(
-            c.getEsperto().getEmail(),
-            clubInDB.get().getEsperto().getEmail()
-        );
+
 
     }
-*/
+
     /**
      * Verifica il corretto funzionamento della funzionalità di modifica
      * di un Club del Libro.

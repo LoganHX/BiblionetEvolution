@@ -48,7 +48,7 @@ public class EspertoServiceImpl implements EspertoService {
         List<Esperto> toReturn = new ArrayList<>();
 
         for (Esperto esperto : espertoDAO.findAllEsperti()) {
-            for (String genere : esperto.getGeneri()) { //todo o getNomeGeneri?
+            for (String genere : esperto.getGeneri()) {
                 if (generi.contains(genere) && !toReturn.contains(esperto)) {
                     toReturn.add(esperto);
                 }

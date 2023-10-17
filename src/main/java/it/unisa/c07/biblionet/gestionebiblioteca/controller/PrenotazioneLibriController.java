@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
+
 /**
  * Implementa il controller per il sottosistema
  * PrenotazioneLibri.
@@ -93,8 +96,7 @@ public class PrenotazioneLibriController {
         return switch (filtro) {
             case "titolo" ->
                     prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerTitolo(stringa));
-            case "genere" ->
-                    prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerGenere(stringa));
+
             case "biblioteca" ->
                     prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriPerBiblioteca(stringa));
             default -> prenotazioneService.getInformazioniLibri(prenotazioneService.visualizzaListaLibriCompleta());
@@ -232,9 +234,7 @@ public class PrenotazioneLibriController {
     public List<TicketPrestitoDTO> visualizzaPrenotazioniLettore(@RequestHeader(name = "Authorization") final String token) {
 
         if (!utils.isUtenteLettore(token)) return null;
-
         return prenotazioneService.getInformazioniTickets(prenotazioneService.getTicketsByEmailLettore(utils.getSubjectFromToken(token)));
-
     }
 
 

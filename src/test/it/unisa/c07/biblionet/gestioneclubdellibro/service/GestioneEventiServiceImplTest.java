@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import it.unisa.c07.biblionet.common.LibroDAO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EventoDAO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LettoreDAO;
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -41,7 +44,6 @@ public class GestioneEventiServiceImplTest {
      * Servizio di Gestione Eventi, ossia la classe da testare. Vengono iniettati i
      * mock tramite InjectMocks.
      */
-    @InjectMocks
     private GestioneEventiServiceImpl gestioneEventi;
 
     /**
@@ -54,13 +56,18 @@ public class GestioneEventiServiceImplTest {
      * Mocking del DAO per simulare le CRUD su Lettore.
      */
     @Mock
-    private LettoreDAO lettoreDAO;
+    private LettoreService lettoreService;
+
+    @Mock
+    private LibroDAO libroDAO;
 
     /**
      * Prepara i mock bindando le chiamate tramite Mockito.
      */
     @BeforeAll
     public void preparaMock() {
+        gestioneEventi = new GestioneEventiServiceImpl(eventoDAO, lettoreService, libroDAO);
+
         Mockito.doAnswer(
             AdditionalAnswers.returnsFirstArg()
         ).when(eventoDAO).save(
@@ -76,6 +83,11 @@ public class GestioneEventiServiceImplTest {
                 return Optional.of(evento);
             }
         );
+    }
+
+    @Before
+    public void preparaMock2() {
+        preparaMock();
     }
 
     /**
@@ -120,8 +132,8 @@ public class GestioneEventiServiceImplTest {
     public void partecipaEvento(Lettore lettore) {
         Evento evento = new Evento();
         Mockito.when(eventoDAO.getOne(1)).thenReturn(evento);
-        Mockito.when(lettoreDAO.findByID("a")).thenReturn(lettore);
-        Mockito.when(lettoreDAO.save(lettore)).thenReturn(lettore);
+        Mockito.when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
+        Mockito.when(lettoreService.aggiornaLettore(lettore)).thenReturn(lettore);
 
         assertEquals(gestioneEventi.partecipaEvento("a", 1), lettore);
     }
@@ -139,8 +151,8 @@ public class GestioneEventiServiceImplTest {
         lettore.setEventi(list);
 
         Mockito.when(eventoDAO.getOne(1)).thenReturn(evento);
-        Mockito.when(lettoreDAO.findByID("a")).thenReturn(lettore);
-        Mockito.when(lettoreDAO.save(lettore)).thenReturn(lettore);
+        Mockito.when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
+        Mockito.when(lettoreService.aggiornaLettore(lettore)).thenReturn(lettore);
 
         assertEquals(gestioneEventi.partecipaEvento("a", 1), lettore);
     }
@@ -156,8 +168,8 @@ public class GestioneEventiServiceImplTest {
         lettore.setEventi(new ArrayList<>());
 
         Mockito.when(eventoDAO.getOne(1)).thenReturn(evento);
-        Mockito.when(lettoreDAO.findByID("a")).thenReturn(lettore);
-        Mockito.when(lettoreDAO.save(lettore)).thenReturn(lettore);
+        Mockito.when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
+        Mockito.when(lettoreService.aggiornaLettore(lettore)).thenReturn(lettore);
 
         assertEquals(gestioneEventi.abbandonaEvento("a", 1), lettore);
 
@@ -176,8 +188,8 @@ public class GestioneEventiServiceImplTest {
         lettore.setEventi(list);
 
         Mockito.when(eventoDAO.getOne(1)).thenReturn(evento);
-        Mockito.when(lettoreDAO.findByID("a")).thenReturn(lettore);
-        Mockito.when(lettoreDAO.save(lettore)).thenReturn(lettore);
+        Mockito.when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
+        Mockito.when(lettoreService.aggiornaLettore(lettore)).thenReturn(lettore);
 
         assertEquals(gestioneEventi.abbandonaEvento("a", 1), lettore);
 

@@ -34,11 +34,7 @@ public class GenereServiceImpl implements GenereService {
         for (String g: generi) {
             Genere gen = genereDAO.findByName(g);
             if(gen == null) return null;
-//            Genere dto = new Genere();
-//            dto.setDescrizione(gen.getDescrizione());
-//            dto.setNome(gen.getNome());
             toReturn.add(gen);
-
         }
 
         return toReturn;

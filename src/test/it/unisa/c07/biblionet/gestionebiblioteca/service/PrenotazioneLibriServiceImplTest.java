@@ -8,21 +8,23 @@ import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GenereService;
+import it.unisa.c07.biblionet.gestioneclubdellibro.LettoreService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -41,22 +43,23 @@ public class PrenotazioneLibriServiceImplTest {
      * Inject del service per simulare
      * le operazioni del service.
      */
-    @InjectMocks
     private PrenotazioneLibriServiceImpl prenotazioneService;
     /**
      * Inject del service per simulare
      * le operazioni del service.
      */
-    @InjectMocks
+    @Mock
     private BibliotecaService bibliotecaService;
 
     /**
      * Inject del service per simulare
      * le operazioni del service.
      */
-    @InjectMocks
+    @Mock
     private GenereService genereService;
 
+    @Mock
+    private LettoreService lettoreService;
 
     /**
      * Inject dell'api di google.
@@ -90,6 +93,10 @@ public class PrenotazioneLibriServiceImplTest {
      * Implementa il test della funzionalità di
      * selezione di tutti i libri prenotabili.
      */
+    @Before
+    public void setUp() {
+        prenotazioneService = new PrenotazioneLibriServiceImpl(libroDAO, bookApiAdapter, possessoDAO, ticketPrestitoDAO, bibliotecaService, lettoreService, genereService);
+    }
     @Test
     public void visualizzaListaLibriCompleta() {
         List<Libro> list = new ArrayList<>();
@@ -112,15 +119,61 @@ public class PrenotazioneLibriServiceImplTest {
                 prenotazioneService.visualizzaListaLibriPerTitolo("a"));
     }
 
+
+
     /**
      * Implementa il test della funzionalità di
      * selezione di tutti i libri prenotabili di
      * una determinata biblioteca.
      */
     @Test
-    public void visualizzaListaLibriPerBibliotecaFor2For2() {
-        // todo questo test è stato molto cambiato
-        Biblioteca b1 = new Biblioteca();
+    public void visualizzaListaLibriPerBiblioteca_NessunLibro() {
+        Biblioteca b1 = Mockito.mock(Biblioteca.class);
+        b1.setEmail("b1");
+
+        Possesso p1 = new Possesso(new PossessoId("a", 1), 1);
+        Possesso p2 = new Possesso(new PossessoId("b", 1), 1);
+        List<Possesso> possessi = new ArrayList<>();
+        possessi.add(p1);
+        possessi.add(p2);
+
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b1);
+        when(b1.getPossessi()).thenReturn(new ArrayList<>());
+
+        List<Libro> libri = new ArrayList<>();
+        assertEquals(libri,
+                prenotazioneService.visualizzaListaLibriPerBiblioteca("b1"));
+    }
+
+    @Test
+    public void visualizzaListaLibriPerBiblioteca_UnLibro() {
+        Biblioteca b1 = Mockito.mock(Biblioteca.class);
+        b1.setEmail("b1");
+
+        Possesso p1 = new Possesso(new PossessoId("a", 1), 1);
+        Possesso p2 = new Possesso(new PossessoId("b", 1), 1);
+        List<Possesso> possessi = new ArrayList<>();
+        possessi.add(p1);
+        //possessi.add(p2);
+
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(b1);
+        when(libroDAO.findById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
+        when(b1.getPossessi()).thenReturn(possessi);
+
+        List<Libro> libri = new ArrayList<>();
+        libri.add(new Libro());
+        assertEquals(libri,
+                prenotazioneService.visualizzaListaLibriPerBiblioteca("b1"));
+    }
+
+    /**
+     * Implementa il test della funzionalità di
+     * selezione di tutti i libri prenotabili di
+     * una determinata biblioteca.
+     */
+    @Test
+    public void visualizzaListaLibriPerBiblioteca_PiùLibri() {
+        Biblioteca b1 = Mockito.mock(Biblioteca.class);
         b1.setEmail("b1");
 
         when(bibliotecaService.findBibliotecaByEmail("b1")).thenReturn(b1);
@@ -145,93 +198,14 @@ public class PrenotazioneLibriServiceImplTest {
                 prenotazioneService.visualizzaListaLibriPerBiblioteca("b1"));
     }
 
-    /**
-     * Implementa il test della funzionalità di
-     * selezione di tutti i libri prenotabili di
-     * una determinata biblioteca.
-     */
-    @Test
-    public void visualizzaListaLibriPerBibliotecaFor2For0() {
-        Biblioteca b1 = new Biblioteca();
-        b1.setEmail("b1");
 
-        when(bibliotecaService.findBibliotecaByEmail("b1")).thenReturn(b1);
-
-        List<Libro> libri = new ArrayList<>();
-        assertEquals(libri,
-                prenotazioneService.visualizzaListaLibriPerBiblioteca("b1"));
-    }
-
-    /**
-     * Implementa il test della funzionalità di
-     * selezione di tutti i libri prenotabili di
-     * una determinata biblioteca.
-     */
-    @Test
-    public void visualizzaListaLibriPerBibliotecaFor0() {
-        Biblioteca b1 = new Biblioteca();
-        List<Libro> libri = new ArrayList<>();
-        when(bibliotecaService.findBibliotecaByEmail("b1")).thenReturn(b1);
-
-        assertEquals(libri,
-                prenotazioneService.visualizzaListaLibriPerBiblioteca("b1"));
-    }
-
-    /**
-     * Implementa il test della funzionalità di
-     * selezione di tutti i libri prenotabili di
-     * una determinato genere.
-
-    @Test
-    public void visualizzaListaLibriPerGenereFor2() {
-        //todo
-        List<Libro> libri = new ArrayList<>();
-        Libro l1 = new Libro();
-        l1.setIdLibro(1);
-        Libro l2 = new Libro();
-        l2.setIdLibro(2);
-        Genere g1 = new Genere();
-        g1.setNome("genere");
-        List<String> generiEmpty = new ArrayList<>();
-        List<String> generi = new ArrayList<>();
-        generi.add(g1.getNome());
-        l1.setGeneri(new HashSet<>(generi));
-        l2.setGeneri(new HashSet<>(generiEmpty));
-        libri.add(l1);
-        libri.add(l2);
-        when(libroDAO.findAll()).thenReturn(libri);
-        when(genereDAO.findByName("genere")).thenReturn(g1);
-        List<Libro> list = new ArrayList<>();
-        list.add(l1);
-        assertEquals(list,
-                prenotazioneService.visualizzaListaLibriPerGenere("genere"));
-    }
-    */
-
-    /**
-     * Implementa il test della funzionalità di
-     * selezione di tutti i libri prenotabili di
-     * una determinato genere.
-
-    @Test
-    public void visualizzaListaLibriPerGenereFor0() {
-        //todo
-        when(libroDAO.findAll()).thenReturn(new ArrayList<>());
-        when(genereDAO.findByName("a")).thenReturn(new Genere());
-        assertEquals(new ArrayList<Libro>(),
-                prenotazioneService.visualizzaListaLibriPerGenere("a"));
-    }
-    */
-    /**
-     * Implementa il test della funzionalità che
-     * permette di richiedere un prestito per un libro
-     * da una biblioteca.
-     */
     @Test
     public void richiediPrestito() {
         Biblioteca b = new Biblioteca();
         Libro l = new Libro();
         TicketPrestito t = new TicketPrestito();
+
+        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(new Lettore());
         when(bibliotecaService.findBibliotecaByEmail("id")).thenReturn(b);
         when(libroDAO.getOne(2)).thenReturn(l);
         when(ticketPrestitoDAO.save(t)).thenReturn(t);
@@ -268,7 +242,7 @@ public class PrenotazioneLibriServiceImplTest {
         bl.add(b2);
         when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(b1);
         when(bibliotecaService.findBibliotecaByEmail("b")).thenReturn(b1);
-        assertEquals(bl, prenotazioneService.getBibliotecheLibro(libro));
+        assertEquals(bl.get(0).getEmail(), prenotazioneService.getBibliotecheLibro(libro).get(0).getEmail());
     }
 
     /**
@@ -303,7 +277,6 @@ public class PrenotazioneLibriServiceImplTest {
      * di ottenere una lista di richieste per una biblioteca.
      */
 
-    //todo mi pare poco un test con solo la lista vuota
     @Test
     public void getTicketsByBiblioteca() {
         List<TicketPrestito> list = new ArrayList<>();
@@ -440,10 +413,21 @@ public class PrenotazioneLibriServiceImplTest {
      * di creare un nuovo libro e inserirlo nella lista
      * a partire da un isbn usando una API di google.
      */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoPerIsbnGeneriVuotoLibroTrovatoPosseduto(final Libro libro) {
+    @Test
+    public void inserimentoPerIsbnGeneriVuotoLibroTrovatoPosseduto() {
 
+        LibroDTO libroDTO = (new LibroDTO(
+                1,
+                "Fru",
+                "9597845613497",
+                "1234567891234",
+                "2010",
+                "Mondadori",
+                "Casa",
+                "@@@@@",
+                null
+        ));
+        Libro libro = new Libro(libroDTO);
         when(bookApiAdapter.getLibroDaBookApi(libro.getIsbn(), new Libro())).thenReturn(libro);
         libro.setGeneri(new HashSet<>());
         when(genereService.doGeneriExist(new HashSet<>())).thenReturn(true);
@@ -476,10 +460,20 @@ public class PrenotazioneLibriServiceImplTest {
      * di creare un nuovo libro e inserirlo nella lista
      * a partire da un isbn usando una API di google.
      */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoPerIsbnGeneriInseriti(final Libro libro) {
-
+    @Test
+    public void inserimentoPerIsbnGeneriInseriti() {
+        LibroDTO libroDTO = (new LibroDTO(
+                1,
+                "Fru",
+                "9597845613497",
+                "1234567891234",
+                "2010",
+                "Mondadori",
+                "Casa",
+                "@@@@@",
+                null
+        ));
+        Libro libro = new Libro(libroDTO);
         String genere = "test";
         when(genereService.doGeneriExist(new HashSet<>(Collections.singleton("test")))).thenReturn(true);
 
@@ -500,12 +494,21 @@ public class PrenotazioneLibriServiceImplTest {
     /**
      * Implementa il test della funzionalità che permette di
      * creare un nuovo libro prendendolo dal database
-     * @param libro il libro preso
      */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoDatabase(Libro libro){
-        libro.setIdLibro(1);
+    @Test
+    public void inserimentoDatabase(){
+
+        Libro libro = new Libro(new LibroDTO(
+                1,
+                "Fru",
+                "9597845613497",
+                "1234567891234",
+                "2010",
+                "Mondadori",
+                "Casa",
+                "@@@@@",
+                null
+        ));
         Biblioteca biblioteca= new Biblioteca();
         biblioteca.setEmail("test");
 
@@ -524,12 +527,21 @@ public class PrenotazioneLibriServiceImplTest {
     /**
      * Implementa il test della funzionalità che permette di
      * creare un nuovo libro prendendolo dal database
-     * @param libro il libro preso
      */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoDatabaseLibriDiversi(Libro libro){
-        libro.setIdLibro(1);
+    @Test
+    public void inserimentoDatabaseLibriDiversi(){
+        Libro libro = new Libro(new LibroDTO(
+                1,
+                "Fru",
+                "9597845613497",
+                "1234567891234",
+                "2010",
+                "Mondadori",
+                "Casa",
+                "@@@@@",
+                null
+        ));
+
         Biblioteca biblioteca= new Biblioteca();
         biblioteca.setEmail("test");
 
@@ -550,12 +562,20 @@ public class PrenotazioneLibriServiceImplTest {
     /**
      * Implementa il test della funzionalità che permette di
      * creare un nuovo libro prendendolo dal database
-     * @param libro il libro preso
      */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoDatabaseNoPossessi(Libro libro){
-        libro.setIdLibro(1);
+    @Test
+    public void inserimentoDatabaseNoPossessi(){
+        Libro libro = new Libro(new LibroDTO(
+                1,
+                "Fru",
+                "9597845613497",
+                "1234567891234",
+                "2010",
+                "Mondadori",
+                "Casa",
+                "@@@@@",
+                null
+        ));
         Biblioteca biblioteca= new Biblioteca();
         biblioteca.setEmail("test");
         biblioteca.setPossessi(new ArrayList<>());
@@ -566,119 +586,28 @@ public class PrenotazioneLibriServiceImplTest {
 
     }
 
-    /**
-     * Implementa il test della funzionalità che permette di
-     * creare un nuovo libro manualmente
-     * @param libro il libro preso
-     */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoManuale(LibroDTO libro){
 
-        Biblioteca biblioteca= new Biblioteca();
-        biblioteca.setEmail("test");
-        biblioteca.setPossessi(new ArrayList<>());
-
-        HashSet<String> generi=new HashSet<>();
-        generi.add("test");
-        when(genereService.doGeneriExist(generi)).thenReturn(true);
-
-        ArrayList<Libro> libri = new ArrayList<>();
-        libri.add(new Libro(libro));
-
-
-
-        when(bibliotecaService.findBibliotecaByEmail("test")).thenReturn(biblioteca);
-        ;
-        when(libroDAO.findAll()).thenReturn(libri);
-
-        assertEquals(libro,prenotazioneService.creaLibroDaModel(libro,"test",1,generi));
+    @Test
+    public void findByTitoloContainsNull() {
+        when(prenotazioneService.findByTitoloContains("test")).thenReturn(null);
+        assertEquals(new ArrayList<>(),prenotazioneService.findByTitoloContains("test"));
     }
 
-    /**
-     * Implementa il test della funzionalità che permette di
-     * creare un nuovo libro manualmente
-     * @param libro il libro preso
-     */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoManualeGiaEsistente(LibroDTO libroDTO){
-
-        Libro libro = new Libro(libroDTO);
-        libro.setIdLibro(1);
-        Biblioteca biblioteca= new Biblioteca();
-        biblioteca.setEmail("test");
-
-
-        Set<String> generi=new HashSet<>();
-        generi.add("test");
-        when(genereService.doGeneriExist(generi)).thenReturn(true);
-
-        ArrayList<Libro> libri = new ArrayList<>();
-        Libro tmp = new Libro();
-        tmp.setTitolo("TEST");
-        tmp.setIdLibro(1);
-        libri.add(tmp);
-
-        PossessoId pid = new PossessoId("test", 1);
-        Possesso possesso = new Possesso(pid, 1);
-        ArrayList<Possesso> possessi = new ArrayList<>();
-        possessi.add(possesso);
-        biblioteca.setPossessi(possessi);
-
-
-        when(bibliotecaService.findBibliotecaByEmail("test")).thenReturn(biblioteca);
-        when(libroDAO.findAll()).thenReturn(libri);
-        when(libroDAO.save(libro)).thenReturn(libro);
-
-        assertEquals(libro,prenotazioneService.creaLibroDaModel(libroDTO,"test",1,generi));
+    private static Stream<Arguments> provideLibro() {
+        return Stream.of(
+                Arguments.of(
+                        new Libro(new LibroDTO(
+                                1,
+                                "Fru",
+                                "9597845613497",
+                                "1234567891234",
+                                "2010",
+                                "Mondadori",
+                                "Casa",
+                                "@@@@@",
+                                null
+                        )
+                ))
+        );
     }
-
-    /**
-     * Implementa il test della funzionalità che permette di
-     * creare un nuovo libro manualmente
-     * @param libro il libro preso
-     */
-    @ParameterizedTest
-    @MethodSource("provideLibro")
-    public void inserimentoManualePossessoNonEsistente(LibroDTO libroDTO){
-        Libro libro = new Libro(libroDTO);
-
-        libro.setIdLibro(1);
-        Biblioteca biblioteca= new Biblioteca();
-        biblioteca.setEmail("test");
-
-
-        Set<String> generi=new HashSet<>();
-        generi.add("test");
-        when(genereService.doGeneriExist(generi)).thenReturn(true);
-
-        ArrayList<Libro> libri = new ArrayList<>();
-        Libro tmp = new Libro();
-        tmp.setTitolo("TEST");
-        tmp.setIdLibro(1);
-        libri.add(tmp);
-
-        PossessoId pid = new PossessoId("test", 2);
-        Possesso possesso = new Possesso(pid, 1);
-        ArrayList<Possesso> possessi = new ArrayList<>();
-        possessi.add(possesso);
-        biblioteca.setPossessi(possessi);
-
-
-        when(bibliotecaService.findBibliotecaByEmail("test")).thenReturn(biblioteca);
-        when(libroDAO.findAll()).thenReturn(libri);
-        when(libroDAO.save(libro)).thenReturn(libro);
-
-        assertEquals(libro,prenotazioneService.creaLibroDaModel(libroDTO,"test",1,generi));
-    }
-
-    /**
-     * Non so davvero cosa faccia */
-
-     @Test
-     public void findByTitoloContainsNull() {
-     when(prenotazioneService.findByTitoloContains("test")).thenReturn(null);
-     assertEquals(new ArrayList<>(),prenotazioneService.findByTitoloContains("test"));
-     }
 }

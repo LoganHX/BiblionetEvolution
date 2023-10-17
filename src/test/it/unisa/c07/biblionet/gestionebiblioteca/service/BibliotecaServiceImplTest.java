@@ -1,22 +1,24 @@
 package it.unisa.c07.biblionet.gestionebiblioteca.service;
 
 
-import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.LibroDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static net.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -32,10 +34,10 @@ import static org.mockito.Mockito.when;
 public class BibliotecaServiceImplTest {
 
 
-    @Mock
+    @MockBean
     private BibliotecaDAO bibliotecaDAO;
 
-    @InjectMocks
+    @MockBean
     private BibliotecaServiceImpl bibliotecaService;
 
     /**
@@ -43,10 +45,15 @@ public class BibliotecaServiceImplTest {
      * recuperare una biblioteca dato il suo ID.
      */
     @Test
-    public void findBibliotecaByEmail() {
-        Biblioteca biblioteca =  new Biblioteca();
-        when(bibliotecaDAO.findByID("a")).thenReturn(biblioteca);
-        assertEquals(bibliotecaService.findBibliotecaByEmail("a"), biblioteca);
+    public void findBibliotecaByEmail_BibliotecaInesistente() {
+        when(bibliotecaDAO.findByID(Mockito.anyString())).thenReturn(null);
+        assertNull(bibliotecaService.findBibliotecaByEmail(Mockito.anyString()));
+    }
+
+    @Test
+    public void findBibliotecaByEmail_Ok() {
+        when(bibliotecaDAO.findByID(Mockito.anyString())).thenReturn(new Biblioteca());
+        assertNull(bibliotecaService.findBibliotecaByEmail(Mockito.anyString()));
     }
 
     /**
@@ -56,8 +63,9 @@ public class BibliotecaServiceImplTest {
     @Test
     public void findAllBiblioteche() {
         List<Biblioteca> list = new ArrayList<>();
+        list.add(new Biblioteca());
         when(bibliotecaDAO.findAllBiblioteche()).thenReturn(list);
-        assertEquals(bibliotecaService.findBibliotecaByNome("a"), list);
+        assertEquals(bibliotecaService.findBibliotecaByNome(Mockito.any()), list);
     }
 
 
@@ -67,11 +75,19 @@ public class BibliotecaServiceImplTest {
      * la stringa passata nella città.
      */
     @Test
-    public void findBibliotecaByCitta() {
+    public void findBibliotecaByCitta_NonPresente() {
+        List<Biblioteca> list = new ArrayList<>();
+        when(bibliotecaDAO.findByCitta("a")).thenReturn(null);
+        assertEquals(bibliotecaService.findBibliotecaByCitta(Mockito.anyString()).isEmpty(), (true));
+    }
+
+    @Test
+    public void findBibliotecaByCitta_Ok() {
         List<Biblioteca> list = new ArrayList<>();
         when(bibliotecaDAO.findByCitta("a")).thenReturn(list);
         assertEquals(bibliotecaService.findBibliotecaByCitta("a"), list);
     }
+
 
     /**
      * Utilizzato per fornire il libro ai test

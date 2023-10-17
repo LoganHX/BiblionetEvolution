@@ -280,8 +280,7 @@ public class PrenotazioneLibriControllerTest {
         List<Libro> list = new ArrayList<>();
         when(prenotazioneService.visualizzaListaLibriPerTitolo("titolo"))
                 .thenReturn(list);
-        when(prenotazioneService.visualizzaListaLibriPerGenere("genere"))
-                .thenReturn(list);
+
         when(prenotazioneService.
                 visualizzaListaLibriPerBiblioteca("biblioteca"))
                 .thenReturn(list);

@@ -80,6 +80,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
 
         Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(email);
         List<Possesso> possessi = biblioteca.getPossessi();
+        if(possessi == null) return new ArrayList<>();
         for (Possesso p : possessi) {
             Optional<Libro> l =
                     libroDAO.findById(p.getPossessoID().getLibroID());
@@ -98,22 +99,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @param genere Il nome del genere
      * @return La lista di libri
      */
-    @Override
-    public List<Libro> visualizzaListaLibriPerGenere(
-            final String genere) {
-/*
-        List<LibroBiblioteca> libri = LibroBibliotecaDAO.findAll();
-        List<LibroBiblioteca> list = new ArrayList<>();
-        Genere g = genereDAO.findByName(genere);
-        for (LibroBiblioteca l : libri) {
-            if (l.getGeneri().contains(g)) {
-                list.add(l);
-            }
-        }
-        return list;
-    */
-        return new ArrayList<>();
-    }
+
 
 
     /**
@@ -131,11 +117,8 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                                            final String idBiblioteca,
                                            final int idLibro) {
 
-        //todo violazione architettura
-
         UtenteRegistrato lettore = lettoreService.findLettoreByEmail(lettoreMail);
         TicketPrestito ticket = new TicketPrestito();
-        if(!lettore.getTipo().equals("Lettore")) return null;
         ticket.setLettore(lettore);
         ticket.setDataRichiesta(LocalDateTime.now());
         ticket.setStato(TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA);
@@ -162,7 +145,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     @Override
     public List<Biblioteca> getBibliotecheLibro(final Libro libro) {
         List<Biblioteca> lista = new ArrayList<>();
-        //todo da testare
         for (Possesso p : possessoDAO.findByLibroID(libro.getIdLibro())) {
             lista.add(bibliotecaService.findBibliotecaByEmail(p.getPossessoID().getBibliotecaID()));
         }
@@ -395,27 +377,27 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
                                                   final int numCopie) {
         Libro l = libroDAO.getOne(idLibro);
         Biblioteca b = bibliotecaService.findBibliotecaByEmail(idBiblioteca);
-//        //Se per errore avesse inserito un libro che possiede già,
-//        //aggiorno semplicemente il numero di copie che ha.
-//        for (Possesso p : b.getPossessi()) {
-//            if (p.getPossessoID().getLibroID() == idLibro) {
-//                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
-//                possessoDAO.save(p);
-//                bibliotecaService.aggiornaBiblioteca(b);
-//                return l;
-//            }
-//        }
-//
-//        //Creo e salvo il nuovo possesso
-//        PossessoId pid = new PossessoId(idBiblioteca, idLibro);
-//        Possesso p = new Possesso(pid, numCopie);
-//        possessoDAO.save(p);
-//        List<Possesso> plist = b.getPossessi();
-//        plist.add(p);
-//        b.setPossessi(plist);
-//
-//        //Update della biblioteca con il nuovo possesso
-//        bibliotecaService.aggiornaBiblioteca(b);
+        //Se per errore avesse inserito un libro che possiede già,
+        //aggiorno semplicemente il numero di copie che ha.
+        for (Possesso p : b.getPossessi()) {
+            if (p.getPossessoID().getLibroID() == idLibro) {
+                p.setNumeroCopie(p.getNumeroCopie() + numCopie);
+                possessoDAO.save(p);
+                bibliotecaService.aggiornaBiblioteca(b);
+                return l;
+            }
+        }
+
+        //Creo e salvo il nuovo possesso
+        PossessoId pid = new PossessoId(idBiblioteca, idLibro);
+        Possesso p = new Possesso(pid, numCopie);
+        possessoDAO.save(p);
+        List<Possesso> plist = b.getPossessi();
+        plist.add(p);
+        b.setPossessi(plist);
+
+        //Update della biblioteca con il nuovo possesso
+        bibliotecaService.aggiornaBiblioteca(b);
 
         return gestisciPossessi(l, b, numCopie);
     }
@@ -461,7 +443,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     }
 
     private Libro gestisciPossessi(Libro libroEsistente, Biblioteca b, int numCopie){
-        //controllo se la biblioteca possiede già questo libro
         Possesso p = possessoDAO.findByBibliotecaIDAndLibroID(b.getNomeBiblioteca(), libroEsistente.getIdLibro());
 
         if(p != null){
@@ -470,7 +451,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
             bibliotecaService.aggiornaBiblioteca(b);
             return libroEsistente;
         }
-
 
         //Creo e salvo il nuovo possesso, nel caso in cui la biblioteca non possieda già il libro
         PossessoId pid = new PossessoId(b.getEmail(), libroEsistente.getIdLibro());
