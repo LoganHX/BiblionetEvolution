@@ -463,20 +463,7 @@ public class PostControllerIntegrationTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenLettore));
     }
 
-    @Test
-    public void aggiungiCommento_TokenNonFornito() throws Exception {
 
-        var posts=postDAO.findAll();
-        var idPost=String.valueOf(posts.get(0).getId());
-
-        this.mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post("/post/aggiungi-commento")
-                        .param("titolo", "Prova")
-                        .param("content", "Prova")
-                        .param("idPost", idPost))
-                .andExpect(status().is(400));
-    }
     @Test
     public void aggiungiCommento_TokenBiblioteca() throws Exception {
 

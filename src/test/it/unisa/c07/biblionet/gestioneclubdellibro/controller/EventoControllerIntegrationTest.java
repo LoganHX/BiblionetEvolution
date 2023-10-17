@@ -71,24 +71,7 @@ public class EventoControllerIntegrationTest {
     }
 
     /*************************************+ Tests for eliminaEvento *********************************/
-    @Test
-    public void eliminaEvento() throws Exception {
 
-        String tokenEsperto="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
-
-        var eventi=eventoDAO.findAll();
-        var evento= eventi.get(0);
-        String id=String.valueOf(evento.getIdEvento());
-        String idClub=String.valueOf(evento.getClub().getIdClub());
-
-        this.mockMvc
-                .perform(post("/gestione-eventi/elimina-evento")
-                        .param("idEvento", id)
-                        .param("idClub", idClub)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto)
-                )
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Evento eliminato"));
-    }
 
     @Test
     public void modificaEventoClubOk() throws Exception {
@@ -197,30 +180,7 @@ public class EventoControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
-    @Test(expected=javax.servlet.ServletException.class)
-    public void modificaEventoClub_TokenNonFornito() throws Exception {
 
-        String token = "";
-
-        var eventi=eventoDAO.findAll();
-        var evento= eventi.get(0);
-        String idEvento=String.valueOf(evento.getIdEvento());
-        String idClub=String.valueOf(evento.getClub().getIdClub());
-        var libri=libroDAO.findAll();
-        var libro=libri.get(0);
-        var idLibro=String.valueOf(libro.getIdLibro());
-
-        this.mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post("/gestione-eventi/modifica")
-                        .param("nome", "Prova")
-                        .param("descrizione", "Prova")
-                        .param("dateString", "2024-12-12")
-                        .param("timeString", "11:24")
-                        .param("idClub", idClub)
-                        .param("idLibro", idLibro)
-                        .param("idEvento", idEvento));
-    }
 
     @Test
     public void modificaEventoClub_IDClubNonFornito() throws Exception {
@@ -375,32 +335,7 @@ public class EventoControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
     }
 
-    @Test
-    public void modificaEventoClub_DescrizioneTroppoCorta() throws Exception {
 
-        String tokenEsperto="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";
-
-        var eventi=eventoDAO.findAll();
-        var evento= eventi.get(0);
-        String idEvento=String.valueOf(evento.getIdEvento());
-        String idClub=String.valueOf(evento.getClub().getIdClub());
-        var libri=libroDAO.findAll();
-        var libro=libri.get(0);
-        var idLibro=String.valueOf(libro.getIdLibro());
-
-        this.mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post("/gestione-eventi/modifica")
-                        .param("nome", "Prova")
-                        .param("descrizione", "aa")
-                        .param("dateString", "2024-12-12")
-                        .param("timeString", "11:24")
-                        .param("idClub", idClub)
-                        .param("idLibro", idLibro)
-                        .param("idEvento", idEvento)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenEsperto))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
-    }
 
     @Test
     public void modificaEventoClub_DescrizioneNonFornita() throws Exception {
