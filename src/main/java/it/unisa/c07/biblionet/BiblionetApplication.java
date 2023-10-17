@@ -5,6 +5,7 @@ import it.unisa.c07.biblionet.common.LibroDAO;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.BookApiAdapter;
 import it.unisa.c07.biblionet.gestionebiblioteca.bookapiadapter.GoogleBookApiAdapterImpl;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.*;
+import it.unisa.c07.biblionet.gestioneclubdellibro.PostDTO;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.SpringApplication;
@@ -29,7 +30,7 @@ public class BiblionetApplication {
     private static final BookApiAdapter bookApiAdapter = new GoogleBookApiAdapterImpl();
 
     private static LibroDAO libroDAO = null;
-/*
+
     public static Libro getLibroFromAPI(String isbn, Genere... generi) {
         Set<String> gen = new HashSet<>();
         gen.add("Giallo");
@@ -44,11 +45,12 @@ public class BiblionetApplication {
     }
 
 
-    public static void init(ApplicationContext configurableApplicationContext) {
+    public static void init(ApplicationContext configurableApplicationContext) {/*
 
 //----------------------------Definizione oggetti DAO per ogni entity---------------------------------------------------
 
         BibliotecaDAO bibliotecaDAO = configurableApplicationContext.getBean(BibliotecaDAO.class);
+        PostDAO postDAO = configurableApplicationContext.getBean(PostDAO.class);
         EspertoDAO espertoDAO = configurableApplicationContext.getBean(EspertoDAO.class);
         LettoreDAO lettoreDAO = configurableApplicationContext.getBean(LettoreDAO.class);
         ClubDelLibroDAO clubDelLibroDAO = configurableApplicationContext.getBean(ClubDelLibroDAO.class);
@@ -2100,7 +2102,15 @@ public class BiblionetApplication {
 
         out.info("*************************** Club del Libro creati 8/9 ***************************");
 
-//----------------------Definizione ed inserimento eventi---------------------------------------------------------------
+//----------------------Definizione ed inserimento post---------------------------------------------------------------
+
+        out.info("********************Inserimento post******************************************");
+
+        PostDTO post1Info=new PostDTO("Post molto interessante","Contenuto interessante per un post molto ma molto interessante");
+        Post post1=new Post(post1Info,clubDelLibro1,esperto);
+
+        postDAO.save(post1);
+// ----------------------Definizione ed inserimento eventi---------------------------------------------------------------
 
         Evento evento = new Evento(
                 "Evento fantastyco",
@@ -2428,10 +2438,10 @@ public class BiblionetApplication {
         catch (IOException ex){
             ex.printStackTrace();
             return "noimage";
-        }
+        }*/
 
     }
-*/
+
     public static void main(String[] args) throws NoSuchAlgorithmException {
         ConfigurableApplicationContext configurableApplicationContext =
                 SpringApplication.run(BiblionetApplication.class, args);

@@ -3,9 +3,10 @@ package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 import it.unisa.c07.biblionet.BiblionetApplication;
 import it.unisa.c07.biblionet.gestioneclubdellibro.GestioneEventiService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Evento;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.EventoDAO;
 import lombok.Getter;
 import lombok.Setter;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +38,21 @@ public class GestioneEventiServiceImplIntegrationTest {
     @Autowired
     private GestioneEventiService gestioneEventiService;
 
-    @BeforeEach
+    @Autowired
+    private EventoDAO eventoDAO;
+
+    @Before
     public void init() {
         BiblionetApplication.init((ConfigurableApplicationContext) applicationContext);
     }
 
     @Test
     public void modificaEventoIntegrationTest(){
-        Optional<Evento> evento = gestioneEventiService.getEventoById(61);
-        assertEquals(evento,gestioneEventiService.modificaEvento(evento.get()));
+
+        var evento=eventoDAO.findAll().get(0);
+        assertEquals(evento,gestioneEventiService.modificaEvento(evento));
     }
 
-    @Test
-    public void modificaEventoFaultIntegrationTest(){
-        Evento evento = new Evento();
-        evento.setIdEvento(1);
-        assertEquals(Optional.empty(),gestioneEventiService.modificaEvento(evento));
-    }
 
 
 

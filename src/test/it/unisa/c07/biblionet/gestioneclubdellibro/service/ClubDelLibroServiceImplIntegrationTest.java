@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +27,7 @@ import lombok.Setter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Implementa l'integration testing del service per il sottosistema
@@ -59,8 +61,8 @@ public class ClubDelLibroServiceImplIntegrationTest implements
 
     /**
      * Verifica il corretto funzionamento della funzionalità di creazione
-     * di un Club del Libro.
-*/
+     * di un Club del Libro.**/
+
     @Test
     public void creaClubDelLibroValido() throws IOException {
         Esperto esperto = espertoDAO.findEspertoByEmail("eliaviviani@gmail.com","Esperto");
@@ -68,8 +70,8 @@ public class ClubDelLibroServiceImplIntegrationTest implements
         Set<String> generi = new HashSet<>();
         generi.add("Saggistica");
         var c= new ClubDTO("Club1",
-                "descrizione1",
-                generi);
+                        "descrizione1",
+                        generi);
 
 
 
@@ -78,6 +80,7 @@ public class ClubDelLibroServiceImplIntegrationTest implements
         assertNotEquals(club, null);
         assertEquals(club.getNome(), c.getNome());
         assertEquals(club.getDescrizione(), c.getDescrizione());
+
 
         var clubInDB = this.clubDAO.findById(club.getIdClub());
 
@@ -88,29 +91,5 @@ public class ClubDelLibroServiceImplIntegrationTest implements
 
     }
 
-    /**
-     * Verifica il corretto funzionamento della funzionalità di modifica
-     * di un Club del Libro.
 
-    @Test
-    public void modificaClubDelLibroValido() {
-        var clubBase = clubDAO.findAll().get(0);
-        var id = clubBase.getIdClub();
-
-        var club = clubDAO.findById(id);
-
-        club.get().setNome("Nuovo nome");
-        
-        var clubModificato = this.clubService.modificaDatiClub(club.get());
-
-        var clubInDB = this.clubDAO.findById(id);
-        
-        assertTrue(clubInDB.isPresent());
-        assertNotEquals(clubBase, clubInDB.get());
-        assertEquals(
-            clubModificato.getDescrizione(),
-            clubInDB.get().getDescrizione()
-        );
-    }
-*/
 }

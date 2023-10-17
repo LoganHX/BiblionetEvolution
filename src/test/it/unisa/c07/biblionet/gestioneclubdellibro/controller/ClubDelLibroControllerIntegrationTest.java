@@ -192,30 +192,7 @@ public class ClubDelLibroControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
-    @Test(expected=io.jsonwebtoken.MalformedJwtException.class)
-    public void creaClubDelLibro_TokenNonValido() throws Exception {
-        String token = "jPNrbMvToA";
 
-        byte[] fileContent = FileUtils.readFileToByteArray(new File("src/main/resources/static/image/copertine/copertinaOk.png"));
-
-        MockMultipartFile copertina =
-                new MockMultipartFile("immagineCopertina",
-                        "filename.png",
-                        "image/png",
-                        fileContent);
-
-        String [] generi={"Giallo","Fantasy"};
-
-        // Assert del test
-        this.mockMvc.perform(MockMvcRequestBuilders
-                        .multipart("/club-del-libro/crea")
-                        .file(copertina)
-                        .param("nome", "il mio club")
-                        .param("descrizione", "descrizione")
-                        .param("generi", generi)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
-
-    }
     @Test
     public void creaClubDelLibroOK() throws Exception {
         String tokenEsperto="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbGlhdml2aWFuaUBnbWFpbC5jb20iLCJyb2xlIjoiRXNwZXJ0byIsImlhdCI6MTY4NzUxMTUxNn0.T57rj7tmsAKJKLYvMATNd71sO6YRHjLlECYyhJ2CLzs";

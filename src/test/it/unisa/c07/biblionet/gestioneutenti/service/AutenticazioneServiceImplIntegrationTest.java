@@ -6,8 +6,8 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.LettoreDAO;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import lombok.Getter;
 import lombok.Setter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class AutenticazioneServiceImplIntegrationTest {
     @Autowired
     private LettoreDAO lettoreDAO;
 
-    @BeforeEach
+    @Before
     public void init() {
         BiblionetApplication.init((ConfigurableApplicationContext) applicationContext);
     }
@@ -57,16 +57,24 @@ public class AutenticazioneServiceImplIntegrationTest {
      * @throws NoSuchAlgorithmException L'eccezione che può essere lanciata
      * dal metodo getInstance().
      */
-    @ParameterizedTest
-    @MethodSource("provideAutenticazione")
-    public void loginLettore(final Lettore lettore) throws NoSuchAlgorithmException {
-        MessageDigest md;
-        md = MessageDigest.getInstance("SHA-256");
+    @Test
+    public void loginLettore() throws NoSuchAlgorithmException {
 
         String email = "antoniorenatomontefusco@gmail.com";
         String password = "LettorePassword";
 
-        assertEquals(lettore, autenticazioneService.login(email,
+
+        assertEquals(new Lettore(
+                "antoniorenatomontefusco@gmail.com",
+                "LettorePassword",
+                "Napoli",
+                "Somma Vesuviana",
+                "Via Vesuvio 33",
+                "3456789012",
+                "antoniomontefusco",
+                "Antonio",
+                "Montefusco"
+        ), autenticazioneService.login(email,
                 password));
     }
 
