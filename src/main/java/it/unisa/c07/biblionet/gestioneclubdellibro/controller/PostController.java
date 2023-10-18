@@ -136,14 +136,6 @@ public class PostController {
     }
 
 
-    @PostMapping(value = "/visualizza-post-club")
-    @ResponseBody
-    @CrossOrigin
-    public List<PostDTO> visualizzaTuttiPostClub(final @RequestParam("idClub") int idClub) {
-
-        return postService.getInformazioniPost(postService.visualizzaListaPostByClubId(idClub));
-    }
-
     @PostMapping(value = "/visualizza-post")
     @ResponseBody
     @CrossOrigin

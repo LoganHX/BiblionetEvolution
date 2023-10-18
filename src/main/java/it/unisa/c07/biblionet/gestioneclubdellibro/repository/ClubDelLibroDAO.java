@@ -32,4 +32,5 @@ public interface ClubDelLibroDAO extends JpaRepository<ClubDelLibro, Integer> {
     ClubDelLibro isLettoreIscrittoAClub(String email, int idClub);
 
 
+
 }

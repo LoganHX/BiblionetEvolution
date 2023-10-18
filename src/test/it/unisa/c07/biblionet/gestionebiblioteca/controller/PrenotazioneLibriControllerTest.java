@@ -259,7 +259,6 @@ public class PrenotazioneLibriControllerTest {
      */
     @Test
     public void visualizzaListaLibri() throws Exception {
-        //todo la lista doveva essere piena (list.add(new Libro())
         List<Libro> list = new ArrayList<>();
         when(prenotazioneService.visualizzaListaLibriCompleta())
                 .thenReturn(list);
@@ -332,7 +331,7 @@ public class PrenotazioneLibriControllerTest {
         this.mockMvc.perform(
                         post("/prenotazione-libri/conferma-prenotazione")
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                                .param("idBiblioteca", "id")
+                                .param("emailBiblioteca", "id")
                                 .param("idLibro", "1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(true));
     }
@@ -349,7 +348,7 @@ public class PrenotazioneLibriControllerTest {
         this.mockMvc.perform(
                         post("/prenotazione-libri/conferma-prenotazione")
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                                .param("idBiblioteca", "id")
+                                .param("emailBiblioteca", "id")
                                 .param("idLibro", "1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
@@ -394,14 +393,17 @@ public class PrenotazioneLibriControllerTest {
         String token="";
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
+        List<TicketPrestitoDTO> dto = new ArrayList<>();
+        dto.add(new TicketPrestitoDTO(t));
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(t.getBiblioteca());
-        when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(t.getBiblioteca());
+        when(prenotazioneService.getTicketsByBibliotecaAndStato(t.getBiblioteca(), TicketPrestito.Stati.IN_ATTESA_DI_CONFERMA))
                 .thenReturn(list);
+        when(prenotazioneService.getInformazioniTickets(list)).thenReturn(dto);
 
-        this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
+        this.mockMvc.perform(post("/prenotazione-libri/visualizza-richieste")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_CONFERMA[0].stato").value(t.getStato().toString()))
@@ -424,14 +426,17 @@ public class PrenotazioneLibriControllerTest {
         String token="";
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
+        List<TicketPrestitoDTO> dto = new ArrayList<>();
+        dto.add(new TicketPrestitoDTO(t));
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(t.getBiblioteca());
-        when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(t.getBiblioteca());
+        when(prenotazioneService.getTicketsByBibliotecaAndStato(t.getBiblioteca(), TicketPrestito.Stati.IN_ATTESA_DI_RESTITUZIONE))
                 .thenReturn(list);
+        when(prenotazioneService.getInformazioniTickets(list)).thenReturn(dto);
 
-        this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
+        this.mockMvc.perform(post("/prenotazione-libri/visualizza-richieste")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_RESTITUZIONE[0].stato").value(t.getStato().toString()))
@@ -451,17 +456,21 @@ public class PrenotazioneLibriControllerTest {
     @ParameterizedTest
     @MethodSource("provideTicketChiuso")
     public void visualizzaRichiesteTicketChiuso(final TicketPrestito t) throws Exception {
+
         String token="";
         List<TicketPrestito> list = new ArrayList<>();
         list.add(t);
+        List<TicketPrestitoDTO> dto = new ArrayList<>();
+        dto.add(new TicketPrestitoDTO(t));
 
         when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(bibliotecaService.findBibliotecaByEmail("a")).thenReturn(t.getBiblioteca());
-        when(prenotazioneService.getTicketsByBiblioteca(t.getBiblioteca()))
+        when(bibliotecaService.findBibliotecaByEmail(Mockito.anyString())).thenReturn(t.getBiblioteca());
+        when(prenotazioneService.getTicketsByBibliotecaAndStato(t.getBiblioteca(), TicketPrestito.Stati.CHIUSO))
                 .thenReturn(list);
+        when(prenotazioneService.getInformazioniTickets(list)).thenReturn(dto);
 
-        this.mockMvc.perform(get("/prenotazione-libri/visualizza-richieste")
+        this.mockMvc.perform(post("/prenotazione-libri/visualizza-richieste")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.IN_ATTESA_DI_CONFERMA").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.CHIUSO[0].stato").value(t.getStato().toString()))
@@ -478,12 +487,17 @@ public class PrenotazioneLibriControllerTest {
      */
     @Test
     public void accettaPrenotazione() throws Exception {
-        TicketPrestito ticket = new TicketPrestito();
+        TicketPrestito ticket = Mockito.mock(TicketPrestito.class);
+        Biblioteca biblioteca = Mockito.mock(Biblioteca.class);
+        when(ticket.getBiblioteca()).thenReturn(biblioteca);
+        when(biblioteca.getEmail()).thenReturn("email");
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("email");
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
+
         when(prenotazioneService.getTicketByID(1)).thenReturn(ticket);
         when(prenotazioneService.accettaRichiesta(ticket, 1))
                 .thenReturn(ticket);
-        this.mockMvc.perform(post("/prenotazione-libri/ticket/1/accetta")
-                        .param("giorni", "1"))
+        this.mockMvc.perform(post("/prenotazione-libri/ticket/accetta").param("id", "1").param("giorni", "1").header(HttpHeaders.AUTHORIZATION, "Bearer " + ""))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(true));
     }
 
@@ -495,10 +509,15 @@ public class PrenotazioneLibriControllerTest {
      */
     @Test
     public void rifiutaPrenotazione() throws Exception {
-        TicketPrestito ticket = new TicketPrestito();
+        TicketPrestito ticket = Mockito.mock(TicketPrestito.class);
+        Biblioteca biblioteca = Mockito.mock(Biblioteca.class);
+        when(ticket.getBiblioteca()).thenReturn(biblioteca);
+        when(biblioteca.getEmail()).thenReturn("email");
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("email");
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(prenotazioneService.getTicketByID(1)).thenReturn(ticket);
         when(prenotazioneService.rifiutaRichiesta(ticket)).thenReturn(ticket);
-        this.mockMvc.perform(post("/prenotazione-libri/ticket/1/rifiuta"))
+        this.mockMvc.perform(post("/prenotazione-libri/ticket/rifiuta").param("id", "1").header(HttpHeaders.AUTHORIZATION, "Bearer " + ""))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(true));
     }
 
@@ -511,10 +530,15 @@ public class PrenotazioneLibriControllerTest {
      */
     @Test
     public void chiudiPrenotazione() throws Exception {
-        TicketPrestito ticket = new TicketPrestito();
+        TicketPrestito ticket = Mockito.mock(TicketPrestito.class);
+        Biblioteca biblioteca = Mockito.mock(Biblioteca.class);
+        when(ticket.getBiblioteca()).thenReturn(biblioteca);
+        when(biblioteca.getEmail()).thenReturn("email");
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("email");
+        when(utils.isUtenteBiblioteca(Mockito.anyString())).thenReturn(true);
         when(prenotazioneService.getTicketByID(1)).thenReturn(ticket);
         when(prenotazioneService.chiudiTicket(ticket)).thenReturn(ticket);
-        this.mockMvc.perform(post("/prenotazione-libri/ticket/1/chiudi"))
+        this.mockMvc.perform(post("/prenotazione-libri/ticket/chiudi").param("id", "1").header(HttpHeaders.AUTHORIZATION, "Bearer " + ""))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusOk").value(true));
     }
 
@@ -564,7 +588,7 @@ public class PrenotazioneLibriControllerTest {
         listDTO.add(ticketPrestitoDTO);
 
     when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
-    when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+    when(prenotazioneService.getInformazioniTickets(Mockito.any())).thenReturn(listDTO);
         when(prenotazioneService.getTicketsByEmailLettore("a"))
                 .thenReturn(list);
 

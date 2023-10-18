@@ -42,6 +42,7 @@ public class ClubDelLibroController {
     private final EspertoService espertoService;
     private final GestioneEventiService eventiService;
     private final GenereService genereService;
+    private final PostService postService;
     private final Utils utils;
 
 
@@ -303,11 +304,7 @@ public class ClubDelLibroController {
     @CrossOrigin
     @ResponseBody
     public List<LettoreDTO> visualizzaLettoriClub(final @RequestParam int id) {
-         List<LettoreDTO> lettoriDTO = new ArrayList<>();
-        for(Lettore l: clubService.getClubByID(id).getLettori()){
-                lettoriDTO.add(new LettoreDTO(l));
-        }
-        return lettoriDTO;
+        return lettoreService.getInformazioniLettori(clubService.getClubByID(id).getLettori());
     }
 
     /**
@@ -341,6 +338,14 @@ public class ClubDelLibroController {
         }
 
         return eventiService.getInformazioniEventi(clubDelLibro.getEventi());
+    }
+
+    @PostMapping(value = "/visualizza-post-club")
+    @ResponseBody
+    @CrossOrigin
+    public List<PostDTO> visualizzaTuttiPostClub(final @RequestParam("idClub") int idClub) {
+
+        return postService.getInformazioniPost(clubService.visualizzaListaPostByClubId(idClub));
     }
 
 

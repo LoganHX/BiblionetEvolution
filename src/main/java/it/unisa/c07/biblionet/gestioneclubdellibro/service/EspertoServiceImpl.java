@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,13 +91,13 @@ public class EspertoServiceImpl implements EspertoService {
     }
 
     @Override
-    public List<EspertoDTO> getInformazioniEsperti(List<Esperto> espertoList) {
-        List<EspertoDTO> espertoDTOList = new ArrayList<>();
-        for(Esperto e: espertoList){
-            espertoDTOList.add(new EspertoDTO(e));
-        }
+    public List<EspertoDTO> getInformazioniEsperti(List<Esperto> esperti) {
+        List<EspertoDTO> espertoDTOList = new ArrayList<>(esperti.size());
 
-        return espertoDTOList;
+        return esperti.stream()
+                .filter(Objects::nonNull)
+                .map(EspertoDTO::new)
+                .collect(Collectors.toCollection(() -> espertoDTOList));
     }
 
 

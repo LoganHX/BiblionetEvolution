@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementa la classe che esplicita i metodi
@@ -71,7 +72,6 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
      * @param email la mail della biblioteca
      * @return La lista di libri
      * <p>
-     * todo completamente rifatta
      */
     @Override
     public List<Libro> visualizzaListaLibriPerBiblioteca(
@@ -272,14 +272,14 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
 
     @Override
     public List<TicketPrestitoDTO> getInformazioniTickets(List<TicketPrestito> tickets) {
-        List<TicketPrestitoDTO> ticketsDTO = new ArrayList<>();
 
-        for(TicketPrestito t: tickets){
-            ticketsDTO.add(new TicketPrestitoDTO(t));
-        }
-        return ticketsDTO;
+        List<TicketPrestitoDTO> ticketsDTO = new ArrayList<>(tickets.size());
+
+        return tickets.stream()
+                .filter(Objects::nonNull)
+                .map(TicketPrestitoDTO::new)
+                .collect(Collectors.toCollection(() -> ticketsDTO));
     }
-
 
     /**
      * Implementa la funzionalità che permette di
@@ -383,7 +383,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
             if (p.getPossessoID().getLibroID() == idLibro) {
                 p.setNumeroCopie(p.getNumeroCopie() + numCopie);
                 possessoDAO.save(p);
-                bibliotecaService.aggiornaBiblioteca(b);
+                bibliotecaService.salvaBiblioteca(b);
                 return l;
             }
         }
@@ -397,7 +397,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         b.setPossessi(plist);
 
         //Update della biblioteca con il nuovo possesso
-        bibliotecaService.aggiornaBiblioteca(b);
+        bibliotecaService.salvaBiblioteca(b);
 
         return gestisciPossessi(l, b, numCopie);
     }
@@ -434,12 +434,14 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
     }
 
     @Override
-    public List<LibroDTO> getInformazioniLibri(List<Libro> libroList) {
-        List<LibroDTO> libroDTOS = new ArrayList<>();
-        for(Libro l: libroList){
-            libroDTOS.add(new LibroDTO(l));
-        }
-        return libroDTOS;
+    public List<LibroDTO> getInformazioniLibri(List<Libro> libri) {
+
+        List<LibroDTO> libroDTOS = new ArrayList<>(libri.size());
+
+        return libri.stream()
+                .filter(Objects::nonNull)
+                .map(LibroDTO::new)
+                .collect(Collectors.toCollection(() -> libroDTOS));
     }
 
     private Libro gestisciPossessi(Libro libroEsistente, Biblioteca b, int numCopie){
@@ -448,7 +450,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         if(p != null){
             p.setNumeroCopie(p.getNumeroCopie() + numCopie);
             possessoDAO.save(p);
-            bibliotecaService.aggiornaBiblioteca(b);
+            bibliotecaService.salvaBiblioteca(b);
             return libroEsistente;
         }
 
@@ -461,7 +463,7 @@ public class PrenotazioneLibriServiceImpl implements PrenotazioneLibriService {
         b.setPossessi(plist);
 
         //Update della biblioteca con il nuovo possesso
-        bibliotecaService.aggiornaBiblioteca(b);
+        bibliotecaService.salvaBiblioteca(b);
         return libroEsistente;
     }
 

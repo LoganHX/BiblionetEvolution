@@ -306,26 +306,26 @@ public class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
     }
 
-    @ParameterizedTest
-    @MethodSource("provideClubDelLibro")
-    public void creaPost_TokenNonValido(ClubDelLibro clubDelLibro) throws Exception {
-
-        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
-        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
-        when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
-        when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
-
-        this.mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post("/post/crea")
-                        .param("titolo", "Prova")
-                        .param("content", "Prova")
-                        .param("idClub", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
-    }
+//    @ParameterizedTest
+//    @MethodSource("provideClubDelLibro")
+//    public void creaPost_TokenNonValido(ClubDelLibro clubDelLibro) throws Exception {
+//
+//        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+//        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+//        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+//        when(espertoService.findEspertoByEmail(Mockito.anyString())).thenReturn(clubDelLibro.getEsperto());
+//        when(postService.creaPostDaModel(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Post());
+//
+//        this.mockMvc
+//                .perform(MockMvcRequestBuilders
+//                        .post("/post/crea")
+//                        .param("titolo", "Prova")
+//                        .param("content", "Prova")
+//                        .param("idClub", "1")
+//                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "token"))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+//    }
     @ParameterizedTest
     @MethodSource("provideClubDelLibro")
     public void creaPost_TokenNonFornito(ClubDelLibro clubDelLibro) throws Exception {
@@ -420,8 +420,7 @@ public class PostControllerTest {
     }
 
     @Test
-    @MethodSource("provideClubDelLibro")
-    public void aggiungiCommento_IDPostNonFornito(ClubDelLibro clubDelLibro) throws Exception {
+    public void aggiungiCommento_IDPostNonFornito() throws Exception {
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders

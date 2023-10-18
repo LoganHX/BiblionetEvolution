@@ -192,5 +192,12 @@ public class BibliotecaController {
         return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
     }
 
+    @PostMapping(value = "/informazioni")
+    @ResponseBody
+    @CrossOrigin
+    public BibliotecaDTO visualizzaInformazioniBiblioteca(final @RequestParam String email) {
+        return new BibliotecaDTO(bibliotecaService.findBibliotecaByEmail(email));
+    }
+
 
 }

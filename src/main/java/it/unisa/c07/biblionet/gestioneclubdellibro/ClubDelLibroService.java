@@ -2,6 +2,7 @@ package it.unisa.c07.biblionet.gestioneclubdellibro;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.ClubDelLibro;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
+import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Post;
 
 import java.io.IOException;
 import java.util.List;
@@ -83,4 +84,6 @@ public interface ClubDelLibroService {
 
 
     List<ClubDTO> getInformazioniClubs(List<ClubDelLibro> clubDelLibroList);
+
+    List<Post> visualizzaListaPostByClubId(int id);
 }

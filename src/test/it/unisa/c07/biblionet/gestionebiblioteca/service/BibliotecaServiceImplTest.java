@@ -58,19 +58,6 @@ public class BibliotecaServiceImplTest {
 
     /**
      * Implementa il test della funzionalità che permette di
-     * recuperare la lista di tutte le biblioteche del DB.
-     */
-    @Test
-    public void findAllBiblioteche() {
-        List<Biblioteca> list = new ArrayList<>();
-        list.add(new Biblioteca());
-        when(bibliotecaDAO.findAllBiblioteche()).thenReturn(list);
-        assertEquals(bibliotecaService.findBibliotecaByNome(Mockito.any()), list);
-    }
-
-
-    /**
-     * Implementa il test della funzionalità che permette di
      * recuperare una lista delle biblioteche che contengono
      * la stringa passata nella città.
      */

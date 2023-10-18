@@ -1,6 +1,7 @@
 package it.unisa.c07.biblionet.gestioneclubdellibro.service;
 
 import it.unisa.c07.biblionet.gestioneclubdellibro.ClubDTO;
+import it.unisa.c07.biblionet.gestioneclubdellibro.PostService;
 import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,10 +55,12 @@ public class ClubDelLibroServiceImplTest {
      */
     @Mock
     private LettoreDAO lettoreDAO;
+    @Mock
+    private PostService postService;
 
     @Before
     public void setUp() {
-        clubService = new ClubDelLibroServiceImpl(clubDAO);
+        clubService = new ClubDelLibroServiceImpl(clubDAO, postService);
     }
     /**
      * Implementa il test della funzionalità di

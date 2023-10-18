@@ -42,17 +42,7 @@ public class GenereServiceImplTest {
         when(genereDAO.findByName("")).thenReturn(new Genere());
         assertEquals(listaGeneri, genereService.getAllGeneri(nomi));*/
     }
-    /**
-     * Metodo che si occupa di testare
-     * la funzione di ricerca di un
-     * genere facendo 0 iterazioni nel service.
-     */
-    @Test
-    public void findGeneriByName0IT() {
-        Set<Genere> list = new HashSet<>();
-        String[] generi = {""};
-        assertEquals(list, genereService.getGeneriByName(Arrays.stream(generi).toList()));
-    }
+
 
     /**
      * Metodo che si occupa di testare

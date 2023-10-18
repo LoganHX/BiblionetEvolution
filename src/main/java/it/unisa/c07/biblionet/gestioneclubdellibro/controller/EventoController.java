@@ -43,8 +43,7 @@ public class EventoController {
     public BiblionetResponse abbandonaEvento(final @PathVariable int idEvento, @RequestHeader(name = "Authorization") final String token) {
         //Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
         if (!utils.isUtenteLettore(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
-
-        if(eventiService.isLettoreIscrittoEvento(idEvento, utils.getSubjectFromToken(token)) != null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
+        if(eventiService.isLettoreIscrittoEvento(idEvento, utils.getSubjectFromToken(token)) == null) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
         Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
 

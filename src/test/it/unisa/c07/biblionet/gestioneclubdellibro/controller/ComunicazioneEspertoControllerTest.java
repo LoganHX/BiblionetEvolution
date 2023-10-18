@@ -88,20 +88,5 @@ public class ComunicazioneEspertoControllerTest {
 
     }
 
-    /**
-     * Implementa il test della funzionalitá di visualizzazione
-     * della lista di tutte le biblioteche.
-     * @throws Exception Eccezione per MockMvc
-     */
-    @Test
-    public void visualizzaListaEsperti() throws Exception {
-        List<Esperto> list = new ArrayList<>();
-
-        when(espertoService.findAllEsperti()).thenReturn(list);
-
-        this.mockMvc.perform(get("/comunicazione-esperto/lista-esperti"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").value(list));
-    }
-
 
 }

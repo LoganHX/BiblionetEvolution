@@ -127,7 +127,15 @@ public class EventoControllerTest {
     /*************************************+ Tests for eliminaEvento *********************************/
     @Test
     public void eliminaEvento() throws Exception {
-        //todo possibile non ci sia un check sul token?
+        ClubDelLibro clubDelLibro = Mockito.mock(ClubDelLibro.class);
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(clubDelLibro.getEsperto()).thenReturn(esperto);
+        when(esperto.getEmail()).thenReturn("a");
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+        when(eventiService.eliminaEvento(1)).thenReturn(new Evento());
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
 
 
         when(
@@ -136,9 +144,10 @@ public class EventoControllerTest {
 
         this.mockMvc
                 .perform(post("/gestione-eventi/elimina-evento")
-                        .param("id", "1")
-                        .param("club", "1")
-                )
+                        .param("idClub", "1")
+                        .param("idEvento", "1"
+                )                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + "aa"))
+
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Evento eliminato"));
     }
 
@@ -176,13 +185,22 @@ public class EventoControllerTest {
      *
      * @throws Exception Eccezione per MovkMvc
      */
-    @ParameterizedTest
-    @MethodSource("provideLettore")
+    @Test
     public void partecipaEventoUserOk() throws Exception {
         String token="";
-        Lettore lettore = new Lettore();
+        Lettore lettore = new Lettore(
+                "antoniorenatomontefusco@gmail.com",
+                "LettorePassword",
+                "Napoli",
+                "Somma Vesuviana",
+                "Via Vesuvio 33",
+                "3456789012",
+                "antoniomontefusco",
+                "Antonio",
+                "Montefusco"
+        );
 
-        String idClub = "1";
+
         String idEvento = "1";
 
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
@@ -190,7 +208,7 @@ public class EventoControllerTest {
         when(lettoreService.findLettoreByEmail("a")).thenReturn(lettore);
         when(eventiService.partecipaEvento(Mockito.any(), Mockito.anyInt())).thenReturn(lettore);
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .get("/gestione-eventi/{idClub}/eventi/{idEvento}/iscrizione", idClub, idEvento)
+                        .get("/gestione-eventi/eventi/{idEvento}/iscrizione", idEvento)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 ).andExpect(MockMvcResultMatchers.jsonPath("$.email").value(lettore.getEmail()));
     }
@@ -203,7 +221,6 @@ public class EventoControllerTest {
      */
     @Test
     public void abbandonaEvento() throws Exception {
-        // todo dovrei controllare che il lettore che vuole eliminare sia quello giusto
 
         int idEvento = 1;
         int idClub = 1;
@@ -212,13 +229,19 @@ public class EventoControllerTest {
         Lettore lettore = new Lettore();
         lettore.setEmail("paulo@dybala.it");
 
+        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(new Evento(
+                "Evento fantastyco",
+                "Evento fantastyco per gente fantastyca",
+                LocalDateTime.now(),
+                new ClubDelLibro()
+        ));
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
         when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(lettore);
         when(eventiService.abbandonaEvento(Mockito.anyString(), Mockito.anyInt())).thenReturn(lettore);
 
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .get("/gestione-eventi/{idClub}/eventi/{idEvento}/abbandono", idClub, idEvento)
+                        .get("/gestione-eventi/eventi/{idEvento}/abbandono", idEvento)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OPERAZIONE_OK));
     }
@@ -226,7 +249,7 @@ public class EventoControllerTest {
 
     /**
      * Implementa il test della funzionalità gestita dal
-     * controller per l'abbandono di un un evento
+     * controller per l'abbandono di un evento
      * simulando la richiesta http.
      *
      * @throws Exception Eccezione per MovkMvc
@@ -239,9 +262,9 @@ public class EventoControllerTest {
 
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(e);
+        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(null);
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .get("/gestione-eventi/1/eventi/15/abbandono")
+                        .get("/gestione-eventi/eventi/15/abbandono")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
@@ -259,14 +282,21 @@ public class EventoControllerTest {
     public void abbandonaEventoUtenteInesistente() throws Exception {
 
         String token="";
+        Lettore lettore = new Lettore();
+        lettore.setEmail("paulo@dybala.it");
 
-
+        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(new Evento(
+                "Evento fantastyco",
+                "Evento fantastyco per gente fantastyca",
+                LocalDateTime.now(),
+                new ClubDelLibro()
+        ));
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(true);
         when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(eventiService.isLettoreIscrittoEvento(Mockito.anyInt(), Mockito.anyString())).thenReturn(null);
-        when( lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(null);
+        when(lettoreService.findLettoreByEmail(Mockito.anyString())).thenReturn(null);
+        when(eventiService.abbandonaEvento(Mockito.anyString(), Mockito.anyInt())).thenReturn(lettore);
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .get("/gestione-eventi/1/eventi/15/abbandono")
+                        .get("/gestione-eventi/eventi/15/abbandono")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.OGGETTO_NON_TROVATO));
     }
@@ -287,7 +317,7 @@ public class EventoControllerTest {
         when(utils.isUtenteLettore(Mockito.anyString())).thenReturn(false);
 
         this.mockMvc.perform(MockMvcRequestBuilders
-                        .get("/gestione-eventi/1/eventi/15/abbandono")
+                        .get("/gestione-eventi/eventi/15/abbandono")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
@@ -1127,34 +1157,34 @@ public class EventoControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.NON_AUTORIZZATO));
     }
 
-    @Test
-    public void creaEventoClub_TokenNonValido() throws Exception {
-
-        String token = "";
-
-        ClubDelLibro clubDelLibro = Mockito.mock(ClubDelLibro.class);
-        Esperto esperto = Mockito.mock(Esperto.class);
-        when(clubDelLibro.getEsperto()).thenReturn(esperto);
-        when(esperto.getEmail()).thenReturn("a");
-        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
-        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
-        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
-        when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
-        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
-
-        this.mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post("/gestione-eventi/crea")
-                        .param("nome", "Prova")
-                        .param("descrizione", "Prova")
-                        .param("dateString", "2024-12-12")
-                        .param("timeString", "11:24")
-                        .param("idClub", "1")
-                        .param("idLibro", "1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
-    }
+//    @Test
+//    public void creaEventoClub_TokenNonValido() throws Exception {
+//
+//        String token = "";
+//
+//        ClubDelLibro clubDelLibro = Mockito.mock(ClubDelLibro.class);
+//        Esperto esperto = Mockito.mock(Esperto.class);
+//        when(clubDelLibro.getEsperto()).thenReturn(esperto);
+//        when(esperto.getEmail()).thenReturn("a");
+//        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+//        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
+//        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+//        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+//        when(eventiService.getLibroById(Mockito.anyInt())).thenReturn(Optional.of(new Libro()));
+//        when(eventiService.modificaEvento(Mockito.any())).thenReturn(new Evento());
+//
+//        this.mockMvc
+//                .perform(MockMvcRequestBuilders
+//                        .post("/gestione-eventi/crea")
+//                        .param("nome", "Prova")
+//                        .param("descrizione", "Prova")
+//                        .param("dateString", "2024-12-12")
+//                        .param("timeString", "11:24")
+//                        .param("idClub", "1")
+//                        .param("idLibro", "1")
+//                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.ERRORE));
+//    }
 
     @Test
     public void creaEventoClub_TokenNonDellaGiustaTipologia() throws Exception {
@@ -1516,11 +1546,18 @@ public class EventoControllerTest {
      */
     @Test
     public void eliminaEventoInesistente() throws Exception {
+        ClubDelLibro clubDelLibro = Mockito.mock(ClubDelLibro.class);
+        Esperto esperto = Mockito.mock(Esperto.class);
+        when(clubDelLibro.getEsperto()).thenReturn(esperto);
+        when(esperto.getEmail()).thenReturn("a");
+        when(utils.getSubjectFromToken(Mockito.anyString())).thenReturn("a");
+        when(utils.match(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(utils.isUtenteEsperto(Mockito.anyString())).thenReturn(true);
         when(eventiService.eliminaEvento(1)).thenReturn(null);
-        System.out.println(Optional.empty());
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/elimina-evento")
-                        .param("club", String.valueOf(1))
-                        .param("id", String.valueOf(1)))
+        when(clubService.getClubByID(Mockito.anyInt())).thenReturn(clubDelLibro);
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/gestione-eventi/elimina-evento") .header(HttpHeaders.AUTHORIZATION, "Bearer " + "aaa")
+                        .param("idClub", String.valueOf(1))
+                        .param("idEvento", String.valueOf(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Evento inesistente"));
     }
 

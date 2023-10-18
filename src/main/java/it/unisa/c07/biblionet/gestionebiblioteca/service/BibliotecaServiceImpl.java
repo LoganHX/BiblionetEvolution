@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class BibliotecaServiceImpl implements BibliotecaService {
@@ -19,7 +22,7 @@ public class BibliotecaServiceImpl implements BibliotecaService {
     public Biblioteca creaBibliotecaDaModel(BibliotecaDTO form) {
         Biblioteca biblioteca = new Biblioteca(form);
         biblioteca.setTipo("Biblioteca");
-        return aggiornaBiblioteca(biblioteca);
+        return salvaBiblioteca(biblioteca);
 
     }
 
@@ -61,12 +64,13 @@ public class BibliotecaServiceImpl implements BibliotecaService {
 
     @Override
     public List<BibliotecaDTO> getInformazioniBiblioteche(List<Biblioteca> biblioteche) {
-        List<BibliotecaDTO> bibliotecheDTO = new ArrayList<>();
-        for (Biblioteca b : biblioteche){
-            bibliotecheDTO.add(new BibliotecaDTO(b));
-        }
 
-        return bibliotecheDTO;
+        List<BibliotecaDTO> bibliotecheDTO = new ArrayList<>(biblioteche.size());
+
+        return biblioteche.stream()
+                .filter(Objects::nonNull)
+                .map(BibliotecaDTO::new)
+                .collect(Collectors.toCollection(() -> bibliotecheDTO));
     }
 
 
@@ -78,7 +82,7 @@ public class BibliotecaServiceImpl implements BibliotecaService {
      * @return la biblioteca aggiornata
      */
     @Override
-    public Biblioteca aggiornaBiblioteca(final Biblioteca utente) {
+    public Biblioteca salvaBiblioteca(final Biblioteca utente) {
         return bibliotecaDAO.save(utente);
     }
 

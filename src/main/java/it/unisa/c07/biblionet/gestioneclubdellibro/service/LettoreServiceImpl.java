@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,7 +93,15 @@ public class LettoreServiceImpl implements LettoreService {
     }
 
 
+    @Override
+    public List<LettoreDTO> getInformazioniLettori(List<Lettore> lettori) {
+        List<LettoreDTO> DTOList = new ArrayList<>(lettori.size());
 
+        return lettori.stream()
+                .filter(Objects::nonNull)
+                .map(LettoreDTO::new)
+                .collect(Collectors.toCollection(() -> DTOList));
+    }
 
 
 

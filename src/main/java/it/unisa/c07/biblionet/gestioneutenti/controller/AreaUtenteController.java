@@ -1,12 +1,10 @@
 package it.unisa.c07.biblionet.gestioneutenti.controller;
 
+import it.unisa.c07.biblionet.common.UtenteRegistrato;
 import it.unisa.c07.biblionet.common.UtenteRegistratoDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
-import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
 import it.unisa.c07.biblionet.gestioneclubdellibro.*;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Esperto;
-import it.unisa.c07.biblionet.gestioneclubdellibro.repository.Lettore;
 import it.unisa.c07.biblionet.gestioneutenti.AutenticazioneService;
 import it.unisa.c07.biblionet.utils.BiblionetResponse;
 import it.unisa.c07.biblionet.utils.Utils;
@@ -26,7 +24,6 @@ import javax.validation.Valid;
 @RequestMapping("/area-utente")
 public class AreaUtenteController {
 
-    private final AutenticazioneService autenticazioneService;
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final BibliotecaService bibliotecaService;
@@ -49,7 +46,7 @@ public class AreaUtenteController {
 
         if(!utils.isUtenteBiblioteca(token)) return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        Biblioteca b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
+        UtenteRegistrato b = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
 
         if(b == null){
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
@@ -83,7 +80,7 @@ public class AreaUtenteController {
         if (!utils.isUtenteEsperto(token))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        Esperto e = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
+        UtenteRegistrato e = espertoService.findEspertoByEmail(utils.getSubjectFromToken(token));
 
         if(e == null){
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
@@ -115,7 +112,7 @@ public class AreaUtenteController {
         if (!utils.isUtenteLettore(token))
             return new BiblionetResponse(BiblionetResponse.NON_AUTORIZZATO, false);
 
-        Lettore l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
+        UtenteRegistrato l = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
 
         if(l == null){
             return new BiblionetResponse(BiblionetResponse.ISCRIZIONE_FALLITA, false);
@@ -145,7 +142,7 @@ public class AreaUtenteController {
 
     }
 
-
+/*
     @PostMapping(value = "/modifica-password")
     @ResponseBody
     @CrossOrigin
@@ -161,7 +158,7 @@ public class AreaUtenteController {
         if(!nuovaPassword.equals(confermaNuovaPassword)) return new BiblionetResponse(BiblionetResponse.RICHIESTA_NON_VALIDA, false);
 
         if (utils.isUtenteLettore(token)){
-            Lettore lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
+            UtenteRegistrato lettore = lettoreService.findLettoreByEmail(utils.getSubjectFromToken(token));
             if(lettore == null) return new BiblionetResponse(BiblionetResponse.ERRORE, false);
             lettore.setPassword(nuovaPassword);
             lettoreService.aggiornaLettore(lettore);
@@ -178,11 +175,11 @@ public class AreaUtenteController {
             Biblioteca biblioteca = bibliotecaService.findBibliotecaByEmail(utils.getSubjectFromToken(token));
             if(biblioteca == null )return new BiblionetResponse(BiblionetResponse.ERRORE, false);
             biblioteca.setPassword(nuovaPassword);
-            bibliotecaService.aggiornaBiblioteca(biblioteca);
+            bibliotecaService.salvaBiblioteca(biblioteca);
         }
 
         return new BiblionetResponse(BiblionetResponse.OPERAZIONE_OK, true);
 
     }
-
+*/
 }
