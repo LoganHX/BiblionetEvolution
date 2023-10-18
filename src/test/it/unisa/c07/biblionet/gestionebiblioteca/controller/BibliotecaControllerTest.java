@@ -3,6 +3,7 @@ package it.unisa.c07.biblionet.gestionebiblioteca.controller;
 
 import it.unisa.c07.biblionet.common.Libro;
 import it.unisa.c07.biblionet.common.LibroDTO;
+import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaDTO;
 import it.unisa.c07.biblionet.gestionebiblioteca.BibliotecaService;
 import it.unisa.c07.biblionet.gestionebiblioteca.PrenotazioneLibriService;
 import it.unisa.c07.biblionet.gestionebiblioteca.repository.Biblioteca;
@@ -133,7 +134,7 @@ public class BibliotecaControllerTest {
                         .param("isbn", "a")
                         .param("generi", generi)
                         .param("numCopie", "1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value("Libro non creato"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.descrizione").value(BiblionetResponse.FORMATO_NON_VALIDO));
     }
 
     /**
@@ -2005,12 +2006,21 @@ public class BibliotecaControllerTest {
      * @throws Exception Eccezione per MockMvc
      */
     @Test
-    public void visualizzaDatiBiblioteca() throws Exception {
-        Biblioteca biblioteca = new Biblioteca();
-        biblioteca.setEmail("a");
+    public void visualizzaInformazioniBiblioteca() throws Exception {
+        Biblioteca biblioteca = new Biblioteca(new BibliotecaDTO(
+                "bibliotecacarrisi@gmail.com",
+                "BibliotecaPassword",
+                "Napoli",
+                "Torre del Greco",
+                "Via Carrisi 47",
+                "1234567890",
+                "Biblioteca Carrisi"
+        ));
+
         when(bibliotecaService
-                .findBibliotecaByEmail("a")).thenReturn(biblioteca);
-        this.mockMvc.perform(get("/biblioteca/a"))
+                .findBibliotecaByEmail(Mockito.anyString())).thenReturn(biblioteca);
+        this.mockMvc.perform(post("/biblioteca/informazioni")
+                        .param("email", biblioteca.getEmail()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(biblioteca.getEmail()));
     }
 

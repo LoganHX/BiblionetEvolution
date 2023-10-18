@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -154,12 +151,15 @@ public class ClubDelLibroServiceImpl implements ClubDelLibroService {
     }
 
     @Override
-    public List<ClubDTO> getInformazioniClubs(List<ClubDelLibro> clubDelLibroList){
-        List<ClubDTO> clubDTOS = new ArrayList<>();
-        for(ClubDelLibro c: clubDelLibroList){
-            clubDTOS.add(new ClubDTO(c));
-        }
-        return clubDTOS;
+    public List<ClubDTO> getInformazioniClubs(List<ClubDelLibro> clubs) {
+
+
+        List<ClubDTO> clubDTOS = new ArrayList<>(clubs.size());
+
+        return clubs.stream()
+                .filter(Objects::nonNull)
+                .map(ClubDTO::new)
+                .collect(Collectors.toCollection(() -> clubDTOS));
     }
 
 
