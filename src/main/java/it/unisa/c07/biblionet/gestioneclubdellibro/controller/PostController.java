@@ -136,12 +136,22 @@ public class PostController {
     }
 
 
+    @PostMapping(value = "/visualizza-post-club")
+    @ResponseBody
+    @CrossOrigin
+    public List<PostDTO> visualizzaTuttiPostClub(final @RequestParam("idClub") int idClub) {
+
+        return postService.getInformazioniPost(postService.visualizzaListaPostByClubId(idClub));
+    }
+
     @PostMapping(value = "/visualizza-post")
     @ResponseBody
     @CrossOrigin
-    public List<PostDTO> visualizzaPost(final @RequestParam("idClub") int idClub) {
+    public PostDTO visualizzaPost(final @RequestParam("idClub") int idClub, final @RequestParam("idPost") int idPost) {
 
-        return postService.getInformazioniPost(postService.visualizzaListaPostByClubId(idClub));
+        Post post = postService.getPostByID(idPost);
+        if(post.getClubDelLibro().getIdClub() != idClub) return null;
+        return new PostDTO(post);
 
     }
 

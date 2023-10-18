@@ -35,7 +35,6 @@ public final class RegistrazioneController {
     private final LettoreService lettoreService;
     private final EspertoService espertoService;
     private final BibliotecaService bibliotecaService;
-    private final Utils utils;
 
     /**
      * Implementa la funzionalità di registrazione di un esperto.*/

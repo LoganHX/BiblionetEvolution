@@ -8,9 +8,8 @@ import it.unisa.c07.biblionet.gestioneclubdellibro.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -19,8 +18,6 @@ public class PostServiceImpl implements PostService {
 
     private final PostDAO postDAO;
     private final CommentoDAO commentoDAO;
-
-
 
     @Override
     public List<Post> visualizzaListaPostByClubId(int id){
@@ -49,7 +46,6 @@ public class PostServiceImpl implements PostService {
 
         p.addCommento(c);
         commentoDAO.save(c);
-        //p = postDAO.save(p);
 
         return p;
     }
@@ -58,20 +54,21 @@ public class PostServiceImpl implements PostService {
         return commentoDAO.findAllCommentiByPostId(idPost);
     }
 
-    @Override
-    public List<PostDTO> getInformazioniPost(List<Post> posts){
-        List<PostDTO> dtos = new ArrayList<>();
-        for(Post p: posts){
-            dtos.add(new PostDTO(p));
-        }
-        return dtos;
+    public List<PostDTO> getInformazioniPost(List<Post> posts) {
+        List<PostDTO> dtos = new ArrayList<>(posts.size());
+
+        return posts.stream()
+                .filter(Objects::nonNull)
+                .map(PostDTO::new)
+                .collect(Collectors.toCollection(() -> dtos));
     }
-    @Override
-    public List<CommentoDTO> getInformazioniCommenti(List<Commento> commenti){
-        List<CommentoDTO> dtos = new ArrayList<>();
-        for(Commento c: commenti){
-            dtos.add(new CommentoDTO(c));
-        }
-        return dtos;
+
+    public List<CommentoDTO> getInformazioniCommenti(List<Commento> commenti) {
+        List<CommentoDTO> dtos = new ArrayList<>(commenti.size());
+
+        return commenti.stream()
+                .filter(Objects::nonNull)
+                .map(CommentoDTO::new)
+                .collect(Collectors.toCollection(() -> dtos));
     }
 }

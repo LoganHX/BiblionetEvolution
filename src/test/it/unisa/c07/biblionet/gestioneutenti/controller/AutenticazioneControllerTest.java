@@ -31,10 +31,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AutenticazioneControllerTest {
 
-    @Autowired
-    @Setter
-    @Getter
-    private ApplicationContext applicationContext;
 
     /**
      * Inject di MockMvc per simulare
@@ -48,9 +44,6 @@ public class AutenticazioneControllerTest {
     @MockBean
     private AutenticazioneService autenticazioneService;
 
-    public void init() {
-        BiblionetApplication.init((ConfigurableApplicationContext) applicationContext);
-    }
 
     @Test
     public void loginOk() throws Exception {

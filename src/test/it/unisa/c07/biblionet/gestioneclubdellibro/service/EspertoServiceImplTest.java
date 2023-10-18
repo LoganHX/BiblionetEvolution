@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class EspertoServiceImplTest {
 
-    @MockBean
+    @Mock
     private EspertoDAO espertoDAO;
 
     /**

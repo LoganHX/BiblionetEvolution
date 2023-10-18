@@ -42,15 +42,6 @@ public class PostDTO {
         this.date = post.getDate();
         this.content = post.getContent();
         this.username = post.getUsername();
-        //this.commenti = new ArrayList<>();
     }
 
-  /*  public PostDTO(Post post, List<CommentoDTO> commenti) {
-        this.titolo = post.getTitolo();
-        this.id = post.getId();
-        this.espertoMail = post.getEsperto().getEmail();
-        this.date = post.getDate();
-        this.content = post.getContent();
-        //this.commenti = commenti;
-    }*/
 }
