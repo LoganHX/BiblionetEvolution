@@ -1,0 +1,1940 @@
+{
+  "id": "c35c91e6-9ca5-4d07-9e81-d374c2afb19e",
+  "version": "2.0",
+  "name": "System_Testing_RegistrazioneBiblioteca",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "4e8cf79b-3c9b-4b97-b51e-dffc829ae908",
+    "name": "TC_1.3.1",
+    "commands": [{
+      "id": "b0b591d2-fdf5-4ad6-b247-5982c10f99c7",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2b51dae6-4216-4853-9da4-74b673934856",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4167b9f5-7be5-4727-b190-b9a7e9dda73a",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "29a388eb-8368-4835-8f91-c2bc6f32b15a",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8f7ce7ff-fa54-47e4-91db-1b16485dd3df",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3d5f3d05-a9f1-4a39-89fd-9754da6b64fb",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bafd9e2a-87a6-4ba3-a5fc-6a611761509c",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "bs@teol.ku.dk"
+    }, {
+      "id": "32b071f5-4124-4501-b1a6-3c1f5c3f6d96",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2ed78ebe-6fbc-4c3e-9540-28ad5e39709e",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "C(%$A__12"
+    }, {
+      "id": "5656178b-e04d-458b-940d-681624b6c56c",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b1a3472c-abdf-4344-a696-5c0db33a4a7a",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "C(%$A__12"
+    }, {
+      "id": "f667ee18-f51c-4308-8b8d-e89332178b0f",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "08093841-cf1e-4187-a08d-fd5549312541",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca di Dipartimento del  Dipartimento di Teologia  dell’Università di København"
+    }, {
+      "id": "46bae23c-6737-43f0-9690-e941925966d6",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a19d41e9-3645-4aef-8688-dfddbda1a20e",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "794867b7-4c2f-4b9f-8402-8864e001bd71",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b2e7ba70-9cac-464b-9eb2-6bf39843d1b9",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Karen Blixen 16"
+    }, {
+      "id": "659d6712-aec4-41da-a855-9d5fa0658532",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5b6a9b7e-afba-4b52-8eae-701cc5e17fbd",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "0819999999"
+    }, {
+      "id": "94816b34-2621-4470-84de-4b21e225aa53",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "5cda5d8d-78f6-4dd5-9a9a-25ac6291394b",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "c68d16f2-f1c2-45cd-8b07-18501dde375f",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "529a7fa4-c603-4df2-a82c-260cc85f633c",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Registrazione Biblioteca",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "5fe9e7c9-8b02-43f2-bc78-90b1868cccf0",
+    "name": "TC_1.3.2",
+    "commands": [{
+      "id": "2103774c-037c-4063-b1a5-ae49874348a4",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c0602ff5-546e-41d7-a921-82ad62cd16d7",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2f4fd621-35f7-4e7d-9a72-0c594989d971",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f32f1fb2-89ca-4f4a-86f5-03be4a8fa8ef",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "95ddd0cc-1e3a-48b5-acd5-fe0e1cdda2d0",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1489e9b5-9c6a-49b8-83db-ebb314d859c1",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4b1bff7b-78b3-4981-bf8d-cfbaae70b7e9",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Contatti.unisa.com"
+    }, {
+      "id": "3eb487fd-4646-4f40-bf28-7c79d2bac51b",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "427356d7-2400-4f0f-a203-1700f84f7be8",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "K_134edla&&\\n"
+    }, {
+      "id": "a743dbca-122b-4c0f-bb0e-3e4c34afdd92",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ff6ac32a-c3be-40cb-aa7f-fe76c0882286",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "K_134edla&&\\n"
+    }, {
+      "id": "324180a6-d525-4693-9739-5bfa57b1ebb4",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c3166247-f431-41e7-be41-3dea6e3d5275",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca Fisciano"
+    }, {
+      "id": "e15546a4-507c-4760-a337-ac7aa3a9815b",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3c33f679-e017-443e-b88c-e5e0b81ed152",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0cbd307c-38cf-4da3-9a06-b40b358ecf0f",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "181353b6-8021-40d9-a892-a3eef1519c2f",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Via Giovanni Paolo XX"
+    }, {
+      "id": "a61cbf46-0539-4529-979c-85a9670299d3",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "03cf9c31-f00e-4def-b5aa-372f4421a672",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "0819999999"
+    }, {
+      "id": "5bdffaaf-54d0-4a7c-9702-2f8c9a363412",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "c6b53553-47c9-43a9-8859-17db9604f90f",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "28741022-5ed3-4371-b6c3-465324a92a81",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c14164a4-ff90-4440-9912-9888b9b0ebf4",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Registrazione Biblioteca",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "131ee008-35e0-4475-a664-306b9ea2f02d",
+    "name": "TC_1.3.3",
+    "commands": [{
+      "id": "91aea146-d2ba-4cc8-a393-23b952225dc2",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8fc43679-ca34-4492-9ca7-71fa662a29ff",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "883332cc-1eee-4693-88f5-be7524460f5c",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6c590c91-9a0e-4c5f-ae7e-c355d7085da0",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "086bd589-b751-4245-bdbd-beb59b569b56",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9ed51c51-0cea-4df9-aea7-f310a6db0c92",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2f31c65c-5038-4a63-8236-f8cccd170e01",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "biblioserrara@gmail.com\\n"
+    }, {
+      "id": "4c4ae837-33cd-4218-a3a8-a890fdd788e0",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "edc6c06d-86f0-4aca-8dc3-0712f019746c",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "Biblo"
+    }, {
+      "id": "dd31c769-3ea0-4414-b741-1c9147e91855",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1fb1855c-076c-4924-9e83-ebe64607d71e",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "Biblo"
+    }, {
+      "id": "42ced363-5716-4319-acd3-e4bc74f1bdc0",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "339a43e0-2992-4217-b1cf-e0f6baaf2ea7",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca Comunale di Serrara \\nFontana"
+    }, {
+      "id": "2d4e9f99-8383-4a4f-8b35-b39a57b1831c",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2704fba7-3194-47f5-be92-91b99cfd5c4e",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c4c40a76-c69a-4c64-8f59-a4fdc1b86e6b",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a100bcca-3fb9-4806-911f-683e3c52a0d8",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Piazza IV NOvembre"
+    }, {
+      "id": "f5d1e7f2-88fd-4dc6-8e80-f8e1b5ebca77",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6bda02fb-7b79-498f-8533-ec169e027767",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "0819999999"
+    }, {
+      "id": "b7ada82c-89be-409b-9fb8-2b314aa598b7",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "493877a2-37d6-440e-a5a5-3128f05dae71",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "92813484-812c-437e-9a5f-c8fdf403eb82",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "445a5d44-37cb-4bb2-ba6a-00350175d4a6",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Registrazione Biblioteca",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "1589265e-b493-4e4e-909c-2beb01e0da3f",
+    "name": "TC_1.3.4",
+    "commands": [{
+      "id": "328641e8-bc53-4681-8f65-f14bc47f982f",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "39d6e84d-dd34-4da9-9dda-22c9e51b0fd0",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "60559038-b6d7-4c7b-b1d4-fb98e8eb9880",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5bd05767-a2e2-4294-9e3c-371c4c8b0c44",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f5f6ac99-d113-4b01-b486-ed9e9bff7853",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "03e7ebda-4b76-4f7c-8fa8-b5abc2fb09ed",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e61e6827-6a0e-4d60-a9d7-dbd651b2de2f",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "library@gmail.com"
+    }, {
+      "id": "32ebe1c4-5194-4c3d-9833-f300ce524b16",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f42976a1-c201-4d4d-90e2-75b7254b4691",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "AlessandroMagno"
+    }, {
+      "id": "0bfcccb6-e5a6-4bf7-a2b8-c7583c4944b5",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5481eb56-8446-44bb-93d7-a7b4d9a5da8e",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "Tolomeo305"
+    }, {
+      "id": "fba8e8e1-40e5-473b-9d27-7318ebef6488",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "70ddf759-0f3b-49d8-a790-ffa54a7c3ec9",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca Reale di Alessandria"
+    }, {
+      "id": "1dd1b78f-e126-4f12-9cd6-57df3e5d9554",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a454c70f-8964-4491-b344-0ca1c14e85e5",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d86472c1-ccdc-4e6d-9f84-92fc995cf5e9",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7ca31e25-2ed4-465b-b92e-652fc8ff4727",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Piazza Turati 4"
+    }, {
+      "id": "0d6ba7c8-0dc4-4d08-9b84-060dd93e49a3",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ac703f50-bad4-48ef-ae01-841457873966",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "0819999999"
+    }, {
+      "id": "34849a7a-522a-4600-a5e5-8a79ab782c06",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "6cfef54d-597d-4f1a-bb77-ba4eb0d4cb6b",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "c7baff5d-0b5e-4eeb-9048-93efe12096ae",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "59dbb0c7-abc7-4827-9594-8bf374641478",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Registrazione Biblioteca",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "6493b4c5-3497-46d5-a81f-c5f6b4fb1d3b",
+    "name": "TC_1.3.5",
+    "commands": [{
+      "id": "f54158a2-0fc3-49a2-9bbd-079c4b4e8100",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "698a5194-f838-433c-b6d2-4615f3647f36",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ea069e6c-fa27-4526-bf96-e366aa360800",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fcf65676-3c16-4ede-848c-996d2cf90e8f",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "552fa9aa-dadf-49ea-afc9-d130d1160875",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f3297b77-d82f-4eec-9ff8-51fbef61bebe",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4aa39136-dc95-47aa-b287-3c16fc3eac49",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "biblioabano@gmail.com\\n"
+    }, {
+      "id": "a19a553d-351e-4643-b65e-c8bab73139ac",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b1b7d955-f4b1-463a-b594-815bd793400e",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "BibliotecaPassword"
+    }, {
+      "id": "d60ba206-6fff-4ef9-86bc-baad34f63761",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a89e8060-4ad0-4d2f-988b-5c8ae58d2f43",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "BibliotecaPassword"
+    }, {
+      "id": "85a60612-92a5-4b1a-ab93-5a48a77939d6",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fd878ada-a3db-4d4a-923a-e9a84449cdbd",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca di Abano Terme"
+    }, {
+      "id": "4833f3f8-d622-48e4-a1e0-7c43d2b73ed8",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "9972b9e5-c41f-42a5-b42e-716a0456d477",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "76522073-b9b2-41c2-b842-34c0562739df",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4ef76fde-044e-47b5-8fd5-baf7659d2b5d",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "43e3fd1e-a889-41e7-8521-753d8da0fd75",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5cc77e3f-724e-4c1a-b438-6046cd619234",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Via Matteotti 71"
+    }, {
+      "id": "efa994f9-cf54-469b-ada1-f2b332e5f084",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1342f9db-1627-46c9-b800-5c2ec7c1d0b7",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "TRESEISEIUNODUETREUNODUETRE"
+    }, {
+      "id": "caa7ba32-148f-4c6f-a17c-7da5314d0a9a",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9d06611b-dd7e-4645-b172-47e9e6a98a07",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Registrazione Biblioteca",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "fee35179-e0ee-4030-98a3-f8be52e0544d",
+    "name": "TC_1.3.6",
+    "commands": [{
+      "id": "0ba78888-9818-43cf-9cbc-21bc9e495094",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f665b385-9ece-4783-a916-35dc8746f6ac",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "78d63b5a-7f57-4c1a-9311-93fe09b8c8b4",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b668fb61-f66d-478e-8f48-121baace3441",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c82670ab-661c-445b-9682-b907404e5b0b",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "81519aa9-aae6-4941-83a6-51391462c8f8",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "807d3320-015d-4866-a4e8-89a2935ae863",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "biblioteca@gmail.com"
+    }, {
+      "id": "095ea650-fc23-4c73-a5d8-f32828c300cb",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "03aba2e7-adfd-43d8-a09a-db6c01a43fdc",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "BibliotecaPassword"
+    }, {
+      "id": "4851f861-73d7-4e62-a2e5-cd4e85a8c770",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6f588a37-e3fa-4079-891d-374b51a19fea",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "BibliotecaPassword"
+    }, {
+      "id": "e748bd24-33c9-4158-8de4-08fc1a523a5e",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f55b4b52-7c30-4151-8055-7f902fc23fb7",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca di Sicurezza"
+    }, {
+      "id": "b90201d7-7841-4c9a-9573-561a7b2e48f1",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "ef5e7767-eea7-45de-b1d5-1bf4051f14db",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "d1e9ed7b-e109-447c-b931-a48f4b857da8",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "62a5923d-60c0-4166-9e2a-f5b1841094aa",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "776c33bd-48e4-433f-8b33-cf217e0f7024",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d86cc328-98e3-4557-9828-689da4a08471",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "<>"
+    }, {
+      "id": "38df8cd4-e948-4946-9bd3-2fe6747a7578",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9b2a18cd-d918-42de-9e01-cdf881ca7ad6",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "0819999999"
+    }, {
+      "id": "609e6dd5-44f0-46e0-a2a2-3ae7dd0728ce",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c0820048-d3df-4a4f-89b5-4f1af4e60822",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Registrazione Biblioteca",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "8d8bad8f-9830-493c-9ce3-654cd0852aa0",
+    "name": "TC_1.3.7",
+    "commands": [{
+      "id": "7319070c-be51-4d91-af09-b18a2bad4114",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c8ef82b6-734d-4cf1-a9c7-ca9922dadb17",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "654x687",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c8d9d9b2-92c4-4fb0-95c0-3f2ad33ea097",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4373e4f5-0d21-4c57-9912-ed25c1715c0e",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registrazione",
+      "targets": [
+        ["id=Registrazione", "id"],
+        ["css=#Registrazione", "css:finder"],
+        ["xpath=//button[@id='Registrazione']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/nav/div/li/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "42e3cb31-92df-4020-9032-cdb89eda9296",
+      "comment": "",
+      "command": "click",
+      "target": "css=#RegistrazioneBiblioteca > .card-img-overlay",
+      "targets": [
+        ["css=#RegistrazioneBiblioteca > .card-img-overlay", "css:finder"],
+        ["xpath=//div[@id='RegistrazioneBiblioteca']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b33c012f-44af-41c1-a855-16cd213acc73",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.form-outline:nth-child(2) > .form-control", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6bfc0c4b-3b26-49f5-86f2-790e4dab7ee6",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.active", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "biblioteca@gmail.com"
+    }, {
+      "id": "391d4dfc-b8f5-4913-a23e-502b51d6a4f6",
+      "comment": "",
+      "command": "click",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "16b47998-dc09-4e3c-b66c-9a73889dfc0a",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.form-outline:nth-child(3) > .active", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "BibliotecaPassword"
+    }, {
+      "id": "a880230e-6ce8-47b9-90d3-77c3b49d3020",
+      "comment": "",
+      "command": "click",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.card:nth-child(1) .form-outline:nth-child(4) > .form-control", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0936656b-9f18-4939-8029-92471188cbc5",
+      "comment": "",
+      "command": "type",
+      "target": "name=confermaPassword",
+      "targets": [
+        ["name=confermaPassword", "name"],
+        ["css=.form-outline:nth-child(4) > .active", "css:finder"],
+        ["xpath=//input[@name='confermaPassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "BibliotecaPassword"
+    }, {
+      "id": "d03e4da6-8dca-4b3b-9b00-f2ce296e5b25",
+      "comment": "",
+      "command": "click",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .form-outline:nth-child(3) > .form-control", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "97947f7a-94a4-4ace-aec8-9a19cc4d3293",
+      "comment": "",
+      "command": "type",
+      "target": "name=nomeBiblioteca",
+      "targets": [
+        ["name=nomeBiblioteca", "name"],
+        ["css=.card:nth-child(2) .active", "css:finder"],
+        ["xpath=//input[@name='nomeBiblioteca']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/input", "xpath:position"]
+      ],
+      "value": "Biblioteca Nazionale di Napoli"
+    }, {
+      "id": "30d06d95-bdee-46c9-aa1c-65b6b856fc41",
+      "comment": "",
+      "command": "click",
+      "target": "name=provincia",
+      "targets": [
+        ["name=provincia", "name"],
+        ["css=.form-outline:nth-child(5) > .form-control", "css:finder"],
+        ["xpath=//input[@name='provincia']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6201d0a1-1125-49ce-ad0d-9f441a11d02b",
+      "comment": "",
+      "command": "type",
+      "target": "name=provincia",
+      "targets": [],
+      "value": "SA"
+    }, {
+      "id": "869ecb00-766e-4a7f-982a-d23d28d32acf",
+      "comment": "",
+      "command": "click",
+      "target": "name=citta",
+      "targets": [
+        ["name=provincia", "name"],
+        ["css=.form-outline:nth-child(5) > .form-control", "css:finder"],
+        ["xpath=//input[@name='provincia']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6b9892b6-de52-44b2-b7a1-9723129b69f7",
+      "comment": "",
+      "command": "type",
+      "target": "name=citta",
+      "targets": [],
+      "value": "Salerno"
+    }, {
+      "id": "f339f4eb-58bb-4302-a368-8edbd5898916",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7bdf700c-91ca-4f34-ba55-6f8f3d4f054b",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4cd896b9-8e03-430a-8e34-aa6f82e8d582",
+      "comment": "",
+      "command": "click",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4ea30518-3836-4ea7-a38d-3cecd49131e5",
+      "comment": "",
+      "command": "type",
+      "target": "name=via",
+      "targets": [
+        ["name=via", "name"],
+        ["css=.form-outline:nth-child(6) > .form-control", "css:finder"],
+        ["xpath=//input[@name='via']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Piazza del Plebiscito"
+    }, {
+      "id": "4fb84278-c1b2-4dae-af9b-aca1a96ed3a1",
+      "comment": "",
+      "command": "click",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e6734567-8d08-4fca-a44f-b6da35cd3760",
+      "comment": "",
+      "command": "type",
+      "target": "name=recapitoTelefonico",
+      "targets": [
+        ["name=recapitoTelefonico", "name"],
+        ["css=.form-outline:nth-child(7) > .form-control", "css:finder"],
+        ["xpath=//input[@name='recapitoTelefonico']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "0819999999"
+    }, {
+      "id": "54a7d77b-c947-4815-bd5c-537f42796fdb",
+      "comment": "",
+      "command": "click",
+      "target": "id=Registratibtn2",
+      "targets": [
+        ["id=Registratibtn2", "id"],
+        ["css=#Registratibtn2", "css:finder"],
+        ["xpath=//button[@id='Registratibtn2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2adcec11-6b2b-4f51-9246-1b277af9d41e",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Home Page",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "c31a9929-9ed8-4abd-98a8-7b3c84ab8c19",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["4e8cf79b-3c9b-4b97-b51e-dffc829ae908"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}

@@ -1,0 +1,3 @@
+Selenium IDE non permette di testare ogni aspetto che si desiderava testare dell'applicazione.
+La creazione di un club del libro e di un libro in presenza di una copertina non può essere testato con Selenium IDE, per questo motivo si è testato manualmente.
+Tali test hanno dato esito negativo (i test hanno fallito, per cui non è stato rilevato nessun malfunzionamento).
