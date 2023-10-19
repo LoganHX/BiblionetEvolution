@@ -48,6 +48,12 @@ public class PostServiceImplTest {
         assertNotNull(postService.aggiungiCommento(1, new CommentoDTO(), new Lettore()));
 
     }
+    @Test
+    public void aggiungiCommento_UtenteNull(){
+        when(postDAO.findById(Mockito.anyInt())).thenReturn(Optional.of(new Post()));
+        assertNull(postService.aggiungiCommento(1, new CommentoDTO(), null));
+
+    }
 
 
     @Test
